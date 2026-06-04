@@ -1,1 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Financial Report Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text: #17202a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --good: #16a34a;
+      --bad: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 28px;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.03em;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text);
+      min-width: 180px;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 25px;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 360px;
+    }
+
+    .chart-card h2 {
+      margin: 0 0 16px;
+      font-size: 16px;
+    }
+
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    .table-card h2 {
+      margin: 0 0 16px;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+    }
+
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1000px) {
+      .kpis {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+
+      .charts {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 18px;
+      }
+
+      .kpis {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>Financial Report Dashboard</h1>
+    <p>Automated KPIs from Shopify, QuickBooks, and BILL.</p>
+  </div>
+
+  <div class="filters">
+    <select id="yearFilter"></select>
+    <select id="channelFilter"></select>
+  </div>
+
+  <div class="kpis" id="kpiCards"></div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <h2>Revenue by Channel</h2>
+      <canvas id="revenueByChannelChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h2>Monthly Revenue Trend</h2>
+      <canvas id="monthlyTrendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <h2>Channel Breakdown</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Channel</th>
+          <th class="right">Revenue</th>
+          <th class="right">Transactions</th>
+          <th class="right">Average Order Value</th>
+          <th class="right">Discounts</th>
+          <th class="right">Tax</th>
+        </tr>
+      </thead>
+      <tbody id="channelTable"></tbody>
+    </table>
+  </div>
+
+  <div class="footer" id="updatedAt"></div>
+
+  <script>
+    let DATA = null;
+    let revenueByChannelChart = null;
+    let monthlyTrendChart = null;
+
+    function formatMoney(value) {
+      return "$" + Number(value || 0).toLocaleString("en-US", {
+        maximumFractionDigits: 0
+      });
+    }
+
+    function formatPercent(value) {
+      return (Number(value || 0) * 100).toFixed(1) + "%";
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString("en-US", {
+        maximumFractionDigits: 0
+      });
+    }
+
+    async function loadData() {
+      const response = await fetch("financial_report.json?t=" + Date.now());
+      DATA = await response.json();
+
+      document.getElementById("updatedAt").textContent =
+        "Last updated: " + new Date(DATA.generated_at).toLocaleString();
+
+      setupFilters();
+      renderDashboard();
+    }
+
+    function setupFilters() {
+      const yearFilter = document.getElementById("yearFilter");
+      const channelFilter = document.getElementById("channelFilter");
+
+      yearFilter.innerHTML = DATA.years_available
+        .map(year => `<option value="${year}">${year}</option>`)
+        .join("");
+
+      yearFilter.value = Math.max(...DATA.years_available);
+
+      const channels = [...new Set(DATA.by_channel_year.map(row => row.channel))].sort();
+
+      channelFilter.innerHTML =
+        `<option value="all">All Channels</option>` +
+        channels.map(channel => `<option value="${channel}">${channel}</option>`).join("");
+
+      yearFilter.addEventListener("change", renderDashboard);
+      channelFilter.addEventListener("change", renderDashboard);
+    }
+
+    function getSelectedData() {
+      const year = Number(document.getElementById("yearFilter").value);
+      const channel = document.getElementById("channelFilter").value;
+
+      let channelRows = DATA.by_channel_year.filter(row => row.year === year);
+      let monthRows = DATA.by_month.filter(row => row.year === year);
+
+      if (channel !== "all") {
+        channelRows = channelRows.filter(row => row.channel === channel);
+        monthRows = monthRows.filter(row => row.channel === channel);
+      }
+
+      const kpiRow = DATA.kpis_by_year.find(row => row.year === year) || {};
+      const qbRow = DATA.qb_summary[String(year)] || {};
+
+      return {
+        year,
+        channel,
+        channelRows,
+        monthRows,
+        kpiRow,
+        qbRow
+      };
+    }
+
+    function renderDashboard() {
+      const selected = getSelectedData();
+
+      renderKpis(selected);
+      renderRevenueByChannel(selected.channelRows);
+      renderMonthlyTrend(selected.monthRows);
+      renderChannelTable(selected.channelRows);
+    }
+
+    function renderKpis(selected) {
+      const rows = selected.channelRows;
+
+      const totalRevenue = rows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
+      const totalTransactions = rows.reduce((sum, row) => sum + Number(row.transactions || 0), 0);
+      const averageOrderValue = totalTransactions ? totalRevenue / totalTransactions : 0;
+
+      const grossProfit = selected.qbRow.gross_profit || 0;
+      const netIncome = selected.qbRow.net_income || 0;
+      const totalExpenses = selected.qbRow.total_expenses || 0;
+      const totalCogs = selected.qbRow.total_cogs || 0;
+      const grossMargin = selected.qbRow.gross_margin || 0;
+      const netMargin = selected.qbRow.net_margin || 0;
+
+      document.getElementById("kpiCards").innerHTML = `
+        <div class="card">
+          <div class="label">Total Revenue</div>
+          <div class="value">${formatMoney(totalRevenue)}</div>
+          <div class="small">${formatNumber(totalTransactions)} transactions</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Gross Profit</div>
+          <div class="value">${formatMoney(grossProfit)}</div>
+          <div class="small">Gross Margin: ${formatPercent(grossMargin)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Net Income</div>
+          <div class="value">${formatMoney(netIncome)}</div>
+          <div class="small">Net Margin: ${formatPercent(netMargin)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Average Order Value</div>
+          <div class="value">${formatMoney(averageOrderValue)}</div>
+          <div class="small">Revenue / Transactions</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Total Expenses</div>
+          <div class="value">${formatMoney(totalExpenses)}</div>
+          <div class="small">From QuickBooks P&L</div>
+        </div>
+
+        <div class="card">
+          <div class="label">COGS</div>
+          <div class="value">${formatMoney(totalCogs)}</div>
+          <div class="small">Cost of Goods Sold</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Active Channels</div>
+          <div class="value">${formatNumber(rows.length)}</div>
+          <div class="small">Filtered channel count</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Report Year</div>
+          <div class="value">${selected.year}</div>
+          <div class="small">Automated daily refresh</div>
+        </div>
+      `;
+    }
+
+    function renderRevenueByChannel(rows) {
+      if (revenueByChannelChart) {
+        revenueByChannelChart.destroy();
+      }
+
+      revenueByChannelChart = new Chart(
+        document.getElementById("revenueByChannelChart"),
+        {
+          type: "bar",
+          data: {
+            labels: rows.map(row => row.channel),
+            datasets: [{
+              label: "Revenue",
+              data: rows.map(row => row.total_revenue),
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        }
+      );
+    }
+
+    function renderMonthlyTrend(rows) {
+      if (monthlyTrendChart) {
+        monthlyTrendChart.destroy();
+      }
+
+      const months = [...new Set(rows.map(row => row.month))].sort();
+      const channels = [...new Set(rows.map(row => row.channel))].sort();
+
+      const datasets = channels.map(channel => {
+        return {
+          label: channel,
+          data: months.map(month => {
+            const found = rows.find(row => row.month === month && row.channel === channel);
+            return found ? found.total_revenue : 0;
+          }),
+          tension: 0.35
+        };
+      });
+
+      monthlyTrendChart = new Chart(
+        document.getElementById("monthlyTrendChart"),
+        {
+          type: "line",
+          data: {
+            labels: months,
+            datasets: datasets
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "bottom"
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        }
+      );
+    }
+
+    function renderChannelTable(rows) {
+      document.getElementById("channelTable").innerHTML = rows
+        .sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))
+        .map(row => {
+          const revenue = Number(row.total_revenue || 0);
+          const transactions = Number(row.transactions || 0);
+          const aov = transactions ? revenue / transactions : 0;
+
+          return `
+            <tr>
+              <td>${row.channel}</td>
+              <td class="right">${formatMoney(revenue)}</td>
+              <td class="right">${formatNumber(transactions)}</td>
+              <td class="right">${formatMoney(aov)}</td>
+              <td class="right">${formatMoney(row.discounts)}</td>
+              <td class="right">${formatMoney(row.tax)}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
