@@ -1,0 +1,207 @@
+{
+  "generated_at": "2026-06-04T07:00:00Z",
+  "years_available": [2024, 2025, 2026],
+  "kpis_by_year": [
+    {
+      "year": 2024,
+      "total_revenue": 485000,
+      "subtotal": 462000,
+      "tax": 18000,
+      "discounts": 9500,
+      "transactions": 3120,
+      "average_order_value": 155.44
+    },
+    {
+      "year": 2025,
+      "total_revenue": 728500,
+      "subtotal": 694000,
+      "tax": 29500,
+      "discounts": 15300,
+      "transactions": 4680,
+      "average_order_value": 155.66
+    },
+    {
+      "year": 2026,
+      "total_revenue": 392750,
+      "subtotal": 374000,
+      "tax": 15400,
+      "discounts": 8800,
+      "transactions": 2365,
+      "average_order_value": 166.07
+    }
+  ],
+  "qb_summary": {
+    "2024": {
+      "year": 2024,
+      "source": "QuickBooks",
+      "total_income": 485000,
+      "total_cogs": 205000,
+      "gross_profit": 280000,
+      "total_expenses": 162000,
+      "net_income": 118000,
+      "gross_margin": 0.5773,
+      "net_margin": 0.2433
+    },
+    "2025": {
+      "year": 2025,
+      "source": "QuickBooks",
+      "total_income": 728500,
+      "total_cogs": 298000,
+      "gross_profit": 430500,
+      "total_expenses": 235000,
+      "net_income": 195500,
+      "gross_margin": 0.5909,
+      "net_margin": 0.2684
+    },
+    "2026": {
+      "year": 2026,
+      "source": "QuickBooks",
+      "total_income": 392750,
+      "total_cogs": 158000,
+      "gross_profit": 234750,
+      "total_expenses": 121500,
+      "net_income": 113250,
+      "gross_margin": 0.5977,
+      "net_margin": 0.2883
+    }
+  },
+  "by_channel_year": [
+    {
+      "year": 2024,
+      "channel": "Online Store",
+      "total_revenue": 245000,
+      "subtotal": 235000,
+      "tax": 9200,
+      "discounts": 5100,
+      "transactions": 1820
+    },
+    {
+      "year": 2024,
+      "channel": "Amazon",
+      "total_revenue": 104500,
+      "subtotal": 99000,
+      "tax": 4200,
+      "discounts": 2300,
+      "transactions": 680
+    },
+    {
+      "year": 2024,
+      "channel": "Wholesale",
+      "total_revenue": 87500,
+      "subtotal": 83000,
+      "tax": 3100,
+      "discounts": 1400,
+      "transactions": 330
+    },
+    {
+      "year": 2024,
+      "channel": "BILL / B2B",
+      "total_revenue": 48000,
+      "subtotal": 45000,
+      "tax": 1500,
+      "discounts": 700,
+      "transactions": 290
+    },
+    {
+      "year": 2025,
+      "channel": "Online Store",
+      "total_revenue": 386000,
+      "subtotal": 368000,
+      "tax": 15700,
+      "discounts": 8100,
+      "transactions": 2710
+    },
+    {
+      "year": 2025,
+      "channel": "Amazon",
+      "total_revenue": 151500,
+      "subtotal": 143000,
+      "tax": 5900,
+      "discounts": 3500,
+      "transactions": 920
+    },
+    {
+      "year": 2025,
+      "channel": "Wholesale",
+      "total_revenue": 119000,
+      "subtotal": 113000,
+      "tax": 4700,
+      "discounts": 2100,
+      "transactions": 530
+    },
+    {
+      "year": 2025,
+      "channel": "BILL / B2B",
+      "total_revenue": 72000,
+      "subtotal": 70000,
+      "tax": 3200,
+      "discounts": 1600,
+      "transactions": 520
+    },
+    {
+      "year": 2026,
+      "channel": "Online Store",
+      "total_revenue": 215000,
+      "subtotal": 204000,
+      "tax": 8700,
+      "discounts": 4300,
+      "transactions": 1450
+    },
+    {
+      "year": 2026,
+      "channel": "Amazon",
+      "total_revenue": 82000,
+      "subtotal": 78500,
+      "tax": 3200,
+      "discounts": 2100,
+      "transactions": 480
+    },
+    {
+      "year": 2026,
+      "channel": "Wholesale",
+      "total_revenue": 54750,
+      "subtotal": 52000,
+      "tax": 2100,
+      "discounts": 1200,
+      "transactions": 235
+    },
+    {
+      "year": 2026,
+      "channel": "BILL / B2B",
+      "total_revenue": 41000,
+      "subtotal": 39500,
+      "tax": 1400,
+      "discounts": 1200,
+      "transactions": 200
+    }
+  ],
+  "by_month": [
+    { "year": 2026, "month": "01", "channel": "Online Store", "total_revenue": 32000, "transactions": 210 },
+    { "year": 2026, "month": "02", "channel": "Online Store", "total_revenue": 34500, "transactions": 225 },
+    { "year": 2026, "month": "03", "channel": "Online Store", "total_revenue": 38200, "transactions": 250 },
+    { "year": 2026, "month": "04", "channel": "Online Store", "total_revenue": 42100, "transactions": 270 },
+    { "year": 2026, "month": "05", "channel": "Online Store", "total_revenue": 46000, "transactions": 300 },
+    { "year": 2026, "month": "06", "channel": "Online Store", "total_revenue": 22200, "transactions": 195 },
+
+    { "year": 2026, "month": "01", "channel": "Amazon", "total_revenue": 12500, "transactions": 75 },
+    { "year": 2026, "month": "02", "channel": "Amazon", "total_revenue": 13400, "transactions": 82 },
+    { "year": 2026, "month": "03", "channel": "Amazon", "total_revenue": 15100, "transactions": 95 },
+    { "year": 2026, "month": "04", "channel": "Amazon", "total_revenue": 16800, "transactions": 100 },
+    { "year": 2026, "month": "05", "channel": "Amazon", "total_revenue": 18000, "transactions": 110 },
+    { "year": 2026, "month": "06", "channel": "Amazon", "total_revenue": 6200, "transactions": 18 },
+
+    { "year": 2026, "month": "01", "channel": "Wholesale", "total_revenue": 8200, "transactions": 34 },
+    { "year": 2026, "month": "02", "channel": "Wholesale", "total_revenue": 9100, "transactions": 40 },
+    { "year": 2026, "month": "03", "channel": "Wholesale", "total_revenue": 9700, "transactions": 42 },
+    { "year": 2026, "month": "04", "channel": "Wholesale", "total_revenue": 10500, "transactions": 45 },
+    { "year": 2026, "month": "05", "channel": "Wholesale", "total_revenue": 11250, "transactions": 50 },
+    { "year": 2026, "month": "06", "channel": "Wholesale", "total_revenue": 6000, "transactions": 24 },
+
+    { "year": 2026, "month": "01", "channel": "BILL / B2B", "total_revenue": 6000, "transactions": 30 },
+    { "year": 2026, "month": "02", "channel": "BILL / B2B", "total_revenue": 6500, "transactions": 32 },
+    { "year": 2026, "month": "03", "channel": "BILL / B2B", "total_revenue": 7200, "transactions": 36 },
+    { "year": 2026, "month": "04", "channel": "BILL / B2B", "total_revenue": 7800, "transactions": 40 },
+    { "year": 2026, "month": "05", "channel": "BILL / B2B", "total_revenue": 8300, "transactions": 42 },
+    { "year": 2026, "month": "06", "channel": "BILL / B2B", "total_revenue": 5200, "transactions": 20 }
+  ]
+}
