@@ -1,5 +1,52 @@
-n iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.Understand this warning
-userCodeAppPanel?cre…OAuthDialog=true:64 Uncaught SyntaxError: Unexpected identifier 'good'Understand this error
-2userCodeAppPanel?createOAuthDialog=true:1 Uncaught ReferenceError: setMode is not defined
-    at HTMLButtonElement.onclick (userCodeAppPanel?createOAuthDialog=true:1:12646)
-onclick @ userCodeAppPanel?createOAuthDialog=true:1Understand this error
+name: Daily Financial Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  financial-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run financial report pipeline
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+
+          QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
+          QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
+          QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
+          QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
+
+          BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
+          BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
+          BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
+          BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
+          BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
+
+          START_YEAR: ${{ secrets.START_YEAR }}
+        run: python main.py
+
+      - name: Commit updated financial report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions@github.com"
+          git add docs/financial_report.json
+          git diff --staged --quiet || git commit -m "Update financial report data"
+          git push
