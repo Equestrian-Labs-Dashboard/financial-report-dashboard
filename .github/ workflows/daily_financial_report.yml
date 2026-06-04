@@ -1,0 +1,5 @@
+n iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.Understand this warning
+userCodeAppPanel?cre…OAuthDialog=true:64 Uncaught SyntaxError: Unexpected identifier 'good'Understand this error
+2userCodeAppPanel?createOAuthDialog=true:1 Uncaught ReferenceError: setMode is not defined
+    at HTMLButtonElement.onclick (userCodeAppPanel?createOAuthDialog=true:1:12646)
+onclick @ userCodeAppPanel?createOAuthDialog=true:1Understand this error
