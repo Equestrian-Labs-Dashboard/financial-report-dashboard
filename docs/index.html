@@ -16,8 +16,8 @@
       --muted: #6b7280;
       --border: #e5e7eb;
       --accent: #2563eb;
-      --good: #16a34a;
-      --bad: #dc2626;
+      --green: #16a34a;
+      --red: #dc2626;
     }
 
     * {
@@ -33,6 +33,10 @@
     }
 
     .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
       margin-bottom: 24px;
     }
 
@@ -45,6 +49,16 @@
     .header p {
       margin: 8px 0 0;
       color: var(--muted);
+    }
+
+    .badge {
+      background: #e0ecff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      white-space: nowrap;
     }
 
     .filters {
@@ -167,6 +181,10 @@
       .charts {
         grid-template-columns: 1fr;
       }
+
+      .header {
+        flex-direction: column;
+      }
     }
 
     @media (max-width: 600px) {
@@ -187,8 +205,11 @@
 
 <body>
   <div class="header">
-    <h1>Financial Report Dashboard</h1>
-    <p>Automated KPIs from Shopify, QuickBooks, and BILL.</p>
+    <div>
+      <h1>Financial Report Dashboard</h1>
+      <p>Automated KPIs from Shopify, QuickBooks, and BILL.</p>
+    </div>
+    <div class="badge">Draft Preview · Sample Data</div>
   </div>
 
   <div class="filters">
