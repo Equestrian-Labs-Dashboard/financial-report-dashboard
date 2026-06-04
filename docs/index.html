@@ -13,20 +13,18 @@
       --bg: #07111f;
       --sidebar: #0b1728;
       --panel: #0e1c2f;
-      --panel-soft: #10233a;
-      --panel-lighter: #132a45;
+      --panel-2: #10233a;
+      --panel-3: #132a45;
       --border: #1e3a5f;
       --border-soft: #183250;
       --text: #f8fafc;
       --muted: #7f9ab7;
-      --muted-2: #4f6f91;
+      --muted-2: #5f7f9f;
       --blue: #3b82f6;
-      --cyan: #22d3ee;
       --green: #22c55e;
       --purple: #a78bfa;
       --amber: #f59e0b;
       --red: #ef4444;
-      --card-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
     }
 
     * {
@@ -39,96 +37,96 @@
       background: var(--bg);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 192px 1fr;
       min-height: 100vh;
     }
 
     .sidebar {
       background: var(--sidebar);
       border-right: 1px solid var(--border-soft);
-      padding: 24px 0;
+      height: 100vh;
       position: sticky;
       top: 0;
-      height: 100vh;
+      overflow-y: auto;
     }
 
     .company {
-      padding: 0 22px 22px;
+      padding: 18px 12px 16px;
       border-bottom: 1px solid var(--border-soft);
     }
 
     .window-dots {
       display: flex;
-      gap: 7px;
-      margin-bottom: 12px;
+      gap: 6px;
+      margin-bottom: 10px;
     }
 
     .dot-ui {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
     }
 
-    .dot-green {
+    .green-dot {
       background: var(--green);
     }
 
-    .dot-purple {
+    .purple-dot {
       background: var(--purple);
     }
 
     .company-name {
+      font-size: 14px;
       font-weight: 800;
-      font-size: 16px;
-      letter-spacing: -0.03em;
+      line-height: 1.1;
     }
 
     .company-subtitle {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 4px;
     }
 
     .nav-section {
-      padding: 20px 0 4px;
+      padding: 18px 0 4px;
     }
 
     .nav-label {
-      padding: 0 22px;
+      padding: 0 12px;
+      margin-bottom: 7px;
       color: var(--muted-2);
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      margin-bottom: 8px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
+      padding: 9px 12px;
       color: #b8cee5;
       text-decoration: none;
-      padding: 10px 22px;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .nav-item.active {
       background: #13243b;
       color: white;
-      border-left: 3px solid var(--blue);
-      padding-left: 19px;
     }
 
     .nav-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: var(--blue);
+      flex: 0 0 auto;
     }
 
     .nav-dot.green {
@@ -145,55 +143,55 @@
 
     .badge-small {
       margin-left: auto;
-      font-size: 10px;
+      font-size: 9px;
       color: #fef3c7;
-      background: rgba(245, 158, 11, 0.18);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      padding: 2px 7px;
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.36);
+      padding: 2px 6px;
       border-radius: 999px;
     }
 
     .main {
-      padding: 30px 28px 40px;
+      padding: 24px 28px 32px;
       overflow-x: hidden;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
       align-items: flex-start;
-      margin-bottom: 18px;
+      gap: 16px;
+      margin-bottom: 14px;
     }
 
     .title h1 {
       margin: 0;
-      font-size: 28px;
-      letter-spacing: -0.04em;
+      font-size: 24px;
+      line-height: 1.05;
       font-weight: 850;
+      letter-spacing: -0.04em;
     }
 
     .title p {
-      margin: 7px 0 0;
+      margin: 6px 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .header-actions {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
 
     .pill {
       border: 1px solid var(--border);
-      background: var(--panel-soft);
+      background: var(--panel-2);
       color: #cfe3f8;
       border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
+      padding: 6px 10px;
+      font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -212,19 +210,20 @@
 
     .tabs {
       display: inline-flex;
-      background: var(--panel-soft);
+      background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 4px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .tab {
       border: 0;
       background: transparent;
       color: #8fb1d3;
-      padding: 7px 14px;
+      padding: 6px 13px;
       border-radius: 6px;
+      font-size: 12px;
       font-weight: 800;
       cursor: default;
     }
@@ -238,24 +237,24 @@
     .filters-bar {
       background: #0b1a2d;
       border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 12px 16px;
+      border-radius: 8px;
+      padding: 10px 14px;
       display: flex;
-      gap: 18px;
+      gap: 14px;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .filter-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
 
     .filter-label {
       color: var(--muted-2);
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       font-weight: 900;
@@ -267,39 +266,40 @@
       border: 1px solid #25496f;
       color: white;
       border-radius: 6px;
-      padding: 8px 32px 8px 12px;
-      font-size: 14px;
+      padding: 7px 28px 7px 10px;
+      font-size: 12px;
       font-weight: 800;
       outline: none;
+      min-width: 130px;
     }
 
     .date-strip {
       background: #13243b;
       border: 1px solid var(--border-soft);
       border-radius: 7px;
-      padding: 10px 16px;
+      padding: 8px 12px;
       color: white;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .notice {
-      background: rgba(245, 158, 11, 0.11);
-      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.10);
+      border: 1px solid rgba(245, 158, 11, 0.34);
       color: #fbbf24;
       border-radius: 7px;
-      padding: 11px 14px;
-      font-size: 13px;
+      padding: 9px 12px;
+      font-size: 12px;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .section-title {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin: 22px 0 14px;
+      gap: 9px;
+      margin: 18px 0 12px;
     }
 
     .section-title::before,
@@ -312,8 +312,8 @@
 
     .section-title span {
       color: var(--muted);
-      font-size: 11px;
-      letter-spacing: 0.16em;
+      font-size: 10px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       font-weight: 900;
       white-space: nowrap;
@@ -321,91 +321,113 @@
 
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(160px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(5, minmax(135px, 1fr));
+      gap: 9px;
     }
 
     .kpi-card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 16px 17px;
-      min-height: 138px;
-      box-shadow: var(--card-shadow);
+      padding: 13px 14px;
+      min-height: 116px;
+    }
+
+    .kpi-card.positive {
+      border-top: 2px solid var(--green);
+    }
+
+    .kpi-card.warning {
+      border-top: 2px solid var(--amber);
+    }
+
+    .kpi-card.negative {
+      border-top: 2px solid var(--red);
     }
 
     .kpi-label {
       color: #b9c9dc;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       font-weight: 900;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .kpi-value {
-      font-size: 32px;
+      font-size: 26px;
       line-height: 1;
       font-weight: 900;
       letter-spacing: -0.06em;
-      margin-bottom: 12px;
+      margin-bottom: 9px;
     }
 
     .kpi-chip {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
       background: #12304e;
       border: 1px solid #1d4d78;
       color: #6fa5d9;
       border-radius: 999px;
-      padding: 4px 9px;
-      font-size: 11px;
+      padding: 3px 8px;
+      font-size: 10px;
       font-weight: 800;
-      margin-bottom: 9px;
+      margin-bottom: 7px;
+    }
+
+    .kpi-chip.green {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #86efac;
+    }
+
+    .kpi-chip.red {
+      background: rgba(239, 68, 68, 0.13);
+      border-color: rgba(239, 68, 68, 0.36);
+      color: #fca5a5;
     }
 
     .kpi-note {
       color: #6f8aac;
-      font-size: 11px;
+      font-size: 10.5px;
       line-height: 1.35;
       font-style: italic;
     }
 
     .content-grid {
       display: grid;
-      grid-template-columns: 1.35fr 0.65fr;
-      gap: 14px;
-      margin-top: 14px;
+      grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+      gap: 12px;
+      margin-top: 12px;
     }
 
     .panel {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 16px;
-      box-shadow: var(--card-shadow);
+      padding: 14px;
+      min-width: 0;
     }
 
     .panel-header {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       align-items: flex-start;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .panel-title {
       margin: 0;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: -0.02em;
     }
 
     .panel-subtitle {
-      margin: 5px 0 0;
+      margin: 4px 0 0;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .panel-tag {
@@ -413,45 +435,44 @@
       border: 1px solid var(--border);
       background: #10233a;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
-      padding: 5px 9px;
+      padding: 4px 8px;
       white-space: nowrap;
     }
 
     .chart-wrap {
       position: relative;
-      height: 280px;
       width: 100%;
+      height: 240px;
     }
 
     .chart-wrap.large {
-      height: 300px;
+      height: 260px;
     }
 
-    .source-list,
-    .notes-list {
+    .source-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .source-item {
       background: #10233a;
       border: 1px solid #1d395c;
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px;
     }
 
     .source-top {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .source-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 900;
     }
 
@@ -460,14 +481,14 @@
       background: rgba(34, 197, 94, 0.12);
       border: 1px solid rgba(34, 197, 94, 0.35);
       border-radius: 999px;
-      font-size: 10px;
-      padding: 3px 7px;
+      font-size: 9px;
+      padding: 2px 6px;
       font-weight: 900;
     }
 
     .source-fields {
       color: #7f9ab7;
-      font-size: 11px;
+      font-size: 10px;
       line-height: 1.4;
     }
 
@@ -475,13 +496,15 @@
       list-style: none;
       padding: 0;
       margin: 0;
+      display: grid;
+      gap: 9px;
     }
 
     .notes-list li {
       display: flex;
-      gap: 9px;
+      gap: 8px;
       color: #b7c9dc;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.45;
     }
 
@@ -495,31 +518,31 @@
     }
 
     .table-panel {
-      margin-top: 14px;
+      margin-top: 12px;
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     th {
       color: #8fa9c4;
       text-align: left;
       border-bottom: 1px solid #1d395c;
-      padding: 11px 10px;
+      padding: 9px 8px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      font-size: 11px;
+      font-size: 10px;
       white-space: nowrap;
     }
 
     td {
       color: #dbeafe;
       border-bottom: 1px solid #122942;
-      padding: 12px 10px;
+      padding: 10px 8px;
       white-space: nowrap;
     }
 
@@ -534,25 +557,25 @@
     .channel-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       font-weight: 900;
     }
 
     .channel-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: var(--blue);
     }
 
     .footer {
       color: #5e7b9b;
-      font-size: 11px;
+      font-size: 10.5px;
       text-align: center;
-      padding: 24px 0 0;
+      padding: 18px 0 0;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1180px) {
       .layout {
         grid-template-columns: 1fr;
       }
@@ -561,8 +584,12 @@
         display: none;
       }
 
+      .main {
+        padding: 22px 18px 30px;
+      }
+
       .kpi-grid {
-        grid-template-columns: repeat(2, minmax(160px, 1fr));
+        grid-template-columns: repeat(3, minmax(130px, 1fr));
       }
 
       .content-grid {
@@ -570,11 +597,7 @@
       }
     }
 
-    @media (max-width: 680px) {
-      .main {
-        padding: 20px 14px 32px;
-      }
-
+    @media (max-width: 760px) {
       .header {
         flex-direction: column;
       }
@@ -583,8 +606,8 @@
         justify-content: flex-start;
       }
 
-      .kpi-grid {
-        grid-template-columns: 1fr;
+      .title h1 {
+        font-size: 21px;
       }
 
       .filters-bar {
@@ -593,17 +616,48 @@
 
       .filter-group {
         width: 100%;
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       select {
         width: 100%;
       }
 
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(130px, 1fr));
+      }
+
       .chart-wrap,
       .chart-wrap.large {
-        height: 240px;
+        height: 220px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .main {
+        padding: 18px 12px 26px;
+      }
+
+      .tabs {
+        width: 100%;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 6px 8px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-card {
+        min-height: 105px;
+      }
+
+      .kpi-value {
+        font-size: 24px;
       }
     }
   </style>
@@ -614,8 +668,8 @@
     <aside class="sidebar">
       <div class="company">
         <div class="window-dots">
-          <span class="dot-ui dot-green"></span>
-          <span class="dot-ui dot-purple"></span>
+          <span class="dot-ui green-dot"></span>
+          <span class="dot-ui purple-dot"></span>
         </div>
         <div class="company-name">Financial Report</div>
         <div class="company-subtitle">Analytics Suite</div>
@@ -929,10 +983,10 @@
       const aov = totalTransactions ? totalRevenue / totalTransactions : 0;
 
       document.getElementById("salesKpis").innerHTML = `
-        <div class="kpi-card">
+        <div class="kpi-card positive">
           <div class="kpi-label">Gross Sales</div>
           <div class="kpi-value">${money(totalRevenue)}</div>
-          <div class="kpi-chip">YOY —</div>
+          <div class="kpi-chip green">YOY —</div>
           <div class="kpi-note">Shopify total_price + BILL invoice amount</div>
         </div>
 
@@ -950,7 +1004,7 @@
           <div class="kpi-note">Revenue / transactions</div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card warning">
           <div class="kpi-label">Discounts</div>
           <div class="kpi-value">${money(totalDiscounts)}</div>
           <div class="kpi-chip">YOY —</div>
@@ -973,28 +1027,28 @@
           <div class="kpi-note">QuickBooks Profit & Loss</div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card positive">
           <div class="kpi-label">Gross Profit</div>
           <div class="kpi-value">${money(selected.qb.gross_profit)}</div>
-          <div class="kpi-chip">Margin ${percent(selected.qb.gross_margin)}</div>
+          <div class="kpi-chip green">Margin ${percent(selected.qb.gross_margin)}</div>
           <div class="kpi-note">Total Income - COGS</div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card positive">
           <div class="kpi-label">Net Income</div>
           <div class="kpi-value">${money(selected.qb.net_income)}</div>
-          <div class="kpi-chip">Margin ${percent(selected.qb.net_margin)}</div>
+          <div class="kpi-chip green">Margin ${percent(selected.qb.net_margin)}</div>
           <div class="kpi-note">QuickBooks Net Income</div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card negative">
           <div class="kpi-label">Total Expenses</div>
           <div class="kpi-value">${money(selected.qb.total_expenses)}</div>
-          <div class="kpi-chip">QB P&L</div>
+          <div class="kpi-chip red">QB P&L</div>
           <div class="kpi-note">Operating expense total</div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card warning">
           <div class="kpi-label">COGS</div>
           <div class="kpi-value">${money(selected.qb.total_cogs)}</div>
           <div class="kpi-chip">QB P&L</div>
@@ -1015,8 +1069,8 @@
             backgroundColor: rows.map((_, i) => COLORS[i % COLORS.length]),
             borderColor: rows.map((_, i) => COLORS[i % COLORS.length]),
             borderWidth: 1,
-            borderRadius: 8,
-            maxBarThickness: 54
+            borderRadius: 6,
+            maxBarThickness: 42
           }]
         },
         options: {
@@ -1032,14 +1086,15 @@
           },
           scales: {
             x: {
-              grid: { color: "rgba(127,154,183,0.08)" },
-              ticks: { color: "#8fb1d3" }
+              grid: { color: "rgba(127,154,183,0.06)" },
+              ticks: { color: "#8fb1d3", font: { size: 10 } }
             },
             y: {
               beginAtZero: true,
-              grid: { color: "rgba(127,154,183,0.12)" },
+              grid: { color: "rgba(127,154,183,0.10)" },
               ticks: {
                 color: "#8fb1d3",
+                font: { size: 10 },
                 callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
@@ -1063,8 +1118,9 @@
         borderColor: COLORS[index % COLORS.length],
         backgroundColor: COLORS[index % COLORS.length],
         tension: 0.35,
-        pointRadius: 3,
-        pointHoverRadius: 5
+        pointRadius: 2,
+        pointHoverRadius: 4,
+        borderWidth: 2
       }));
 
       monthlyTrendChart = new Chart(document.getElementById("monthlyTrendChart"), {
@@ -1079,7 +1135,7 @@
           plugins: {
             legend: {
               position: "bottom",
-              labels: { color: "#b8cee5" }
+              labels: { color: "#b8cee5", font: { size: 10 }, boxWidth: 10 }
             },
             tooltip: {
               callbacks: {
@@ -1089,14 +1145,15 @@
           },
           scales: {
             x: {
-              grid: { color: "rgba(127,154,183,0.08)" },
-              ticks: { color: "#8fb1d3" }
+              grid: { color: "rgba(127,154,183,0.06)" },
+              ticks: { color: "#8fb1d3", font: { size: 10 } }
             },
             y: {
               beginAtZero: true,
-              grid: { color: "rgba(127,154,183,0.12)" },
+              grid: { color: "rgba(127,154,183,0.10)" },
               ticks: {
                 color: "#8fb1d3",
+                font: { size: 10 },
                 callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
