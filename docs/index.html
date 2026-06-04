@@ -10,17 +10,15 @@
 
   <style>
     :root {
-      --bg: #f3f4f6;
-      --panel: #ffffff;
-      --panel-soft: #fafafa;
-      --text: #111827;
-      --muted: #6b7280;
-      --border: #e5e7eb;
+      --bg: #f5f5f4;
+      --card: #ffffff;
+      --text: #1c1c1a;
+      --muted: #737373;
+      --border: #e7e5e4;
       --blue: #2563eb;
-      --blue-dark: #1e40af;
       --green: #16a34a;
-      --red: #dc2626;
       --amber: #d97706;
+      --red: #dc2626;
       --purple: #7c3aed;
       --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
       --radius: 18px;
@@ -32,17 +30,13 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.13), transparent 32%),
-        radial-gradient(circle at top right, rgba(124, 58, 237, 0.10), transparent 28%),
-        var(--bg);
+      background: var(--bg);
       color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .app {
-      max-width: 1440px;
+      max-width: 1380px;
       margin: 0 auto;
       padding: 28px;
     }
@@ -50,9 +44,9 @@
     .topbar {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
       align-items: center;
-      margin-bottom: 22px;
+      gap: 18px;
+      margin-bottom: 24px;
     }
 
     .brand {
@@ -62,21 +56,20 @@
     }
 
     .brand-logo {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 14px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
       display: grid;
       place-items: center;
+      background: #111827;
       color: white;
       font-weight: 800;
-      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28);
+      letter-spacing: -0.04em;
     }
 
     .brand-title {
-      font-size: 16px;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      font-size: 16px;
     }
 
     .brand-subtitle {
@@ -87,61 +80,61 @@
 
     .top-actions {
       display: flex;
-      align-items: center;
       gap: 10px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
 
-    .status-pill {
-      border: 1px solid #bfdbfe;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-radius: 999px;
+    .pill {
+      border: 1px solid var(--border);
+      background: white;
       padding: 9px 13px;
+      border-radius: 999px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
+      color: #44403c;
       white-space: nowrap;
     }
 
-    .draft-pill {
-      border: 1px solid #fde68a;
+    .pill.blue {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+
+    .pill.amber {
       background: #fffbeb;
       color: #92400e;
-      border-radius: 999px;
-      padding: 9px 13px;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
+      border-color: #fde68a;
     }
 
     .hero {
-      background: linear-gradient(135deg, #0f172a, #1e3a8a 58%, #4338ca);
+      background: #111827;
       color: white;
-      border-radius: 26px;
+      border-radius: 28px;
       padding: 30px;
-      box-shadow: var(--shadow);
       margin-bottom: 22px;
-      position: relative;
+      box-shadow: var(--shadow);
       overflow: hidden;
+      position: relative;
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      right: -120px;
-      top: -120px;
-      width: 320px;
-      height: 320px;
-      background: rgba(255, 255, 255, 0.12);
+      right: -110px;
+      top: -110px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 999px;
     }
 
-    .hero-content {
+    .hero-inner {
       position: relative;
-      z-index: 2;
+      z-index: 1;
       display: grid;
-      grid-template-columns: 1.5fr 1fr;
+      grid-template-columns: 1.6fr 1fr;
       gap: 24px;
       align-items: end;
     }
@@ -149,95 +142,87 @@
     .hero h1 {
       margin: 0;
       font-size: 34px;
-      line-height: 1.1;
       letter-spacing: -0.04em;
+      line-height: 1.08;
     }
 
     .hero p {
       margin: 12px 0 0;
-      color: rgba(255, 255, 255, 0.78);
-      max-width: 720px;
+      max-width: 760px;
+      color: rgba(255, 255, 255, 0.75);
       font-size: 15px;
     }
 
-    .hero-meta {
+    .hero-metrics {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    .hero-box {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+    .hero-metric {
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.13);
       border-radius: 16px;
       padding: 14px;
-      backdrop-filter: blur(10px);
     }
 
-    .hero-box-label {
+    .hero-label {
+      color: rgba(255, 255, 255, 0.66);
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.72);
       margin-bottom: 6px;
     }
 
-    .hero-box-value {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+    .hero-value {
+      font-size: 22px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
     }
 
     .toolbar {
-      background: var(--panel);
+      background: white;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
       padding: 16px;
       margin-bottom: 18px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 14px;
       flex-wrap: wrap;
-      align-items: center;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
     }
 
     .filters {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      align-items: center;
     }
 
     .filter-group {
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 6px;
     }
 
     .filter-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
     }
 
     select {
-      min-width: 185px;
+      min-width: 190px;
       border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
       border-radius: 12px;
       padding: 11px 12px;
-      color: var(--text);
-      background: white;
       outline: none;
       font-size: 14px;
     }
 
-    select:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-    }
-
-    .data-note {
+    .updated {
       color: var(--muted);
       font-size: 13px;
       text-align: right;
@@ -245,13 +230,13 @@
 
     .kpis {
       display: grid;
-      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
       gap: 16px;
       margin-bottom: 18px;
     }
 
     .kpi-card {
-      background: var(--panel);
+      background: white;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 18px;
@@ -265,32 +250,21 @@
       position: absolute;
       left: 0;
       top: 0;
-      height: 4px;
       width: 100%;
+      height: 4px;
       background: var(--blue);
     }
 
-    .kpi-card.green::before {
-      background: var(--green);
-    }
-
-    .kpi-card.red::before {
-      background: var(--red);
-    }
-
-    .kpi-card.amber::before {
-      background: var(--amber);
-    }
-
-    .kpi-card.purple::before {
-      background: var(--purple);
-    }
+    .kpi-card.green::before { background: var(--green); }
+    .kpi-card.amber::before { background: var(--amber); }
+    .kpi-card.red::before { background: var(--red); }
+    .kpi-card.purple::before { background: var(--purple); }
 
     .kpi-label {
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 10px;
+      font-weight: 750;
+      margin-bottom: 9px;
     }
 
     .kpi-value {
@@ -300,39 +274,40 @@
       margin-bottom: 8px;
     }
 
-    .kpi-subtitle {
+    .kpi-note {
       color: var(--muted);
       font-size: 12px;
       line-height: 1.4;
     }
 
-    .main-grid {
+    .grid-main {
       display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
+      grid-template-columns: 1.25fr 0.75fr;
       gap: 18px;
       margin-bottom: 18px;
     }
 
-    .chart-card,
-    .side-card,
-    .table-card {
-      background: var(--panel);
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: white;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 20px;
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
     }
 
-    .chart-card {
-      min-height: 410px;
-    }
-
     .card-header {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
       align-items: flex-start;
-      margin-bottom: 18px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .card-title {
@@ -342,25 +317,34 @@
     }
 
     .card-subtitle {
-      margin: 4px 0 0;
+      margin: 5px 0 0;
       color: var(--muted);
       font-size: 13px;
     }
 
-    .mini-badge {
-      background: var(--panel-soft);
+    .mini-pill {
+      background: #fafaf9;
       border: 1px solid var(--border);
       color: var(--muted);
       border-radius: 999px;
       padding: 6px 10px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       white-space: nowrap;
     }
 
-    .stack {
-      display: grid;
-      gap: 18px;
+    .chart-wrap {
+      position: relative;
+      height: 320px;
+      width: 100%;
+    }
+
+    .chart-wrap.small {
+      height: 280px;
+    }
+
+    canvas {
+      max-width: 100%;
     }
 
     .source-list {
@@ -369,51 +353,52 @@
     }
 
     .source-item {
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      border-radius: 14px;
-      padding: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fafaf9;
     }
 
     .source-name {
-      font-weight: 800;
       font-size: 14px;
+      font-weight: 850;
     }
 
-    .source-desc {
-      color: var(--muted);
+    .source-fields {
+      margin-top: 4px;
       font-size: 12px;
-      margin-top: 3px;
+      color: var(--muted);
+      line-height: 1.35;
     }
 
     .source-status {
-      color: var(--green);
       background: #dcfce7;
       border: 1px solid #bbf7d0;
+      color: #166534;
       border-radius: 999px;
       padding: 5px 9px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 850;
       white-space: nowrap;
     }
 
-    .insight-list {
-      margin: 0;
-      padding: 0;
+    .notes {
       list-style: none;
+      padding: 0;
+      margin: 0;
       display: grid;
-      gap: 10px;
+      gap: 11px;
     }
 
-    .insight-list li {
+    .notes li {
       display: flex;
       gap: 10px;
-      color: #374151;
       font-size: 13px;
+      color: #44403c;
       line-height: 1.45;
     }
 
@@ -424,13 +409,6 @@
       background: var(--blue);
       margin-top: 5px;
       flex: 0 0 auto;
-    }
-
-    .secondary-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-bottom: 18px;
     }
 
     .table-card {
@@ -451,11 +429,13 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+      white-space: nowrap;
     }
 
     td {
       border-bottom: 1px solid var(--border);
       padding: 13px 10px;
+      white-space: nowrap;
     }
 
     tr:last-child td {
@@ -466,11 +446,11 @@
       text-align: right;
     }
 
-    .channel-pill {
+    .channel {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .channel-dot {
@@ -484,33 +464,33 @@
       color: var(--muted);
       font-size: 12px;
       text-align: center;
-      padding: 14px 0 4px;
+      padding: 16px 0 4px;
     }
 
-    @media (max-width: 1180px) {
-      .hero-content,
-      .main-grid,
-      .secondary-grid {
+    @media (max-width: 1100px) {
+      .hero-inner,
+      .grid-main,
+      .grid-two {
         grid-template-columns: 1fr;
       }
 
       .kpis {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
+        grid-template-columns: repeat(2, minmax(170px, 1fr));
       }
 
-      .data-note {
+      .updated {
         text-align: left;
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 640px) {
       .app {
         padding: 18px;
       }
 
       .topbar {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       .top-actions {
@@ -526,17 +506,19 @@
         font-size: 26px;
       }
 
-      .hero-meta,
+      .hero-metrics,
       .kpis {
         grid-template-columns: 1fr;
       }
 
+      .filter-group,
       select {
         width: 100%;
       }
 
-      .filter-group {
-        width: 100%;
+      .chart-wrap,
+      .chart-wrap.small {
+        height: 260px;
       }
     }
   </style>
@@ -554,29 +536,29 @@
       </div>
 
       <div class="top-actions">
-        <div class="draft-pill">Draft Preview · Sample Data</div>
-        <div class="status-pill">Automated Daily Refresh</div>
+        <div class="pill amber">Draft Preview · Sample Data</div>
+        <div class="pill blue">Automated Daily Refresh</div>
       </div>
     </section>
 
     <section class="hero">
-      <div class="hero-content">
+      <div class="hero-inner">
         <div>
           <h1>Executive Financial Performance Overview</h1>
           <p>
-            Centralized financial KPIs, revenue by channel, monthly performance trends,
-            profitability metrics, and channel-level breakdowns from connected business systems.
+            Consolidated financial reporting using real available fields from Shopify orders,
+            QuickBooks Profit & Loss, and BILL invoices.
           </p>
         </div>
 
-        <div class="hero-meta">
-          <div class="hero-box">
-            <div class="hero-box-label">Primary Output</div>
-            <div class="hero-box-value">GitHub Pages</div>
+        <div class="hero-metrics">
+          <div class="hero-metric">
+            <div class="hero-label">Output</div>
+            <div class="hero-value">GitHub Pages</div>
           </div>
-          <div class="hero-box">
-            <div class="hero-box-label">Pipeline</div>
-            <div class="hero-box-value">GitHub Actions</div>
+          <div class="hero-metric">
+            <div class="hero-label">Automation</div>
+            <div class="hero-value">GitHub Actions</div>
           </div>
         </div>
       </div>
@@ -595,103 +577,96 @@
         </div>
       </div>
 
-      <div class="data-note" id="updatedAt">Loading report data...</div>
+      <div class="updated" id="updatedAt">Loading report data...</div>
     </section>
 
     <section class="kpis" id="kpiCards"></section>
 
-    <section class="main-grid">
-      <div class="chart-card">
+    <section class="grid-main">
+      <div class="card">
         <div class="card-header">
           <div>
             <h2 class="card-title">Revenue by Channel</h2>
-            <p class="card-subtitle">Aggregated revenue across selected year and channel filter.</p>
+            <p class="card-subtitle">From Shopify order source, BILL invoice source, and mapped sales channels.</p>
           </div>
-          <div class="mini-badge">Channel Mix</div>
+          <div class="mini-pill">Revenue</div>
         </div>
-        <canvas id="revenueByChannelChart"></canvas>
+        <div class="chart-wrap">
+          <canvas id="revenueByChannelChart"></canvas>
+        </div>
       </div>
 
-      <div class="stack">
-        <div class="side-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">Data Sources</h2>
-              <p class="card-subtitle">Systems included in the final automated pipeline.</p>
-            </div>
-          </div>
-
-          <div class="source-list">
-            <div class="source-item">
-              <div>
-                <div class="source-name">Shopify</div>
-                <div class="source-desc">Orders, channels, revenue, discounts, tax.</div>
-              </div>
-              <div class="source-status">Ready</div>
-            </div>
-
-            <div class="source-item">
-              <div>
-                <div class="source-name">QuickBooks</div>
-                <div class="source-desc">P&L, COGS, expenses, gross profit, net income.</div>
-              </div>
-              <div class="source-status">Ready</div>
-            </div>
-
-            <div class="source-item">
-              <div>
-                <div class="source-name">BILL</div>
-                <div class="source-desc">Invoices, B2B revenue, billing activity.</div>
-              </div>
-              <div class="source-status">Ready</div>
-            </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Available Source Fields</h2>
+            <p class="card-subtitle">Only real API/report fields or valid aggregations are used.</p>
           </div>
         </div>
 
-        <div class="side-card">
-          <div class="card-header">
+        <div class="source-list">
+          <div class="source-item">
             <div>
-              <h2 class="card-title">Executive Notes</h2>
-              <p class="card-subtitle">High-level interpretation for the selected view.</p>
+              <div class="source-name">Shopify Orders</div>
+              <div class="source-fields">created_at, total_price, subtotal_price, total_tax, total_discounts, source_name, financial_status</div>
             </div>
+            <div class="source-status">Used</div>
           </div>
 
-          <ul class="insight-list" id="insightList"></ul>
+          <div class="source-item">
+            <div>
+              <div class="source-name">QuickBooks P&L</div>
+              <div class="source-fields">Total Income, COGS, Gross Profit, Total Expenses, Net Income</div>
+            </div>
+            <div class="source-status">Used</div>
+          </div>
+
+          <div class="source-item">
+            <div>
+              <div class="source-name">BILL Invoices</div>
+              <div class="source-fields">invoiceDate, amount, status, paymentStatus, invoiceId</div>
+            </div>
+            <div class="source-status">Used</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="secondary-grid">
-      <div class="chart-card">
+    <section class="grid-two">
+      <div class="card">
         <div class="card-header">
           <div>
             <h2 class="card-title">Monthly Revenue Trend</h2>
-            <p class="card-subtitle">Revenue movement by month and channel.</p>
+            <p class="card-subtitle">Monthly totals grouped by year, month, and channel.</p>
           </div>
-          <div class="mini-badge">Trend</div>
+          <div class="mini-pill">Trend</div>
         </div>
-        <canvas id="monthlyTrendChart"></canvas>
+        <div class="chart-wrap">
+          <canvas id="monthlyTrendChart"></canvas>
+        </div>
       </div>
 
-      <div class="chart-card">
+      <div class="card">
         <div class="card-header">
           <div>
-            <h2 class="card-title">Profitability Snapshot</h2>
-            <p class="card-subtitle">QuickBooks P&L metrics for the selected year.</p>
+            <h2 class="card-title">P&L Snapshot</h2>
+            <p class="card-subtitle">QuickBooks Profit & Loss values for the selected year.</p>
           </div>
-          <div class="mini-badge">P&L</div>
+          <div class="mini-pill">QuickBooks</div>
         </div>
-        <canvas id="profitabilityChart"></canvas>
+        <div class="chart-wrap">
+          <canvas id="profitLossChart"></canvas>
+        </div>
       </div>
     </section>
 
-    <section class="table-card">
+    <section class="card table-card">
       <div class="card-header">
         <div>
           <h2 class="card-title">Channel Breakdown</h2>
-          <p class="card-subtitle">Detailed financial view by channel.</p>
+          <p class="card-subtitle">Aggregated revenue, transactions, discounts, and tax by channel.</p>
         </div>
-        <div class="mini-badge">Summary Table</div>
+        <div class="mini-pill">Summary Table</div>
       </div>
 
       <table>
@@ -709,6 +684,18 @@
       </table>
     </section>
 
+    <section class="card" style="margin-top:18px;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Executive Notes</h2>
+          <p class="card-subtitle">Auto-generated interpretation from the selected report view.</p>
+        </div>
+        <div class="mini-pill">Notes</div>
+      </div>
+
+      <ul class="notes" id="executiveNotes"></ul>
+    </section>
+
     <div class="footer">
       Financial Report Dashboard · Draft prototype using sample data
     </div>
@@ -718,31 +705,23 @@
     let DATA = null;
     let revenueByChannelChart = null;
     let monthlyTrendChart = null;
-    let profitabilityChart = null;
+    let profitLossChart = null;
 
-    const chartPalette = [
-      "#2563eb",
-      "#16a34a",
-      "#d97706",
-      "#7c3aed",
-      "#dc2626",
-      "#0891b2",
-      "#4f46e5"
-    ];
+    const COLORS = ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#dc2626", "#0891b2"];
 
-    function formatMoney(value) {
+    function money(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
         maximumFractionDigits: 0
       });
     }
 
-    function formatNumber(value) {
+    function number(value) {
       return Number(value || 0).toLocaleString("en-US", {
         maximumFractionDigits: 0
       });
     }
 
-    function formatPercent(value) {
+    function percent(value) {
       return (Number(value || 0) * 100).toFixed(1) + "%";
     }
 
@@ -754,7 +733,7 @@
         "Last updated: " + new Date(DATA.generated_at).toLocaleString();
 
       setupFilters();
-      renderDashboard();
+      render();
     }
 
     function setupFilters() {
@@ -773,11 +752,11 @@
         `<option value="all">All Channels</option>` +
         channels.map(channel => `<option value="${channel}">${channel}</option>`).join("");
 
-      yearFilter.addEventListener("change", renderDashboard);
-      channelFilter.addEventListener("change", renderDashboard);
+      yearFilter.addEventListener("change", render);
+      channelFilter.addEventListener("change", render);
     }
 
-    function getSelectedData() {
+    function selectedData() {
       const year = Number(document.getElementById("yearFilter").value);
       const channel = document.getElementById("channelFilter").value;
 
@@ -789,149 +768,129 @@
         monthRows = monthRows.filter(row => row.channel === channel);
       }
 
-      const kpiRow = DATA.kpis_by_year.find(row => row.year === year) || {};
-      const qbRow = DATA.qb_summary[String(year)] || {};
-
       return {
         year,
         channel,
         channelRows,
         monthRows,
-        kpiRow,
-        qbRow
+        qb: DATA.qb_summary[String(year)] || {}
       };
     }
 
-    function renderDashboard() {
-      const selected = getSelectedData();
+    function render() {
+      const selected = selectedData();
 
       renderKpis(selected);
       renderRevenueByChannel(selected.channelRows);
       renderMonthlyTrend(selected.monthRows);
-      renderProfitability(selected.qbRow);
-      renderChannelTable(selected.channelRows);
-      renderInsights(selected);
+      renderProfitLoss(selected.qb);
+      renderTable(selected.channelRows);
+      renderNotes(selected);
     }
 
     function renderKpis(selected) {
-      const rows = selected.channelRows;
+      const totalRevenue = selected.channelRows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
+      const totalTransactions = selected.channelRows.reduce((sum, row) => sum + Number(row.transactions || 0), 0);
+      const totalDiscounts = selected.channelRows.reduce((sum, row) => sum + Number(row.discounts || 0), 0);
+      const totalTax = selected.channelRows.reduce((sum, row) => sum + Number(row.tax || 0), 0);
+      const aov = totalTransactions ? totalRevenue / totalTransactions : 0;
 
-      const totalRevenue = rows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
-      const totalTransactions = rows.reduce((sum, row) => sum + Number(row.transactions || 0), 0);
-      const averageOrderValue = totalTransactions ? totalRevenue / totalTransactions : 0;
-
-      const grossProfit = selected.qbRow.gross_profit || 0;
-      const netIncome = selected.qbRow.net_income || 0;
-      const totalExpenses = selected.qbRow.total_expenses || 0;
-      const totalCogs = selected.qbRow.total_cogs || 0;
-      const grossMargin = selected.qbRow.gross_margin || 0;
-      const netMargin = selected.qbRow.net_margin || 0;
+      const grossProfit = selected.qb.gross_profit || 0;
+      const netIncome = selected.qb.net_income || 0;
+      const totalExpenses = selected.qb.total_expenses || 0;
+      const cogs = selected.qb.total_cogs || 0;
 
       document.getElementById("kpiCards").innerHTML = `
         <div class="kpi-card">
           <div class="kpi-label">Total Revenue</div>
-          <div class="kpi-value">${formatMoney(totalRevenue)}</div>
-          <div class="kpi-subtitle">${formatNumber(totalTransactions)} total transactions</div>
+          <div class="kpi-value">${money(totalRevenue)}</div>
+          <div class="kpi-note">Shopify total_price + BILL invoice amount</div>
         </div>
 
         <div class="kpi-card green">
           <div class="kpi-label">Gross Profit</div>
-          <div class="kpi-value">${formatMoney(grossProfit)}</div>
-          <div class="kpi-subtitle">Gross Margin: ${formatPercent(grossMargin)}</div>
+          <div class="kpi-value">${money(grossProfit)}</div>
+          <div class="kpi-note">QuickBooks P&L · Gross Margin ${percent(selected.qb.gross_margin)}</div>
         </div>
 
         <div class="kpi-card purple">
           <div class="kpi-label">Net Income</div>
-          <div class="kpi-value">${formatMoney(netIncome)}</div>
-          <div class="kpi-subtitle">Net Margin: ${formatPercent(netMargin)}</div>
+          <div class="kpi-value">${money(netIncome)}</div>
+          <div class="kpi-note">QuickBooks P&L · Net Margin ${percent(selected.qb.net_margin)}</div>
         </div>
 
         <div class="kpi-card amber">
           <div class="kpi-label">Average Order Value</div>
-          <div class="kpi-value">${formatMoney(averageOrderValue)}</div>
-          <div class="kpi-subtitle">Revenue divided by transactions</div>
+          <div class="kpi-value">${money(aov)}</div>
+          <div class="kpi-note">Revenue / transaction count</div>
         </div>
 
         <div class="kpi-card red">
           <div class="kpi-label">Total Expenses</div>
-          <div class="kpi-value">${formatMoney(totalExpenses)}</div>
-          <div class="kpi-subtitle">Pulled from QuickBooks P&L</div>
+          <div class="kpi-value">${money(totalExpenses)}</div>
+          <div class="kpi-note">QuickBooks P&L · Total Expenses</div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-label">COGS</div>
-          <div class="kpi-value">${formatMoney(totalCogs)}</div>
-          <div class="kpi-subtitle">Cost of Goods Sold</div>
+          <div class="kpi-value">${money(cogs)}</div>
+          <div class="kpi-note">QuickBooks P&L · Cost of Goods Sold</div>
         </div>
 
         <div class="kpi-card green">
-          <div class="kpi-label">Active Channels</div>
-          <div class="kpi-value">${formatNumber(rows.length)}</div>
-          <div class="kpi-subtitle">Channels in the selected filter</div>
+          <div class="kpi-label">Discounts</div>
+          <div class="kpi-value">${money(totalDiscounts)}</div>
+          <div class="kpi-note">Shopify total_discounts aggregated</div>
         </div>
 
         <div class="kpi-card purple">
-          <div class="kpi-label">Report Year</div>
-          <div class="kpi-value">${selected.year}</div>
-          <div class="kpi-subtitle">Financial reporting period</div>
+          <div class="kpi-label">Tax Collected</div>
+          <div class="kpi-value">${money(totalTax)}</div>
+          <div class="kpi-note">Shopify total_tax aggregated</div>
         </div>
       `;
     }
 
     function renderRevenueByChannel(rows) {
-      if (revenueByChannelChart) {
-        revenueByChannelChart.destroy();
-      }
+      if (revenueByChannelChart) revenueByChannelChart.destroy();
 
-      revenueByChannelChart = new Chart(
-        document.getElementById("revenueByChannelChart"),
-        {
-          type: "bar",
-          data: {
-            labels: rows.map(row => row.channel),
-            datasets: [{
-              label: "Revenue",
-              data: rows.map(row => row.total_revenue),
-              backgroundColor: rows.map((_, index) => chartPalette[index % chartPalette.length]),
-              borderRadius: 10,
-              maxBarThickness: 60
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false
-              },
-              tooltip: {
-                callbacks: {
-                  label: context => "Revenue: " + formatMoney(context.raw)
-                }
+      revenueByChannelChart = new Chart(document.getElementById("revenueByChannelChart"), {
+        type: "bar",
+        data: {
+          labels: rows.map(row => row.channel),
+          datasets: [{
+            data: rows.map(row => row.total_revenue),
+            backgroundColor: rows.map((_, i) => COLORS[i % COLORS.length]),
+            borderRadius: 10,
+            maxBarThickness: 58
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: context => "Revenue: " + money(context.raw)
               }
-            },
-            scales: {
-              x: {
-                grid: {
-                  display: false
-                }
-              },
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: value => "$" + Number(value).toLocaleString("en-US")
-                }
+            }
+          },
+          scales: {
+            x: { grid: { display: false } },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
           }
         }
-      );
+      });
     }
 
     function renderMonthlyTrend(rows) {
-      if (monthlyTrendChart) {
-        monthlyTrendChart.destroy();
-      }
+      if (monthlyTrendChart) monthlyTrendChart.destroy();
 
       const months = [...new Set(rows.map(row => row.month))].sort();
       const channels = [...new Set(rows.map(row => row.channel))].sort();
@@ -942,149 +901,136 @@
           const found = rows.find(row => row.month === month && row.channel === channel);
           return found ? found.total_revenue : 0;
         }),
-        borderColor: chartPalette[index % chartPalette.length],
-        backgroundColor: chartPalette[index % chartPalette.length],
+        borderColor: COLORS[index % COLORS.length],
+        backgroundColor: COLORS[index % COLORS.length],
         tension: 0.35,
-        pointRadius: 4,
-        pointHoverRadius: 6
+        pointRadius: 3,
+        pointHoverRadius: 5
       }));
 
-      monthlyTrendChart = new Chart(
-        document.getElementById("monthlyTrendChart"),
-        {
-          type: "line",
-          data: {
-            labels: months,
-            datasets
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "bottom"
-              },
-              tooltip: {
-                callbacks: {
-                  label: context => `${context.dataset.label}: ${formatMoney(context.raw)}`
-                }
+      monthlyTrendChart = new Chart(document.getElementById("monthlyTrendChart"), {
+        type: "line",
+        data: {
+          labels: months,
+          datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom" },
+            tooltip: {
+              callbacks: {
+                label: context => `${context.dataset.label}: ${money(context.raw)}`
               }
-            },
-            scales: {
-              x: {
-                grid: {
-                  display: false
-                }
-              },
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: value => "$" + Number(value).toLocaleString("en-US")
-                }
+            }
+          },
+          scales: {
+            x: { grid: { display: false } },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
           }
         }
-      );
+      });
     }
 
-    function renderProfitability(qbRow) {
-      if (profitabilityChart) {
-        profitabilityChart.destroy();
-      }
+    function renderProfitLoss(qb) {
+      if (profitLossChart) profitLossChart.destroy();
 
-      const labels = ["Gross Profit", "Net Income", "Expenses", "COGS"];
-      const values = [
-        qbRow.gross_profit || 0,
-        qbRow.net_income || 0,
-        qbRow.total_expenses || 0,
-        qbRow.total_cogs || 0
-      ];
-
-      profitabilityChart = new Chart(
-        document.getElementById("profitabilityChart"),
-        {
-          type: "doughnut",
-          data: {
-            labels,
-            datasets: [{
-              data: values,
-              backgroundColor: ["#16a34a", "#2563eb", "#dc2626", "#d97706"],
-              borderWidth: 0,
-              hoverOffset: 8
-            }]
+      profitLossChart = new Chart(document.getElementById("profitLossChart"), {
+        type: "bar",
+        data: {
+          labels: ["Total Income", "COGS", "Gross Profit", "Expenses", "Net Income"],
+          datasets: [{
+            data: [
+              qb.total_income || 0,
+              qb.total_cogs || 0,
+              qb.gross_profit || 0,
+              qb.total_expenses || 0,
+              qb.net_income || 0
+            ],
+            backgroundColor: ["#2563eb", "#d97706", "#16a34a", "#dc2626", "#7c3aed"],
+            borderRadius: 10,
+            maxBarThickness: 52
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: context => money(context.raw)
+              }
+            }
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: "64%",
-            plugins: {
-              legend: {
-                position: "bottom"
-              },
-              tooltip: {
-                callbacks: {
-                  label: context => `${context.label}: ${formatMoney(context.raw)}`
-                }
+          scales: {
+            x: { grid: { display: false } },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
           }
         }
-      );
+      });
     }
 
-    function renderChannelTable(rows) {
+    function renderTable(rows) {
       document.getElementById("channelTable").innerHTML = rows
         .sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))
         .map((row, index) => {
           const revenue = Number(row.total_revenue || 0);
           const transactions = Number(row.transactions || 0);
           const aov = transactions ? revenue / transactions : 0;
-          const dotColor = chartPalette[index % chartPalette.length];
+          const color = COLORS[index % COLORS.length];
 
           return `
             <tr>
               <td>
-                <span class="channel-pill">
-                  <span class="channel-dot" style="background:${dotColor}"></span>
+                <span class="channel">
+                  <span class="channel-dot" style="background:${color}"></span>
                   ${row.channel}
                 </span>
               </td>
-              <td class="right">${formatMoney(revenue)}</td>
-              <td class="right">${formatNumber(transactions)}</td>
-              <td class="right">${formatMoney(aov)}</td>
-              <td class="right">${formatMoney(row.discounts)}</td>
-              <td class="right">${formatMoney(row.tax)}</td>
+              <td class="right">${money(revenue)}</td>
+              <td class="right">${number(transactions)}</td>
+              <td class="right">${money(aov)}</td>
+              <td class="right">${money(row.discounts)}</td>
+              <td class="right">${money(row.tax)}</td>
             </tr>
           `;
         })
         .join("");
     }
 
-    function renderInsights(selected) {
+    function renderNotes(selected) {
       const rows = selected.channelRows;
       const totalRevenue = rows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
       const topChannel = [...rows].sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))[0];
 
-      const grossMargin = selected.qbRow.gross_margin || 0;
-      const netMargin = selected.qbRow.net_margin || 0;
-
-      document.getElementById("insightList").innerHTML = `
+      document.getElementById("executiveNotes").innerHTML = `
         <li>
           <span class="dot"></span>
-          <span>Top revenue channel is <strong>${topChannel ? topChannel.channel : "N/A"}</strong> with ${topChannel ? formatMoney(topChannel.total_revenue) : "$0"}.</span>
+          <span>Top revenue channel is <strong>${topChannel ? topChannel.channel : "N/A"}</strong> with ${topChannel ? money(topChannel.total_revenue) : "$0"}.</span>
         </li>
         <li>
           <span class="dot"></span>
-          <span>Total selected revenue is <strong>${formatMoney(totalRevenue)}</strong> for the selected reporting view.</span>
+          <span>Total selected revenue is <strong>${money(totalRevenue)}</strong>.</span>
         </li>
         <li>
           <span class="dot"></span>
-          <span>Gross margin is <strong>${formatPercent(grossMargin)}</strong> and net margin is <strong>${formatPercent(netMargin)}</strong>.</span>
+          <span>Gross margin is <strong>${percent(selected.qb.gross_margin)}</strong> and net margin is <strong>${percent(selected.qb.net_margin)}</strong>.</span>
         </li>
         <li>
           <span class="dot"></span>
-          <span>This prototype uses sample data. Final version will refresh automatically through API credentials.</span>
+          <span>This draft uses sample data. The final version will refresh automatically after connecting Shopify, QuickBooks, and BILL credentials.</span>
         </li>
       `;
     }
