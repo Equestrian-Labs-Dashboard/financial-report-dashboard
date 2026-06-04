@@ -1,1 +1,5 @@
-
+requests
+pandas
+python-dateutil
+python-dotenv
+intuit-oauth
