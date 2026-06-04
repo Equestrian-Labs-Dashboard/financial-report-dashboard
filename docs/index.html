@@ -10,14 +10,20 @@
 
   <style>
     :root {
-      --bg: #f4f6f8;
-      --card: #ffffff;
-      --text: #17202a;
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --panel-soft: #fafafa;
+      --text: #111827;
       --muted: #6b7280;
       --border: #e5e7eb;
-      --accent: #2563eb;
+      --blue: #2563eb;
+      --blue-dark: #1e40af;
       --green: #16a34a;
       --red: #dc2626;
+      --amber: #d97706;
+      --purple: #7c3aed;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
     }
 
     * {
@@ -26,122 +32,409 @@
 
     body {
       margin: 0;
-      padding: 28px;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.13), transparent 32%),
+        radial-gradient(circle at top right, rgba(124, 58, 237, 0.10), transparent 28%),
+        var(--bg);
       color: var(--text);
     }
 
-    .header {
+    .app {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .topbar {
       display: flex;
       justify-content: space-between;
       gap: 20px;
-      align-items: flex-start;
-      margin-bottom: 24px;
+      align-items: center;
+      margin-bottom: 22px;
     }
 
-    .header h1 {
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .status-pill {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .draft-pill {
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a 58%, #4338ca);
+      color: white;
+      border-radius: 26px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 320px;
+      height: 320px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
+      align-items: end;
+    }
+
+    .hero h1 {
       margin: 0;
-      font-size: 30px;
+      font-size: 34px;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 720px;
+      font-size: 15px;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hero-box {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-box-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.72);
+      margin-bottom: 6px;
+    }
+
+    .hero-box-value {
+      font-size: 20px;
+      font-weight: 800;
       letter-spacing: -0.03em;
     }
 
-    .header p {
-      margin: 8px 0 0;
-      color: var(--muted);
-    }
-
-    .badge {
-      background: #e0ecff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      white-space: nowrap;
+    .toolbar {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      padding: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .filters {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 22px;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     select {
-      background: var(--card);
+      min-width: 185px;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 14px;
+      border-radius: 12px;
+      padding: 11px 12px;
       color: var(--text);
-      min-width: 180px;
+      background: white;
+      outline: none;
+      font-size: 14px;
+    }
+
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .data-note {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
     }
 
     .kpis {
       display: grid;
-      grid-template-columns: repeat(4, minmax(160px, 1fr));
-      gap: 14px;
-      margin-bottom: 22px;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
-    .card {
-      background: var(--card);
+    .kpi-card {
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: var(--radius);
       padding: 18px;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      position: relative;
+      overflow: hidden;
     }
 
-    .label {
-      font-size: 13px;
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 4px;
+      width: 100%;
+      background: var(--blue);
+    }
+
+    .kpi-card.green::before {
+      background: var(--green);
+    }
+
+    .kpi-card.red::before {
+      background: var(--red);
+    }
+
+    .kpi-card.amber::before {
+      background: var(--amber);
+    }
+
+    .kpi-card.purple::before {
+      background: var(--purple);
+    }
+
+    .kpi-label {
       color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
       margin-bottom: 8px;
     }
 
-    .value {
-      font-size: 25px;
-      font-weight: 750;
-      letter-spacing: -0.03em;
-    }
-
-    .small {
-      font-size: 12px;
+    .kpi-subtitle {
       color: var(--muted);
-      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.4;
     }
 
-    .charts {
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .chart-card,
+    .side-card,
+    .table-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    }
+
+    .chart-card {
+      min-height: 410px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .card-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mini-badge {
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .source-item {
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .source-name {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .source-desc {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .source-status {
+      color: var(--green);
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .insight-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .insight-list li {
+      display: flex;
+      gap: 10px;
+      color: #374151;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--blue);
+      margin-top: 5px;
+      flex: 0 0 auto;
+    }
+
+    .secondary-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 18px;
       margin-bottom: 18px;
     }
 
-    .chart-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      min-height: 360px;
-    }
-
-    .chart-card h2 {
-      margin: 0 0 16px;
-      font-size: 16px;
-    }
-
     .table-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
       overflow-x: auto;
-    }
-
-    .table-card h2 {
-      margin: 0 0 16px;
-      font-size: 16px;
     }
 
     table {
@@ -151,109 +444,291 @@
     }
 
     th {
-      text-align: left;
       color: var(--muted);
-      font-weight: 600;
+      text-align: left;
       border-bottom: 1px solid var(--border);
-      padding: 10px 8px;
+      padding: 12px 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     td {
       border-bottom: 1px solid var(--border);
-      padding: 10px 8px;
+      padding: 13px 10px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
     }
 
     .right {
       text-align: right;
     }
 
-    .footer {
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 12px;
+    .channel-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
     }
 
-    @media (max-width: 1000px) {
-      .kpis {
-        grid-template-columns: repeat(2, minmax(160px, 1fr));
-      }
+    .channel-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
 
-      .charts {
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 14px 0 4px;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-content,
+      .main-grid,
+      .secondary-grid {
         grid-template-columns: 1fr;
       }
 
-      .header {
-        flex-direction: column;
+      .kpis {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+      }
+
+      .data-note {
+        text-align: left;
       }
     }
 
-    @media (max-width: 600px) {
-      body {
+    @media (max-width: 680px) {
+      .app {
         padding: 18px;
       }
 
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding: 22px;
+        border-radius: 22px;
+      }
+
+      .hero h1 {
+        font-size: 26px;
+      }
+
+      .hero-meta,
       .kpis {
         grid-template-columns: 1fr;
       }
 
-      .header h1 {
-        font-size: 24px;
+      select {
+        width: 100%;
+      }
+
+      .filter-group {
+        width: 100%;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="header">
-    <div>
-      <h1>Financial Report Dashboard</h1>
-      <p>Automated KPIs from Shopify, QuickBooks, and BILL.</p>
+  <main class="app">
+    <section class="topbar">
+      <div class="brand">
+        <div class="brand-logo">FR</div>
+        <div>
+          <div class="brand-title">Financial Report Dashboard</div>
+          <div class="brand-subtitle">Shopify · QuickBooks · BILL</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="draft-pill">Draft Preview · Sample Data</div>
+        <div class="status-pill">Automated Daily Refresh</div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <div class="hero-content">
+        <div>
+          <h1>Executive Financial Performance Overview</h1>
+          <p>
+            Centralized financial KPIs, revenue by channel, monthly performance trends,
+            profitability metrics, and channel-level breakdowns from connected business systems.
+          </p>
+        </div>
+
+        <div class="hero-meta">
+          <div class="hero-box">
+            <div class="hero-box-label">Primary Output</div>
+            <div class="hero-box-value">GitHub Pages</div>
+          </div>
+          <div class="hero-box">
+            <div class="hero-box-label">Pipeline</div>
+            <div class="hero-box-value">GitHub Actions</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div class="filters">
+        <div class="filter-group">
+          <div class="filter-label">Report Year</div>
+          <select id="yearFilter"></select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Channel</div>
+          <select id="channelFilter"></select>
+        </div>
+      </div>
+
+      <div class="data-note" id="updatedAt">Loading report data...</div>
+    </section>
+
+    <section class="kpis" id="kpiCards"></section>
+
+    <section class="main-grid">
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Revenue by Channel</h2>
+            <p class="card-subtitle">Aggregated revenue across selected year and channel filter.</p>
+          </div>
+          <div class="mini-badge">Channel Mix</div>
+        </div>
+        <canvas id="revenueByChannelChart"></canvas>
+      </div>
+
+      <div class="stack">
+        <div class="side-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Data Sources</h2>
+              <p class="card-subtitle">Systems included in the final automated pipeline.</p>
+            </div>
+          </div>
+
+          <div class="source-list">
+            <div class="source-item">
+              <div>
+                <div class="source-name">Shopify</div>
+                <div class="source-desc">Orders, channels, revenue, discounts, tax.</div>
+              </div>
+              <div class="source-status">Ready</div>
+            </div>
+
+            <div class="source-item">
+              <div>
+                <div class="source-name">QuickBooks</div>
+                <div class="source-desc">P&L, COGS, expenses, gross profit, net income.</div>
+              </div>
+              <div class="source-status">Ready</div>
+            </div>
+
+            <div class="source-item">
+              <div>
+                <div class="source-name">BILL</div>
+                <div class="source-desc">Invoices, B2B revenue, billing activity.</div>
+              </div>
+              <div class="source-status">Ready</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Executive Notes</h2>
+              <p class="card-subtitle">High-level interpretation for the selected view.</p>
+            </div>
+          </div>
+
+          <ul class="insight-list" id="insightList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="secondary-grid">
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Monthly Revenue Trend</h2>
+            <p class="card-subtitle">Revenue movement by month and channel.</p>
+          </div>
+          <div class="mini-badge">Trend</div>
+        </div>
+        <canvas id="monthlyTrendChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Profitability Snapshot</h2>
+            <p class="card-subtitle">QuickBooks P&L metrics for the selected year.</p>
+          </div>
+          <div class="mini-badge">P&L</div>
+        </div>
+        <canvas id="profitabilityChart"></canvas>
+      </div>
+    </section>
+
+    <section class="table-card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Channel Breakdown</h2>
+          <p class="card-subtitle">Detailed financial view by channel.</p>
+        </div>
+        <div class="mini-badge">Summary Table</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="right">Revenue</th>
+            <th class="right">Transactions</th>
+            <th class="right">Average Order Value</th>
+            <th class="right">Discounts</th>
+            <th class="right">Tax</th>
+          </tr>
+        </thead>
+        <tbody id="channelTable"></tbody>
+      </table>
+    </section>
+
+    <div class="footer">
+      Financial Report Dashboard · Draft prototype using sample data
     </div>
-    <div class="badge">Draft Preview · Sample Data</div>
-  </div>
-
-  <div class="filters">
-    <select id="yearFilter"></select>
-    <select id="channelFilter"></select>
-  </div>
-
-  <div class="kpis" id="kpiCards"></div>
-
-  <div class="charts">
-    <div class="chart-card">
-      <h2>Revenue by Channel</h2>
-      <canvas id="revenueByChannelChart"></canvas>
-    </div>
-
-    <div class="chart-card">
-      <h2>Monthly Revenue Trend</h2>
-      <canvas id="monthlyTrendChart"></canvas>
-    </div>
-  </div>
-
-  <div class="table-card">
-    <h2>Channel Breakdown</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Channel</th>
-          <th class="right">Revenue</th>
-          <th class="right">Transactions</th>
-          <th class="right">Average Order Value</th>
-          <th class="right">Discounts</th>
-          <th class="right">Tax</th>
-        </tr>
-      </thead>
-      <tbody id="channelTable"></tbody>
-    </table>
-  </div>
-
-  <div class="footer" id="updatedAt"></div>
+  </main>
 
   <script>
     let DATA = null;
     let revenueByChannelChart = null;
     let monthlyTrendChart = null;
+    let profitabilityChart = null;
+
+    const chartPalette = [
+      "#2563eb",
+      "#16a34a",
+      "#d97706",
+      "#7c3aed",
+      "#dc2626",
+      "#0891b2",
+      "#4f46e5"
+    ];
 
     function formatMoney(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
@@ -261,14 +736,14 @@
       });
     }
 
-    function formatPercent(value) {
-      return (Number(value || 0) * 100).toFixed(1) + "%";
-    }
-
     function formatNumber(value) {
       return Number(value || 0).toLocaleString("en-US", {
         maximumFractionDigits: 0
       });
+    }
+
+    function formatPercent(value) {
+      return (Number(value || 0) * 100).toFixed(1) + "%";
     }
 
     async function loadData() {
@@ -333,7 +808,9 @@
       renderKpis(selected);
       renderRevenueByChannel(selected.channelRows);
       renderMonthlyTrend(selected.monthRows);
+      renderProfitability(selected.qbRow);
       renderChannelTable(selected.channelRows);
+      renderInsights(selected);
     }
 
     function renderKpis(selected) {
@@ -351,52 +828,52 @@
       const netMargin = selected.qbRow.net_margin || 0;
 
       document.getElementById("kpiCards").innerHTML = `
-        <div class="card">
-          <div class="label">Total Revenue</div>
-          <div class="value">${formatMoney(totalRevenue)}</div>
-          <div class="small">${formatNumber(totalTransactions)} transactions</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total Revenue</div>
+          <div class="kpi-value">${formatMoney(totalRevenue)}</div>
+          <div class="kpi-subtitle">${formatNumber(totalTransactions)} total transactions</div>
         </div>
 
-        <div class="card">
-          <div class="label">Gross Profit</div>
-          <div class="value">${formatMoney(grossProfit)}</div>
-          <div class="small">Gross Margin: ${formatPercent(grossMargin)}</div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Gross Profit</div>
+          <div class="kpi-value">${formatMoney(grossProfit)}</div>
+          <div class="kpi-subtitle">Gross Margin: ${formatPercent(grossMargin)}</div>
         </div>
 
-        <div class="card">
-          <div class="label">Net Income</div>
-          <div class="value">${formatMoney(netIncome)}</div>
-          <div class="small">Net Margin: ${formatPercent(netMargin)}</div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">Net Income</div>
+          <div class="kpi-value">${formatMoney(netIncome)}</div>
+          <div class="kpi-subtitle">Net Margin: ${formatPercent(netMargin)}</div>
         </div>
 
-        <div class="card">
-          <div class="label">Average Order Value</div>
-          <div class="value">${formatMoney(averageOrderValue)}</div>
-          <div class="small">Revenue / Transactions</div>
+        <div class="kpi-card amber">
+          <div class="kpi-label">Average Order Value</div>
+          <div class="kpi-value">${formatMoney(averageOrderValue)}</div>
+          <div class="kpi-subtitle">Revenue divided by transactions</div>
         </div>
 
-        <div class="card">
-          <div class="label">Total Expenses</div>
-          <div class="value">${formatMoney(totalExpenses)}</div>
-          <div class="small">From QuickBooks P&L</div>
+        <div class="kpi-card red">
+          <div class="kpi-label">Total Expenses</div>
+          <div class="kpi-value">${formatMoney(totalExpenses)}</div>
+          <div class="kpi-subtitle">Pulled from QuickBooks P&L</div>
         </div>
 
-        <div class="card">
-          <div class="label">COGS</div>
-          <div class="value">${formatMoney(totalCogs)}</div>
-          <div class="small">Cost of Goods Sold</div>
+        <div class="kpi-card">
+          <div class="kpi-label">COGS</div>
+          <div class="kpi-value">${formatMoney(totalCogs)}</div>
+          <div class="kpi-subtitle">Cost of Goods Sold</div>
         </div>
 
-        <div class="card">
-          <div class="label">Active Channels</div>
-          <div class="value">${formatNumber(rows.length)}</div>
-          <div class="small">Filtered channel count</div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Active Channels</div>
+          <div class="kpi-value">${formatNumber(rows.length)}</div>
+          <div class="kpi-subtitle">Channels in the selected filter</div>
         </div>
 
-        <div class="card">
-          <div class="label">Report Year</div>
-          <div class="value">${selected.year}</div>
-          <div class="small">Automated daily refresh</div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">Report Year</div>
+          <div class="kpi-value">${selected.year}</div>
+          <div class="kpi-subtitle">Financial reporting period</div>
         </div>
       `;
     }
@@ -415,19 +892,35 @@
             datasets: [{
               label: "Revenue",
               data: rows.map(row => row.total_revenue),
-              borderRadius: 8
+              backgroundColor: rows.map((_, index) => chartPalette[index % chartPalette.length]),
+              borderRadius: 10,
+              maxBarThickness: 60
             }]
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: context => "Revenue: " + formatMoney(context.raw)
+                }
               }
             },
             scales: {
+              x: {
+                grid: {
+                  display: false
+                }
+              },
               y: {
-                beginAtZero: true
+                beginAtZero: true,
+                ticks: {
+                  callback: value => "$" + Number(value).toLocaleString("en-US")
+                }
               }
             }
           }
@@ -443,16 +936,18 @@
       const months = [...new Set(rows.map(row => row.month))].sort();
       const channels = [...new Set(rows.map(row => row.channel))].sort();
 
-      const datasets = channels.map(channel => {
-        return {
-          label: channel,
-          data: months.map(month => {
-            const found = rows.find(row => row.month === month && row.channel === channel);
-            return found ? found.total_revenue : 0;
-          }),
-          tension: 0.35
-        };
-      });
+      const datasets = channels.map((channel, index) => ({
+        label: channel,
+        data: months.map(month => {
+          const found = rows.find(row => row.month === month && row.channel === channel);
+          return found ? found.total_revenue : 0;
+        }),
+        borderColor: chartPalette[index % chartPalette.length],
+        backgroundColor: chartPalette[index % chartPalette.length],
+        tension: 0.35,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }));
 
       monthlyTrendChart = new Chart(
         document.getElementById("monthlyTrendChart"),
@@ -460,18 +955,77 @@
           type: "line",
           data: {
             labels: months,
-            datasets: datasets
+            datasets
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: "bottom"
+              },
+              tooltip: {
+                callbacks: {
+                  label: context => `${context.dataset.label}: ${formatMoney(context.raw)}`
+                }
               }
             },
             scales: {
+              x: {
+                grid: {
+                  display: false
+                }
+              },
               y: {
-                beginAtZero: true
+                beginAtZero: true,
+                ticks: {
+                  callback: value => "$" + Number(value).toLocaleString("en-US")
+                }
+              }
+            }
+          }
+        }
+      );
+    }
+
+    function renderProfitability(qbRow) {
+      if (profitabilityChart) {
+        profitabilityChart.destroy();
+      }
+
+      const labels = ["Gross Profit", "Net Income", "Expenses", "COGS"];
+      const values = [
+        qbRow.gross_profit || 0,
+        qbRow.net_income || 0,
+        qbRow.total_expenses || 0,
+        qbRow.total_cogs || 0
+      ];
+
+      profitabilityChart = new Chart(
+        document.getElementById("profitabilityChart"),
+        {
+          type: "doughnut",
+          data: {
+            labels,
+            datasets: [{
+              data: values,
+              backgroundColor: ["#16a34a", "#2563eb", "#dc2626", "#d97706"],
+              borderWidth: 0,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "64%",
+            plugins: {
+              legend: {
+                position: "bottom"
+              },
+              tooltip: {
+                callbacks: {
+                  label: context => `${context.label}: ${formatMoney(context.raw)}`
+                }
               }
             }
           }
@@ -482,14 +1036,20 @@
     function renderChannelTable(rows) {
       document.getElementById("channelTable").innerHTML = rows
         .sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))
-        .map(row => {
+        .map((row, index) => {
           const revenue = Number(row.total_revenue || 0);
           const transactions = Number(row.transactions || 0);
           const aov = transactions ? revenue / transactions : 0;
+          const dotColor = chartPalette[index % chartPalette.length];
 
           return `
             <tr>
-              <td>${row.channel}</td>
+              <td>
+                <span class="channel-pill">
+                  <span class="channel-dot" style="background:${dotColor}"></span>
+                  ${row.channel}
+                </span>
+              </td>
               <td class="right">${formatMoney(revenue)}</td>
               <td class="right">${formatNumber(transactions)}</td>
               <td class="right">${formatMoney(aov)}</td>
@@ -499,6 +1059,34 @@
           `;
         })
         .join("");
+    }
+
+    function renderInsights(selected) {
+      const rows = selected.channelRows;
+      const totalRevenue = rows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
+      const topChannel = [...rows].sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))[0];
+
+      const grossMargin = selected.qbRow.gross_margin || 0;
+      const netMargin = selected.qbRow.net_margin || 0;
+
+      document.getElementById("insightList").innerHTML = `
+        <li>
+          <span class="dot"></span>
+          <span>Top revenue channel is <strong>${topChannel ? topChannel.channel : "N/A"}</strong> with ${topChannel ? formatMoney(topChannel.total_revenue) : "$0"}.</span>
+        </li>
+        <li>
+          <span class="dot"></span>
+          <span>Total selected revenue is <strong>${formatMoney(totalRevenue)}</strong> for the selected reporting view.</span>
+        </li>
+        <li>
+          <span class="dot"></span>
+          <span>Gross margin is <strong>${formatPercent(grossMargin)}</strong> and net margin is <strong>${formatPercent(netMargin)}</strong>.</span>
+        </li>
+        <li>
+          <span class="dot"></span>
+          <span>This prototype uses sample data. Final version will refresh automatically through API credentials.</span>
+        </li>
+      `;
     }
 
     loadData();
