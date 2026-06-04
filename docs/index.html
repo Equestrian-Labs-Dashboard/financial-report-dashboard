@@ -10,18 +10,23 @@
 
   <style>
     :root {
-      --bg: #f5f5f4;
-      --card: #ffffff;
-      --text: #1c1c1a;
-      --muted: #737373;
-      --border: #e7e5e4;
-      --blue: #2563eb;
-      --green: #16a34a;
-      --amber: #d97706;
-      --red: #dc2626;
-      --purple: #7c3aed;
-      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-      --radius: 18px;
+      --bg: #07111f;
+      --sidebar: #0b1728;
+      --panel: #0e1c2f;
+      --panel-soft: #10233a;
+      --panel-lighter: #132a45;
+      --border: #1e3a5f;
+      --border-soft: #183250;
+      --text: #f8fafc;
+      --muted: #7f9ab7;
+      --muted-2: #4f6f91;
+      --blue: #3b82f6;
+      --cyan: #22d3ee;
+      --green: #22c55e;
+      --purple: #a78bfa;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --card-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
     }
 
     * {
@@ -30,56 +35,153 @@
 
     body {
       margin: 0;
+      min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .app {
-      max-width: 1380px;
-      margin: 0 auto;
-      padding: 28px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
+    .layout {
       display: grid;
-      place-items: center;
-      background: #111827;
-      color: white;
-      font-weight: 800;
-      letter-spacing: -0.04em;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
     }
 
-    .brand-title {
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .company {
+      padding: 0 22px 22px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .dot-ui {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .dot-green {
+      background: var(--green);
+    }
+
+    .dot-purple {
+      background: var(--purple);
+    }
+
+    .company-name {
       font-weight: 800;
       font-size: 16px;
+      letter-spacing: -0.03em;
     }
 
-    .brand-subtitle {
+    .company-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .nav-section {
+      padding: 20px 0 4px;
+    }
+
+    .nav-label {
+      padding: 0 22px;
+      color: var(--muted-2);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #b8cee5;
+      text-decoration: none;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      background: #13243b;
+      color: white;
+      border-left: 3px solid var(--blue);
+      padding-left: 19px;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .nav-dot.green {
+      background: var(--green);
+    }
+
+    .nav-dot.purple {
+      background: var(--purple);
+    }
+
+    .nav-dot.amber {
+      background: var(--amber);
+    }
+
+    .badge-small {
+      margin-left: auto;
+      font-size: 10px;
+      color: #fef3c7;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    .main {
+      padding: 30px 28px 40px;
+      overflow-x: hidden;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      font-weight: 850;
+    }
+
+    .title p {
+      margin: 7px 0 0;
       color: var(--muted);
       font-size: 13px;
-      margin-top: 2px;
     }
 
-    .top-actions {
+    .header-actions {
       display: flex;
+      align-items: center;
       gap: 10px;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -87,354 +189,337 @@
 
     .pill {
       border: 1px solid var(--border);
-      background: white;
-      padding: 9px 13px;
+      background: var(--panel-soft);
+      color: #cfe3f8;
       border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #44403c;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
       white-space: nowrap;
     }
 
-    .pill.blue {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-color: #bfdbfe;
+    .pill.live {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #86efac;
     }
 
-    .pill.amber {
-      background: #fffbeb;
-      color: #92400e;
-      border-color: #fde68a;
+    .pill.draft {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
     }
 
-    .hero {
-      background: #111827;
-      color: white;
-      border-radius: 28px;
-      padding: 30px;
-      margin-bottom: 22px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -110px;
-      top: -110px;
-      width: 300px;
-      height: 300px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: 24px;
-      align-items: end;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: 34px;
-      letter-spacing: -0.04em;
-      line-height: 1.08;
-    }
-
-    .hero p {
-      margin: 12px 0 0;
-      max-width: 760px;
-      color: rgba(255, 255, 255, 0.75);
-      font-size: 15px;
-    }
-
-    .hero-metrics {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .hero-metric {
-      background: rgba(255, 255, 255, 0.09);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .hero-label {
-      color: rgba(255, 255, 255, 0.66);
-      font-size: 12px;
-      margin-bottom: 6px;
-    }
-
-    .hero-value {
-      font-size: 22px;
-      font-weight: 850;
-      letter-spacing: -0.04em;
-    }
-
-    .toolbar {
-      background: white;
+    .tabs {
+      display: inline-flex;
+      background: var(--panel-soft);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 14px;
     }
 
-    .filters {
+    .tab {
+      border: 0;
+      background: transparent;
+      color: #8fb1d3;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 800;
+      cursor: default;
+    }
+
+    .tab.active {
+      background: #192f4c;
+      color: white;
+      border: 1px solid var(--border);
+    }
+
+    .filters-bar {
+      background: #0b1a2d;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 16px;
       display: flex;
-      gap: 12px;
+      gap: 18px;
+      align-items: center;
       flex-wrap: wrap;
+      margin-bottom: 14px;
     }
 
     .filter-group {
-      display: grid;
-      gap: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .filter-label {
+      color: var(--muted-2);
       font-size: 11px;
-      color: var(--muted);
-      font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      font-weight: 900;
+      white-space: nowrap;
     }
 
     select {
-      min-width: 190px;
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--text);
-      border-radius: 12px;
-      padding: 11px 12px;
-      outline: none;
+      background: #13243b;
+      border: 1px solid #25496f;
+      color: white;
+      border-radius: 6px;
+      padding: 8px 32px 8px 12px;
       font-size: 14px;
+      font-weight: 800;
+      outline: none;
     }
 
-    .updated {
-      color: var(--muted);
+    .date-strip {
+      background: #13243b;
+      border: 1px solid var(--border-soft);
+      border-radius: 7px;
+      padding: 10px 16px;
+      color: white;
       font-size: 13px;
-      text-align: right;
-    }
-
-    .kpis {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(170px, 1fr));
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .kpi-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .kpi-card::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--blue);
-    }
-
-    .kpi-card.green::before { background: var(--green); }
-    .kpi-card.amber::before { background: var(--amber); }
-    .kpi-card.red::before { background: var(--red); }
-    .kpi-card.purple::before { background: var(--purple); }
-
-    .kpi-label {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 750;
-      margin-bottom: 9px;
-    }
-
-    .kpi-value {
-      font-size: 28px;
-      font-weight: 850;
-      letter-spacing: -0.04em;
-      margin-bottom: 8px;
-    }
-
-    .kpi-note {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
-    .grid-main {
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .grid-two {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
+      font-weight: 800;
       margin-bottom: 16px;
     }
 
-    .card-title {
+    .notice {
+      background: rgba(245, 158, 11, 0.11);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      border-radius: 7px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 22px 0 14px;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      height: 1px;
+      background: #25496f;
+      flex: 1;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .kpi-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 17px;
+      min-height: 138px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .kpi-label {
+      color: #b9c9dc;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      margin-bottom: 12px;
+    }
+
+    .kpi-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #12304e;
+      border: 1px solid #1d4d78;
+      color: #6fa5d9;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 9px;
+    }
+
+    .kpi-note {
+      color: #6f8aac;
+      font-size: 11px;
+      line-height: 1.35;
+      font-style: italic;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .panel-title {
       margin: 0;
-      font-size: 17px;
+      font-size: 15px;
+      font-weight: 900;
       letter-spacing: -0.02em;
     }
 
-    .card-subtitle {
+    .panel-subtitle {
       margin: 5px 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
     }
 
-    .mini-pill {
-      background: #fafaf9;
+    .panel-tag {
+      color: #9bbbe0;
       border: 1px solid var(--border);
-      color: var(--muted);
+      background: #10233a;
       border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 5px 9px;
       white-space: nowrap;
     }
 
     .chart-wrap {
       position: relative;
-      height: 320px;
+      height: 280px;
       width: 100%;
     }
 
-    .chart-wrap.small {
-      height: 280px;
+    .chart-wrap.large {
+      height: 300px;
     }
 
-    canvas {
-      max-width: 100%;
-    }
-
-    .source-list {
+    .source-list,
+    .notes-list {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
     .source-item {
+      background: #10233a;
+      border: 1px solid #1d395c;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .source-top {
       display: flex;
       justify-content: space-between;
+      gap: 10px;
       align-items: center;
-      gap: 12px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #fafaf9;
+      margin-bottom: 6px;
     }
 
     .source-name {
-      font-size: 14px;
-      font-weight: 850;
-    }
-
-    .source-fields {
-      margin-top: 4px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
+      font-size: 13px;
+      font-weight: 900;
     }
 
     .source-status {
-      background: #dcfce7;
-      border: 1px solid #bbf7d0;
-      color: #166534;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.35);
       border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 12px;
-      font-weight: 850;
-      white-space: nowrap;
+      font-size: 10px;
+      padding: 3px 7px;
+      font-weight: 900;
     }
 
-    .notes {
+    .source-fields {
+      color: #7f9ab7;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .notes-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      display: grid;
-      gap: 11px;
     }
 
-    .notes li {
+    .notes-list li {
       display: flex;
-      gap: 10px;
-      font-size: 13px;
-      color: #44403c;
+      gap: 9px;
+      color: #b7c9dc;
+      font-size: 12px;
       line-height: 1.45;
     }
 
-    .dot {
-      width: 9px;
-      height: 9px;
+    .note-dot {
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: var(--blue);
       margin-top: 5px;
       flex: 0 0 auto;
     }
 
-    .table-card {
+    .table-panel {
+      margin-top: 14px;
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     th {
-      color: var(--muted);
+      color: #8fa9c4;
       text-align: left;
-      border-bottom: 1px solid var(--border);
-      padding: 12px 10px;
-      font-size: 12px;
+      border-bottom: 1px solid #1d395c;
+      padding: 11px 10px;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
+      font-size: 11px;
       white-space: nowrap;
     }
 
     td {
-      border-bottom: 1px solid var(--border);
-      padding: 13px 10px;
+      color: #dbeafe;
+      border-bottom: 1px solid #122942;
+      padding: 12px 10px;
       white-space: nowrap;
     }
 
@@ -446,268 +531,314 @@
       text-align: right;
     }
 
-    .channel {
+    .channel-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-weight: 750;
+      font-weight: 900;
     }
 
     .channel-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 999px;
       background: var(--blue);
     }
 
     .footer {
-      color: var(--muted);
-      font-size: 12px;
+      color: #5e7b9b;
+      font-size: 11px;
       text-align: center;
-      padding: 16px 0 4px;
+      padding: 24px 0 0;
     }
 
-    @media (max-width: 1100px) {
-      .hero-inner,
-      .grid-main,
-      .grid-two {
+    @media (max-width: 1200px) {
+      .layout {
         grid-template-columns: 1fr;
       }
 
-      .kpis {
-        grid-template-columns: repeat(2, minmax(170px, 1fr));
+      .sidebar {
+        display: none;
       }
 
-      .updated {
-        text-align: left;
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
       }
     }
 
-    @media (max-width: 640px) {
-      .app {
-        padding: 18px;
+    @media (max-width: 680px) {
+      .main {
+        padding: 20px 14px 32px;
       }
 
-      .topbar {
+      .header {
         flex-direction: column;
-        align-items: flex-start;
       }
 
-      .top-actions {
+      .header-actions {
         justify-content: flex-start;
       }
 
-      .hero {
-        padding: 22px;
-        border-radius: 22px;
-      }
-
-      .hero h1 {
-        font-size: 26px;
-      }
-
-      .hero-metrics,
-      .kpis {
+      .kpi-grid {
         grid-template-columns: 1fr;
       }
 
-      .filter-group,
+      .filters-bar {
+        align-items: stretch;
+      }
+
+      .filter-group {
+        width: 100%;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
       select {
         width: 100%;
       }
 
       .chart-wrap,
-      .chart-wrap.small {
-        height: 260px;
+      .chart-wrap.large {
+        height: 240px;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="app">
-    <section class="topbar">
-      <div class="brand">
-        <div class="brand-logo">FR</div>
-        <div>
-          <div class="brand-title">Financial Report Dashboard</div>
-          <div class="brand-subtitle">Shopify · QuickBooks · BILL</div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="company">
+        <div class="window-dots">
+          <span class="dot-ui dot-green"></span>
+          <span class="dot-ui dot-purple"></span>
         </div>
+        <div class="company-name">Financial Report</div>
+        <div class="company-subtitle">Analytics Suite</div>
       </div>
 
-      <div class="top-actions">
-        <div class="pill amber">Draft Preview · Sample Data</div>
-        <div class="pill blue">Automated Daily Refresh</div>
+      <div class="nav-section">
+        <div class="nav-label">Performance</div>
+        <a class="nav-item active" href="#">
+          <span class="nav-dot"></span>
+          Dashboard
+        </a>
       </div>
-    </section>
 
-    <section class="hero">
-      <div class="hero-inner">
-        <div>
-          <h1>Executive Financial Performance Overview</h1>
-          <p>
-            Consolidated financial reporting using real available fields from Shopify orders,
-            QuickBooks Profit & Loss, and BILL invoices.
-          </p>
+      <div class="nav-section">
+        <div class="nav-label">Sources</div>
+        <a class="nav-item" href="#">
+          <span class="nav-dot green"></span>
+          Shopify
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-dot purple"></span>
+          QuickBooks
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-dot amber"></span>
+          BILL
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Analytics Suite</div>
+        <a class="nav-item" href="#">
+          P&L Snapshot
+          <span class="badge-small">QB</span>
+        </a>
+        <a class="nav-item" href="#">
+          Revenue Channels
+          <span class="badge-small">API</span>
+        </a>
+        <a class="nav-item" href="#">
+          Invoice Activity
+          <span class="badge-small">BILL</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="header">
+        <div class="title">
+          <h1>Financial Report — Performance</h1>
+          <p>Shopify API · QuickBooks P&L · BILL invoices · sample draft data</p>
         </div>
 
-        <div class="hero-metrics">
-          <div class="hero-metric">
-            <div class="hero-label">Output</div>
-            <div class="hero-value">GitHub Pages</div>
-          </div>
-          <div class="hero-metric">
-            <div class="hero-label">Automation</div>
-            <div class="hero-value">GitHub Actions</div>
-          </div>
+        <div class="header-actions">
+          <div class="pill live">● Live Ready</div>
+          <div class="pill draft">Draft Preview</div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="toolbar">
-      <div class="filters">
+      <section class="tabs">
+        <button class="tab active">Financial Report</button>
+        <button class="tab">Revenue</button>
+        <button class="tab">P&L</button>
+      </section>
+
+      <section class="filters-bar">
         <div class="filter-group">
-          <div class="filter-label">Report Year</div>
+          <span class="filter-label">Select Year</span>
           <select id="yearFilter"></select>
         </div>
 
         <div class="filter-group">
-          <div class="filter-label">Channel</div>
+          <span class="filter-label">Channel</span>
           <select id="channelFilter"></select>
         </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Compare Vs</span>
+          <select>
+            <option>Same period last year (YOY)</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="date-strip" id="dateStrip">
+        Loading report period...
+      </section>
+
+      <section class="notice">
+        ⚠ Draft preview using sample data. Final version will refresh automatically through Shopify, QuickBooks, and BILL credentials.
+      </section>
+
+      <div class="section-title">
+        <span>01 · Sales & Invoice KPIs</span>
       </div>
 
-      <div class="updated" id="updatedAt">Loading report data...</div>
-    </section>
+      <section class="kpi-grid" id="salesKpis"></section>
 
-    <section class="kpis" id="kpiCards"></section>
-
-    <section class="grid-main">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">Revenue by Channel</h2>
-            <p class="card-subtitle">From Shopify order source, BILL invoice source, and mapped sales channels.</p>
-          </div>
-          <div class="mini-pill">Revenue</div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="revenueByChannelChart"></canvas>
-        </div>
+      <div class="section-title">
+        <span>02 · Financial KPIs — QuickBooks P&L</span>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">Available Source Fields</h2>
-            <p class="card-subtitle">Only real API/report fields or valid aggregations are used.</p>
-          </div>
-        </div>
+      <section class="kpi-grid" id="financialKpis"></section>
 
-        <div class="source-list">
-          <div class="source-item">
+      <section class="content-grid">
+        <div class="panel">
+          <div class="panel-header">
             <div>
-              <div class="source-name">Shopify Orders</div>
-              <div class="source-fields">created_at, total_price, subtotal_price, total_tax, total_discounts, source_name, financial_status</div>
+              <h2 class="panel-title">Revenue by Channel</h2>
+              <p class="panel-subtitle">Grouped by Shopify source_name, BILL invoices, and mapped sales channels.</p>
             </div>
-            <div class="source-status">Used</div>
+            <div class="panel-tag">Channel Mix</div>
           </div>
+          <div class="chart-wrap large">
+            <canvas id="revenueByChannelChart"></canvas>
+          </div>
+        </div>
 
-          <div class="source-item">
+        <div class="panel">
+          <div class="panel-header">
             <div>
-              <div class="source-name">QuickBooks P&L</div>
-              <div class="source-fields">Total Income, COGS, Gross Profit, Total Expenses, Net Income</div>
+              <h2 class="panel-title">Available Source Fields</h2>
+              <p class="panel-subtitle">Real fields used in the final pipeline.</p>
             </div>
-            <div class="source-status">Used</div>
           </div>
 
-          <div class="source-item">
+          <div class="source-list">
+            <div class="source-item">
+              <div class="source-top">
+                <div class="source-name">Shopify Orders</div>
+                <div class="source-status">Used</div>
+              </div>
+              <div class="source-fields">
+                created_at, total_price, subtotal_price, total_tax, total_discounts, source_name, financial_status
+              </div>
+            </div>
+
+            <div class="source-item">
+              <div class="source-top">
+                <div class="source-name">QuickBooks P&L</div>
+                <div class="source-status">Used</div>
+              </div>
+              <div class="source-fields">
+                Total Income, COGS, Gross Profit, Total Expenses, Net Income
+              </div>
+            </div>
+
+            <div class="source-item">
+              <div class="source-top">
+                <div class="source-name">BILL Invoices</div>
+                <div class="source-status">Used</div>
+              </div>
+              <div class="source-fields">
+                invoiceDate, amount, status, paymentStatus, invoiceId
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="panel">
+          <div class="panel-header">
             <div>
-              <div class="source-name">BILL Invoices</div>
-              <div class="source-fields">invoiceDate, amount, status, paymentStatus, invoiceId</div>
+              <h2 class="panel-title">Monthly Revenue Trend</h2>
+              <p class="panel-subtitle">Monthly totals grouped by year, month, and channel.</p>
             </div>
-            <div class="source-status">Used</div>
+            <div class="panel-tag">Trend</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="monthlyTrendChart"></canvas>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="grid-two">
-      <div class="card">
-        <div class="card-header">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Executive Notes</h2>
+              <p class="panel-subtitle">Auto-generated interpretation from selected view.</p>
+            </div>
+            <div class="panel-tag">Notes</div>
+          </div>
+
+          <ul class="notes-list" id="executiveNotes"></ul>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-header">
           <div>
-            <h2 class="card-title">Monthly Revenue Trend</h2>
-            <p class="card-subtitle">Monthly totals grouped by year, month, and channel.</p>
+            <h2 class="panel-title">Channel Breakdown</h2>
+            <p class="panel-subtitle">Aggregated revenue, transactions, discounts, and tax by channel.</p>
           </div>
-          <div class="mini-pill">Trend</div>
+          <div class="panel-tag">Summary Table</div>
         </div>
-        <div class="chart-wrap">
-          <canvas id="monthlyTrendChart"></canvas>
-        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Channel</th>
+              <th class="right">Revenue</th>
+              <th class="right">Transactions</th>
+              <th class="right">Average Order Value</th>
+              <th class="right">Discounts</th>
+              <th class="right">Tax</th>
+            </tr>
+          </thead>
+          <tbody id="channelTable"></tbody>
+        </table>
+      </section>
+
+      <div class="footer" id="updatedAt">
+        Loading update time...
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">P&L Snapshot</h2>
-            <p class="card-subtitle">QuickBooks Profit & Loss values for the selected year.</p>
-          </div>
-          <div class="mini-pill">QuickBooks</div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="profitLossChart"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <section class="card table-card">
-      <div class="card-header">
-        <div>
-          <h2 class="card-title">Channel Breakdown</h2>
-          <p class="card-subtitle">Aggregated revenue, transactions, discounts, and tax by channel.</p>
-        </div>
-        <div class="mini-pill">Summary Table</div>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Channel</th>
-            <th class="right">Revenue</th>
-            <th class="right">Transactions</th>
-            <th class="right">Average Order Value</th>
-            <th class="right">Discounts</th>
-            <th class="right">Tax</th>
-          </tr>
-        </thead>
-        <tbody id="channelTable"></tbody>
-      </table>
-    </section>
-
-    <section class="card" style="margin-top:18px;">
-      <div class="card-header">
-        <div>
-          <h2 class="card-title">Executive Notes</h2>
-          <p class="card-subtitle">Auto-generated interpretation from the selected report view.</p>
-        </div>
-        <div class="mini-pill">Notes</div>
-      </div>
-
-      <ul class="notes" id="executiveNotes"></ul>
-    </section>
-
-    <div class="footer">
-      Financial Report Dashboard · Draft prototype using sample data
-    </div>
-  </main>
+    </main>
+  </div>
 
   <script>
     let DATA = null;
     let revenueByChannelChart = null;
     let monthlyTrendChart = null;
-    let profitLossChart = null;
 
-    const COLORS = ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#dc2626", "#0891b2"];
+    const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#a78bfa", "#ef4444", "#22d3ee"];
 
     function money(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
@@ -730,7 +861,7 @@
       DATA = await response.json();
 
       document.getElementById("updatedAt").textContent =
-        "Last updated: " + new Date(DATA.generated_at).toLocaleString();
+        "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
 
       setupFilters();
       render();
@@ -780,10 +911,12 @@
     function render() {
       const selected = selectedData();
 
+      document.getElementById("dateStrip").textContent =
+        `${selected.year} Financial Report · Net Sales confirmed ✓`;
+
       renderKpis(selected);
       renderRevenueByChannel(selected.channelRows);
       renderMonthlyTrend(selected.monthRows);
-      renderProfitLoss(selected.qb);
       renderTable(selected.channelRows);
       renderNotes(selected);
     }
@@ -795,58 +928,77 @@
       const totalTax = selected.channelRows.reduce((sum, row) => sum + Number(row.tax || 0), 0);
       const aov = totalTransactions ? totalRevenue / totalTransactions : 0;
 
-      const grossProfit = selected.qb.gross_profit || 0;
-      const netIncome = selected.qb.net_income || 0;
-      const totalExpenses = selected.qb.total_expenses || 0;
-      const cogs = selected.qb.total_cogs || 0;
-
-      document.getElementById("kpiCards").innerHTML = `
+      document.getElementById("salesKpis").innerHTML = `
         <div class="kpi-card">
-          <div class="kpi-label">Total Revenue</div>
+          <div class="kpi-label">Gross Sales</div>
           <div class="kpi-value">${money(totalRevenue)}</div>
+          <div class="kpi-chip">YOY —</div>
           <div class="kpi-note">Shopify total_price + BILL invoice amount</div>
         </div>
 
-        <div class="kpi-card green">
-          <div class="kpi-label">Gross Profit</div>
-          <div class="kpi-value">${money(grossProfit)}</div>
-          <div class="kpi-note">QuickBooks P&L · Gross Margin ${percent(selected.qb.gross_margin)}</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Transactions</div>
+          <div class="kpi-value">${number(totalTransactions)}</div>
+          <div class="kpi-chip">YOY —</div>
+          <div class="kpi-note">Order count + invoice count</div>
         </div>
 
-        <div class="kpi-card purple">
-          <div class="kpi-label">Net Income</div>
-          <div class="kpi-value">${money(netIncome)}</div>
-          <div class="kpi-note">QuickBooks P&L · Net Margin ${percent(selected.qb.net_margin)}</div>
-        </div>
-
-        <div class="kpi-card amber">
+        <div class="kpi-card">
           <div class="kpi-label">Average Order Value</div>
           <div class="kpi-value">${money(aov)}</div>
-          <div class="kpi-note">Revenue / transaction count</div>
+          <div class="kpi-chip">YOY —</div>
+          <div class="kpi-note">Revenue / transactions</div>
         </div>
 
-        <div class="kpi-card red">
+        <div class="kpi-card">
+          <div class="kpi-label">Discounts</div>
+          <div class="kpi-value">${money(totalDiscounts)}</div>
+          <div class="kpi-chip">YOY —</div>
+          <div class="kpi-note">Shopify total_discounts</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Tax Collected</div>
+          <div class="kpi-value">${money(totalTax)}</div>
+          <div class="kpi-chip">YOY —</div>
+          <div class="kpi-note">Shopify total_tax</div>
+        </div>
+      `;
+
+      document.getElementById("financialKpis").innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Total Income</div>
+          <div class="kpi-value">${money(selected.qb.total_income)}</div>
+          <div class="kpi-chip">QB P&L</div>
+          <div class="kpi-note">QuickBooks Profit & Loss</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Gross Profit</div>
+          <div class="kpi-value">${money(selected.qb.gross_profit)}</div>
+          <div class="kpi-chip">Margin ${percent(selected.qb.gross_margin)}</div>
+          <div class="kpi-note">Total Income - COGS</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Net Income</div>
+          <div class="kpi-value">${money(selected.qb.net_income)}</div>
+          <div class="kpi-chip">Margin ${percent(selected.qb.net_margin)}</div>
+          <div class="kpi-note">QuickBooks Net Income</div>
+        </div>
+
+        <div class="kpi-card">
           <div class="kpi-label">Total Expenses</div>
-          <div class="kpi-value">${money(totalExpenses)}</div>
-          <div class="kpi-note">QuickBooks P&L · Total Expenses</div>
+          <div class="kpi-value">${money(selected.qb.total_expenses)}</div>
+          <div class="kpi-chip">QB P&L</div>
+          <div class="kpi-note">Operating expense total</div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-label">COGS</div>
-          <div class="kpi-value">${money(cogs)}</div>
-          <div class="kpi-note">QuickBooks P&L · Cost of Goods Sold</div>
-        </div>
-
-        <div class="kpi-card green">
-          <div class="kpi-label">Discounts</div>
-          <div class="kpi-value">${money(totalDiscounts)}</div>
-          <div class="kpi-note">Shopify total_discounts aggregated</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">Tax Collected</div>
-          <div class="kpi-value">${money(totalTax)}</div>
-          <div class="kpi-note">Shopify total_tax aggregated</div>
+          <div class="kpi-value">${money(selected.qb.total_cogs)}</div>
+          <div class="kpi-chip">QB P&L</div>
+          <div class="kpi-note">Cost of Goods Sold</div>
         </div>
       `;
     }
@@ -861,8 +1013,10 @@
           datasets: [{
             data: rows.map(row => row.total_revenue),
             backgroundColor: rows.map((_, i) => COLORS[i % COLORS.length]),
-            borderRadius: 10,
-            maxBarThickness: 58
+            borderColor: rows.map((_, i) => COLORS[i % COLORS.length]),
+            borderWidth: 1,
+            borderRadius: 8,
+            maxBarThickness: 54
           }]
         },
         options: {
@@ -877,10 +1031,15 @@
             }
           },
           scales: {
-            x: { grid: { display: false } },
+            x: {
+              grid: { color: "rgba(127,154,183,0.08)" },
+              ticks: { color: "#8fb1d3" }
+            },
             y: {
               beginAtZero: true,
+              grid: { color: "rgba(127,154,183,0.12)" },
               ticks: {
+                color: "#8fb1d3",
                 callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
@@ -918,7 +1077,10 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: "bottom" },
+            legend: {
+              position: "bottom",
+              labels: { color: "#b8cee5" }
+            },
             tooltip: {
               callbacks: {
                 label: context => `${context.dataset.label}: ${money(context.raw)}`
@@ -926,54 +1088,15 @@
             }
           },
           scales: {
-            x: { grid: { display: false } },
+            x: {
+              grid: { color: "rgba(127,154,183,0.08)" },
+              ticks: { color: "#8fb1d3" }
+            },
             y: {
               beginAtZero: true,
+              grid: { color: "rgba(127,154,183,0.12)" },
               ticks: {
-                callback: value => "$" + Number(value).toLocaleString("en-US")
-              }
-            }
-          }
-        }
-      });
-    }
-
-    function renderProfitLoss(qb) {
-      if (profitLossChart) profitLossChart.destroy();
-
-      profitLossChart = new Chart(document.getElementById("profitLossChart"), {
-        type: "bar",
-        data: {
-          labels: ["Total Income", "COGS", "Gross Profit", "Expenses", "Net Income"],
-          datasets: [{
-            data: [
-              qb.total_income || 0,
-              qb.total_cogs || 0,
-              qb.gross_profit || 0,
-              qb.total_expenses || 0,
-              qb.net_income || 0
-            ],
-            backgroundColor: ["#2563eb", "#d97706", "#16a34a", "#dc2626", "#7c3aed"],
-            borderRadius: 10,
-            maxBarThickness: 52
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: context => money(context.raw)
-              }
-            }
-          },
-          scales: {
-            x: { grid: { display: false } },
-            y: {
-              beginAtZero: true,
-              ticks: {
+                color: "#8fb1d3",
                 callback: value => "$" + Number(value).toLocaleString("en-US")
               }
             }
@@ -994,7 +1117,7 @@
           return `
             <tr>
               <td>
-                <span class="channel">
+                <span class="channel-pill">
                   <span class="channel-dot" style="background:${color}"></span>
                   ${row.channel}
                 </span>
@@ -1017,20 +1140,20 @@
 
       document.getElementById("executiveNotes").innerHTML = `
         <li>
-          <span class="dot"></span>
+          <span class="note-dot"></span>
           <span>Top revenue channel is <strong>${topChannel ? topChannel.channel : "N/A"}</strong> with ${topChannel ? money(topChannel.total_revenue) : "$0"}.</span>
         </li>
         <li>
-          <span class="dot"></span>
+          <span class="note-dot"></span>
           <span>Total selected revenue is <strong>${money(totalRevenue)}</strong>.</span>
         </li>
         <li>
-          <span class="dot"></span>
+          <span class="note-dot"></span>
           <span>Gross margin is <strong>${percent(selected.qb.gross_margin)}</strong> and net margin is <strong>${percent(selected.qb.net_margin)}</strong>.</span>
         </li>
         <li>
-          <span class="dot"></span>
-          <span>This draft uses sample data. The final version will refresh automatically after connecting Shopify, QuickBooks, and BILL credentials.</span>
+          <span class="note-dot"></span>
+          <span>All displayed fields come from Shopify orders, QuickBooks P&L, or BILL invoices.</span>
         </li>
       `;
     }
