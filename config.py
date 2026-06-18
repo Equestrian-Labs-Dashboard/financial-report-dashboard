@@ -13,8 +13,16 @@ def env(name: str, default: str | None = None) -> str:
     return value
 
 
-SHOPIFY_STORE = env("SHOPIFY_STORE")
-SHOPIFY_TOKEN = env("SHOPIFY_TOKEN")
+SHOPIFY_STORES = {
+    "Corro": {
+        "store": env("CORRO_SHOPIFY_STORE"),
+        "token": env("CORRO_SHOPIFY_TOKEN"),
+    },
+    "Cavali": {
+        "store": env("CAVALI_SHOPIFY_STORE"),
+        "token": env("CAVALI_SHOPIFY_TOKEN"),
+    },
+}
 
 QB_CLIENT_ID = env("QB_CLIENT_ID")
 QB_CLIENT_SECRET = env("QB_CLIENT_SECRET")
