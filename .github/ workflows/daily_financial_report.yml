@@ -24,24 +24,27 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run financial report pipeline
-        env:
-          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+      - - name: Run financial report pipeline
+  env:
+    CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
+    CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
 
-          QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
-          QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
-          QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
-          QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
+    CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
+    CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
 
-          BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
-          BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
-          BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
-          BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
-          BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
+    QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
+    QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
+    QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
+    QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
 
-          START_YEAR: ${{ secrets.START_YEAR }}
-        run: python main.py
+    BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
+    BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
+    BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
+    BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
+    BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
+
+    START_YEAR: ${{ secrets.START_YEAR }}
+  run: python main.py
 
       - name: Commit updated financial report
         run: |
