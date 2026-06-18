@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timezone
 
 import config
-from extractors.shopify import get_orders, normalize_shopify_orders
+from extractors.shopify import get_shopify_rows
 from transforms.financial_report import build_financial_report
 
 
@@ -29,24 +29,17 @@ def run():
 
         for brand, credentials in config.SHOPIFY_STORES.items():
             try:
-                print(f"Extracting Shopify orders for {brand}...")
-
-                orders = get_orders(
+                print(f"Extracting Shopify data for {brand}...")
+                rows = get_shopify_rows(
                     brand=brand,
                     store=credentials["store"],
                     token=credentials["token"],
                     year=year,
                 )
 
-                rows = normalize_shopify_orders(
-                    brand=brand,
-                    orders=orders,
-                    year=year,
-                )
-
                 all_shopify_rows.extend(rows)
 
-                print(f"{brand} Shopify orders: {len(orders)}")
+                print(f"{brand} Shopify rows: {len(rows)}")
 
             except Exception as exc:
                 print(f"Shopify error for {brand} {year}: {exc}")
@@ -61,7 +54,6 @@ def run():
     )
 
     save_json(report, "docs/financial_report.json")
-
     print("Financial report completed successfully.")
 
 
