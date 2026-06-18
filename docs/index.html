@@ -14,7 +14,6 @@
       --sidebar: #0b1728;
       --panel: #0e1c2f;
       --panel-2: #10233a;
-      --panel-3: #132a45;
       --border: #1e3a5f;
       --border-soft: #183250;
       --text: #f8fafc;
@@ -130,17 +129,9 @@
       flex: 0 0 auto;
     }
 
-    .nav-dot.green {
-      background: var(--green);
-    }
-
-    .nav-dot.purple {
-      background: var(--purple);
-    }
-
-    .nav-dot.amber {
-      background: var(--amber);
-    }
+    .nav-dot.green { background: var(--green); }
+    .nav-dot.purple { background: var(--purple); }
+    .nav-dot.amber { background: var(--amber); }
 
     .badge-small {
       margin-left: auto;
@@ -334,21 +325,10 @@
       min-height: 116px;
     }
 
-    .kpi-card.positive {
-      border-top: 2px solid var(--green);
-    }
-
-    .kpi-card.warning {
-      border-top: 2px solid var(--amber);
-    }
-
-    .kpi-card.negative {
-      border-top: 2px solid var(--red);
-    }
-
-    .kpi-card.purple {
-      border-top: 2px solid var(--purple);
-    }
+    .kpi-card.positive { border-top: 2px solid var(--green); }
+    .kpi-card.warning { border-top: 2px solid var(--amber); }
+    .kpi-card.negative { border-top: 2px solid var(--red); }
+    .kpi-card.purple { border-top: 2px solid var(--purple); }
 
     .kpi-label {
       color: #b9c9dc;
@@ -576,89 +556,32 @@
     }
 
     @media (max-width: 1180px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        display: none;
-      }
-
-      .main {
-        padding: 22px 18px 30px;
-      }
-
-      .kpi-grid {
-        grid-template-columns: repeat(3, minmax(130px, 1fr));
-      }
-
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main { padding: 22px 18px 30px; }
+      .kpi-grid { grid-template-columns: repeat(3, minmax(130px, 1fr)); }
+      .content-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
-      .header {
-        flex-direction: column;
-      }
-
-      .header-actions {
-        justify-content: flex-start;
-      }
-
-      .title h1 {
-        font-size: 21px;
-      }
-
-      .filters-bar {
-        align-items: stretch;
-      }
-
-      .filter-group {
-        width: 100%;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      select {
-        width: 100%;
-      }
-
-      .kpi-grid {
-        grid-template-columns: repeat(2, minmax(130px, 1fr));
-      }
-
+      .header { flex-direction: column; }
+      .header-actions { justify-content: flex-start; }
+      .title h1 { font-size: 21px; }
+      .filters-bar { align-items: stretch; }
+      .filter-group { width: 100%; flex-direction: column; align-items: flex-start; }
+      select { width: 100%; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
       .chart-wrap,
-      .chart-wrap.large {
-        height: 220px;
-      }
+      .chart-wrap.large { height: 220px; }
     }
 
     @media (max-width: 520px) {
-      .main {
-        padding: 18px 12px 26px;
-      }
-
-      .tabs {
-        width: 100%;
-      }
-
-      .tab {
-        flex: 1;
-        padding: 6px 8px;
-      }
-
-      .kpi-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .kpi-card {
-        min-height: 105px;
-      }
-
-      .kpi-value {
-        font-size: 24px;
-      }
+      .main { padding: 18px 12px 26px; }
+      .tabs { width: 100%; }
+      .tab { flex: 1; padding: 6px 8px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .kpi-card { min-height: 105px; }
+      .kpi-value { font-size: 24px; }
     }
   </style>
 </head>
@@ -677,38 +600,20 @@
 
       <div class="nav-section">
         <div class="nav-label">Performance</div>
-        <a class="nav-item active" href="#">
-          <span class="nav-dot"></span>
-          Dashboard
-        </a>
+        <a class="nav-item active" href="#"><span class="nav-dot"></span>Dashboard</a>
       </div>
 
       <div class="nav-section">
         <div class="nav-label">Brands</div>
-        <a class="nav-item" href="#">
-          <span class="nav-dot green"></span>
-          Corro
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-dot purple"></span>
-          Cavali
-        </a>
+        <a class="nav-item" href="#"><span class="nav-dot green"></span>Corro</a>
+        <a class="nav-item" href="#"><span class="nav-dot purple"></span>Cavali</a>
       </div>
 
       <div class="nav-section">
         <div class="nav-label">Sources</div>
-        <a class="nav-item" href="#">
-          Shopify
-          <span class="badge-small">LIVE</span>
-        </a>
-        <a class="nav-item" href="#">
-          QuickBooks
-          <span class="badge-small">NEXT</span>
-        </a>
-        <a class="nav-item" href="#">
-          BILL
-          <span class="badge-small">NEXT</span>
-        </a>
+        <a class="nav-item" href="#">Shopify<span class="badge-small">LIVE</span></a>
+        <a class="nav-item" href="#">QuickBooks<span class="badge-small">NEXT</span></a>
+        <a class="nav-item" href="#">BILL<span class="badge-small">NEXT</span></a>
       </div>
     </aside>
 
@@ -755,17 +660,13 @@
         </div>
       </section>
 
-      <section class="date-strip" id="dateStrip">
-        Loading Shopify report period...
-      </section>
+      <section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
 
       <section class="notice">
-        ⚠ First section is Shopify-only. KPIs use Shopify-calculated or Shopify-derived fields where available: total sales, gross sales, discounts, returns, shipping, net sales, COGS, gross profit, and gross margin.
+        ⚠ First section is Shopify-only. KPIs use Shopify-calculated or Shopify-derived fields where available: total sales, gross sales, discounts, returns, shipping, taxes, net sales, COGS, gross profit, and gross margin.
       </section>
 
-      <div class="section-title">
-        <span>01 · Shopify KPIs</span>
-      </div>
+      <div class="section-title"><span>01 · Shopify KPIs</span></div>
 
       <section class="kpi-grid" id="shopifyKpis"></section>
 
@@ -797,9 +698,7 @@
                 <div class="source-name">Orders</div>
                 <div class="source-status">Used</div>
               </div>
-              <div class="source-fields">
-                total_price, subtotal_price, total_discounts, total_tax, source_name, financial_status
-              </div>
+              <div class="source-fields">total_price, current_total_price, subtotal_price, total_discounts, current_total_tax, source_name, financial_status</div>
             </div>
 
             <div class="source-item">
@@ -807,9 +706,7 @@
                 <div class="source-name">Shipping</div>
                 <div class="source-status">Used</div>
               </div>
-              <div class="source-fields">
-                total_shipping_price_set.shop_money.amount
-              </div>
+              <div class="source-fields">shipping_lines.discounted_price_set and shipping refunds</div>
             </div>
 
             <div class="source-item">
@@ -817,9 +714,7 @@
                 <div class="source-name">Refunds / Returns</div>
                 <div class="source-status">Used</div>
               </div>
-              <div class="source-fields">
-                refunds.transactions.amount where kind = refund
-              </div>
+              <div class="source-fields">refund_line_items.subtotal_set.shop_money.amount</div>
             </div>
 
             <div class="source-item">
@@ -827,9 +722,7 @@
                 <div class="source-name">COGS</div>
                 <div class="source-status">If available</div>
               </div>
-              <div class="source-fields">
-                Product cost or enriched inventory cost. If unavailable, COGS can show 0 until connected.
-              </div>
+              <div class="source-fields">Product cost or enriched inventory cost. If unavailable, COGS can show 0 until connected.</div>
             </div>
           </div>
         </div>
@@ -879,9 +772,12 @@
               <th>Month</th>
               <th class="right">Total Sales</th>
               <th class="right">Gross Sales</th>
-              <th class="right">Discounts + Returns</th>
+              <th class="right">Discounts</th>
+              <th class="right">Returns</th>
+              <th class="right">Disc. + Returns</th>
               <th class="right">% Gross Sales</th>
               <th class="right">Shipping</th>
+              <th class="right">Taxes</th>
               <th class="right">Net Sales</th>
               <th class="right">COGS</th>
               <th class="right">Gross Profit 1</th>
@@ -908,9 +804,7 @@
                 <div class="source-name">QuickBooks P&L</div>
                 <div class="source-status">Optional</div>
               </div>
-              <div class="source-fields">
-                Total Income, COGS, Gross Profit, Total Expenses, Net Income.
-              </div>
+              <div class="source-fields">Total Income, COGS, Gross Profit, Total Expenses, Net Income.</div>
             </div>
 
             <div class="source-item">
@@ -918,9 +812,7 @@
                 <div class="source-name">BILL Invoices</div>
                 <div class="source-status">Optional</div>
               </div>
-              <div class="source-fields">
-                invoiceDate, amount, status, paymentStatus, invoiceId.
-              </div>
+              <div class="source-fields">invoiceDate, amount, status, paymentStatus, invoiceId.</div>
             </div>
           </div>
         </div>
@@ -938,9 +830,7 @@
         </div>
       </section>
 
-      <div class="footer" id="updatedAt">
-        Loading update time...
-      </div>
+      <div class="footer" id="updatedAt">Loading update time...</div>
     </main>
   </div>
 
@@ -950,8 +840,6 @@
     let salesTrendChart = null;
     let discountReturnsChart = null;
     let marginTrendChart = null;
-
-    const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#a78bfa", "#ef4444", "#22d3ee"];
 
     const MONTHS = {
       "01": "Jan",
@@ -974,8 +862,42 @@
       });
     }
 
+    function compactMoney(value) {
+      const numberValue = Number(value || 0);
+      const absValue = Math.abs(numberValue);
+
+      if (absValue >= 1000000) {
+        return "$" + (numberValue / 1000000).toFixed(1).replace(".0", "") + "M";
+      }
+
+      if (absValue >= 1000) {
+        return "$" + (numberValue / 1000).toFixed(1).replace(".0", "") + "K";
+      }
+
+      return "$" + numberValue.toLocaleString("en-US", {
+        maximumFractionDigits: 0
+      });
+    }
+
     function number(value) {
       return Number(value || 0).toLocaleString("en-US", {
+        maximumFractionDigits: 0
+      });
+    }
+
+    function compactNumber(value) {
+      const numberValue = Number(value || 0);
+      const absValue = Math.abs(numberValue);
+
+      if (absValue >= 1000000) {
+        return (numberValue / 1000000).toFixed(1).replace(".0", "") + "M";
+      }
+
+      if (absValue >= 1000) {
+        return (numberValue / 1000).toFixed(1).replace(".0", "") + "K";
+      }
+
+      return numberValue.toLocaleString("en-US", {
         maximumFractionDigits: 0
       });
     }
@@ -1006,7 +928,7 @@
       } catch (error) {
         document.getElementById("dateStrip").textContent = "Error loading report data.";
         document.getElementById("shopifyKpis").innerHTML = `
-          <div class="empty">Could not load docs/financial_report.json. Check the GitHub Actions output and confirm the file exists.</div>
+          <div class="empty">Could not load docs/financial_report.json. Check GitHub Actions and confirm the file exists.</div>
         `;
         console.error(error);
       }
@@ -1056,7 +978,6 @@
         const brandMatch = filters.brand === "all" || row.brand === filters.brand;
         const yearMatch = Number(row.year) === filters.year;
         const monthMatch = filters.month === "all" || String(row.month).padStart(2, "0") === filters.month;
-
         return brandMatch && yearMatch && monthMatch;
       });
     }
@@ -1064,16 +985,16 @@
     function sumRows(rows) {
       const result = {
         total_sales: 0,
-  gross_sales: 0,
-  discounts: 0,
-  returns: 0,
-  discounts_returns: 0,
-  shipping_charges: 0,
-  taxes: 0,
-  net_sales: 0,
-  cogs: 0,
-  gross_profit_1: 0,
-  transactions: 0
+        gross_sales: 0,
+        discounts: 0,
+        returns: 0,
+        discounts_returns: 0,
+        shipping_charges: 0,
+        taxes: 0,
+        net_sales: 0,
+        cogs: 0,
+        gross_profit_1: 0,
+        transactions: 0
       };
 
       rows.forEach(row => {
@@ -1083,11 +1004,11 @@
         result.returns += Number(row.returns || 0);
         result.discounts_returns += Number(row.discounts_returns || 0);
         result.shipping_charges += Number(row.shipping_charges || 0);
+        result.taxes += Number(row.taxes || 0);
         result.net_sales += Number(row.net_sales || 0);
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
         result.transactions += Number(row.transactions || 0);
-        result.taxes += Number(row.taxes || 0);
       });
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
@@ -1129,106 +1050,106 @@
         `${brandText} · ${selected.filters.year} · ${monthText} · Shopify KPIs confirmed ✓`;
 
       renderKpis(selected.totals);
-      renderSalesTrend(selected.trendRows, selected.filters);
-      renderDiscountReturns(selected.trendRows, selected.filters);
-      renderMarginTrend(selected.trendRows, selected.filters);
+      renderSalesTrend(selected.trendRows);
+      renderDiscountReturns(selected.trendRows);
+      renderMarginTrend(selected.trendRows);
       renderTable(selected.trendRows, selected.filters);
       renderNotes(selected);
     }
 
     function renderKpis(totals) {
       document.getElementById("shopifyKpis").innerHTML = `
-  <div class="kpi-card positive">
-    <div class="kpi-label">Total Sales</div>
-    <div class="kpi-value">${money(totals.total_sales)}</div>
-    <div class="kpi-chip green">Shopify</div>
-    <div class="kpi-note">Net Sales + Shipping + Taxes</div>
-  </div>
+        <div class="kpi-card positive">
+          <div class="kpi-label">Total Sales</div>
+          <div class="kpi-value">${compactMoney(totals.total_sales)}</div>
+          <div class="kpi-chip green">Shopify</div>
+          <div class="kpi-note">Net Sales + Shipping + Taxes</div>
+        </div>
 
-  <div class="kpi-card">
-    <div class="kpi-label">Gross Sales</div>
-    <div class="kpi-value">${money(totals.gross_sales)}</div>
-    <div class="kpi-chip">Shopify</div>
-    <div class="kpi-note">Line item price × quantity</div>
-  </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Gross Sales</div>
+          <div class="kpi-value">${compactMoney(totals.gross_sales)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Line item price × quantity</div>
+        </div>
 
-  <div class="kpi-card warning">
-    <div class="kpi-label">Discounts</div>
-    <div class="kpi-value">${money(totals.discounts)}</div>
-    <div class="kpi-chip">Shopify</div>
-    <div class="kpi-note">Order total_discounts</div>
-  </div>
+        <div class="kpi-card warning">
+          <div class="kpi-label">Discounts</div>
+          <div class="kpi-value">${compactMoney(totals.discounts)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Order total_discounts</div>
+        </div>
 
-  <div class="kpi-card warning">
-    <div class="kpi-label">Returns</div>
-    <div class="kpi-value">${money(totals.returns)}</div>
-    <div class="kpi-chip">Shopify</div>
-    <div class="kpi-note">Refund line item subtotal</div>
-  </div>
+        <div class="kpi-card warning">
+          <div class="kpi-label">Returns</div>
+          <div class="kpi-value">${compactMoney(totals.returns)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Refund line item subtotal</div>
+        </div>
 
-  <div class="kpi-card warning">
-    <div class="kpi-label">Discounts + Returns</div>
-    <div class="kpi-value">${money(totals.discounts_returns)}</div>
-    <div class="kpi-chip">Calculated</div>
-    <div class="kpi-note">Discounts + product returns</div>
-  </div>
+        <div class="kpi-card warning">
+          <div class="kpi-label">Discounts + Returns</div>
+          <div class="kpi-value">${compactMoney(totals.discounts_returns)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">Discounts + product returns</div>
+        </div>
 
-  <div class="kpi-card warning">
-    <div class="kpi-label">% Gross Sales</div>
-    <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
-    <div class="kpi-chip">Calculated</div>
-    <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
-  </div>
+        <div class="kpi-card warning">
+          <div class="kpi-label">% Gross Sales</div>
+          <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
+        </div>
 
-  <div class="kpi-card">
-    <div class="kpi-label">Shipping Charges</div>
-    <div class="kpi-value">${money(totals.shipping_charges)}</div>
-    <div class="kpi-chip">Shopify</div>
-    <div class="kpi-note">Shipping lines - shipping refunds</div>
-  </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Shipping Charges</div>
+          <div class="kpi-value">${compactMoney(totals.shipping_charges)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Shipping lines - shipping refunds</div>
+        </div>
 
-  <div class="kpi-card">
-    <div class="kpi-label">Taxes</div>
-    <div class="kpi-value">${money(totals.taxes)}</div>
-    <div class="kpi-chip">Shopify</div>
-    <div class="kpi-note">current_total_tax</div>
-  </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Taxes</div>
+          <div class="kpi-value">${compactMoney(totals.taxes)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">current_total_tax</div>
+        </div>
 
-  <div class="kpi-card positive">
-    <div class="kpi-label">Net Sales</div>
-    <div class="kpi-value">${money(totals.net_sales)}</div>
-    <div class="kpi-chip green">Confirmed</div>
-    <div class="kpi-note">Gross Sales - Discounts - Returns</div>
-  </div>
+        <div class="kpi-card positive">
+          <div class="kpi-label">Net Sales</div>
+          <div class="kpi-value">${compactMoney(totals.net_sales)}</div>
+          <div class="kpi-chip green">Confirmed</div>
+          <div class="kpi-note">Gross Sales - Discounts - Returns</div>
+        </div>
 
-  <div class="kpi-card negative">
-    <div class="kpi-label">COGS</div>
-    <div class="kpi-value">${money(totals.cogs)}</div>
-    <div class="kpi-chip red">Cost</div>
-    <div class="kpi-note">Product cost if available</div>
-  </div>
+        <div class="kpi-card negative">
+          <div class="kpi-label">COGS</div>
+          <div class="kpi-value">${compactMoney(totals.cogs)}</div>
+          <div class="kpi-chip red">Cost</div>
+          <div class="kpi-note">Product cost if available</div>
+        </div>
 
-  <div class="kpi-card positive">
-    <div class="kpi-label">Gross Profit 1</div>
-    <div class="kpi-value">${money(totals.gross_profit_1)}</div>
-    <div class="kpi-chip green">Calculated</div>
-    <div class="kpi-note">Net Sales - COGS</div>
-  </div>
+        <div class="kpi-card positive">
+          <div class="kpi-label">Gross Profit 1</div>
+          <div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div>
+          <div class="kpi-chip green">Calculated</div>
+          <div class="kpi-note">Net Sales - COGS</div>
+        </div>
 
-  <div class="kpi-card purple">
-    <div class="kpi-label">Gross Margin 1</div>
-    <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
-    <div class="kpi-chip">Calculated</div>
-    <div class="kpi-note">Gross Profit 1 / Net Sales</div>
-  </div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">Gross Margin 1</div>
+          <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">Gross Profit 1 / Net Sales</div>
+        </div>
 
-  <div class="kpi-card">
-    <div class="kpi-label">Transactions</div>
-    <div class="kpi-value">${number(totals.transactions)}</div>
-    <div class="kpi-chip">Shopify</div>
-    <div class="kpi-note">Order count in selected view</div>
-  </div>
-`;
+        <div class="kpi-card">
+          <div class="kpi-label">Transactions</div>
+          <div class="kpi-value">${compactNumber(totals.transactions)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Order count in selected view</div>
+        </div>
+      `;
     }
 
     function groupByMonth(rows) {
@@ -1242,8 +1163,11 @@
             month,
             total_sales: 0,
             gross_sales: 0,
+            discounts: 0,
+            returns: 0,
             discounts_returns: 0,
             shipping_charges: 0,
+            taxes: 0,
             net_sales: 0,
             cogs: 0,
             gross_profit_1: 0,
@@ -1253,8 +1177,11 @@
 
         grouped[month].total_sales += Number(row.total_sales || 0);
         grouped[month].gross_sales += Number(row.gross_sales || 0);
+        grouped[month].discounts += Number(row.discounts || 0);
+        grouped[month].returns += Number(row.returns || 0);
         grouped[month].discounts_returns += Number(row.discounts_returns || 0);
         grouped[month].shipping_charges += Number(row.shipping_charges || 0);
+        grouped[month].taxes += Number(row.taxes || 0);
         grouped[month].net_sales += Number(row.net_sales || 0);
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
@@ -1385,7 +1312,7 @@
             ticks: {
               color: "#8fb1d3",
               font: { size: 10 },
-              callback: value => "$" + Number(value).toLocaleString("en-US")
+              callback: value => compactMoney(value)
             }
           }
         }
@@ -1435,7 +1362,7 @@
       if (!tableRows.length) {
         document.getElementById("shopifyTable").innerHTML = `
           <tr>
-            <td colspan="11">No Shopify data available for this filter.</td>
+            <td colspan="14">No Shopify data available for this filter.</td>
           </tr>
         `;
         return;
@@ -1450,9 +1377,12 @@
             <td>${MONTHS[row.month] || row.month}</td>
             <td class="right">${money(row.total_sales)}</td>
             <td class="right">${money(row.gross_sales)}</td>
+            <td class="right">${money(row.discounts)}</td>
+            <td class="right">${money(row.returns)}</td>
             <td class="right">${money(row.discounts_returns)}</td>
             <td class="right">${percent(row.discounts_returns_pct)}</td>
             <td class="right">${money(row.shipping_charges)}</td>
+            <td class="right">${money(row.taxes)}</td>
             <td class="right">${money(row.net_sales)}</td>
             <td class="right">${money(row.cogs)}</td>
             <td class="right">${money(row.gross_profit_1)}</td>
