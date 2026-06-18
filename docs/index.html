@@ -1138,76 +1138,97 @@
 
     function renderKpis(totals) {
       document.getElementById("shopifyKpis").innerHTML = `
-        <div class="kpi-card positive">
-          <div class="kpi-label">Total Sales</div>
-          <div class="kpi-value">${money(totals.total_sales)}</div>
-          <div class="kpi-chip green">Shopify</div>
-         <div class="kpi-note">Net Sales + Shipping + Taxes</div>
-        </div>
+  <div class="kpi-card positive">
+    <div class="kpi-label">Total Sales</div>
+    <div class="kpi-value">${money(totals.total_sales)}</div>
+    <div class="kpi-chip green">Shopify</div>
+    <div class="kpi-note">Net Sales + Shipping + Taxes</div>
+  </div>
 
-        <div class="kpi-card">
-          <div class="kpi-label">Gross Sales</div>
-          <div class="kpi-value">${money(totals.gross_sales)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Line item price × quantity</div>
-        </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Gross Sales</div>
+    <div class="kpi-value">${money(totals.gross_sales)}</div>
+    <div class="kpi-chip">Shopify</div>
+    <div class="kpi-note">Line item price × quantity</div>
+  </div>
 
-        <div class="kpi-card warning">
-          <div class="kpi-label">Discounts + Returns</div>
-          <div class="kpi-value">${money(totals.discounts_returns)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Discounts + refund transactions</div>
-        </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">Discounts</div>
+    <div class="kpi-value">${money(totals.discounts)}</div>
+    <div class="kpi-chip">Shopify</div>
+    <div class="kpi-note">Order total_discounts</div>
+  </div>
 
-        <div class="kpi-card warning">
-          <div class="kpi-label">% Gross Sales</div>
-          <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
-        </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">Returns</div>
+    <div class="kpi-value">${money(totals.returns)}</div>
+    <div class="kpi-chip">Shopify</div>
+    <div class="kpi-note">Refund line item subtotal</div>
+  </div>
 
-        <div class="kpi-card">
-          <div class="kpi-label">Shipping Charges</div>
-          <div class="kpi-value">${money(totals.shipping_charges)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">total_shipping_price_set</div>
-        </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">Discounts + Returns</div>
+    <div class="kpi-value">${money(totals.discounts_returns)}</div>
+    <div class="kpi-chip">Calculated</div>
+    <div class="kpi-note">Discounts + product returns</div>
+  </div>
 
-        <div class="kpi-card positive">
-          <div class="kpi-label">Net Sales</div>
-          <div class="kpi-value">${money(totals.net_sales)}</div>
-          <div class="kpi-chip green">Confirmed</div>
-          <div class="kpi-note">Gross Sales - Discounts - Returns</div>
-        </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">% Gross Sales</div>
+    <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
+    <div class="kpi-chip">Calculated</div>
+    <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
+  </div>
 
-        <div class="kpi-card negative">
-          <div class="kpi-label">COGS</div>
-          <div class="kpi-value">${money(totals.cogs)}</div>
-          <div class="kpi-chip red">Cost</div>
-          <div class="kpi-note">Product cost if available</div>
-        </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Shipping Charges</div>
+    <div class="kpi-value">${money(totals.shipping_charges)}</div>
+    <div class="kpi-chip">Shopify</div>
+    <div class="kpi-note">Shipping lines - shipping refunds</div>
+  </div>
 
-        <div class="kpi-card positive">
-          <div class="kpi-label">Gross Profit 1</div>
-          <div class="kpi-value">${money(totals.gross_profit_1)}</div>
-          <div class="kpi-chip green">Calculated</div>
-          <div class="kpi-note">Net Sales - COGS</div>
-        </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Taxes</div>
+    <div class="kpi-value">${money(totals.taxes)}</div>
+    <div class="kpi-chip">Shopify</div>
+    <div class="kpi-note">current_total_tax</div>
+  </div>
 
-        <div class="kpi-card purple">
-          <div class="kpi-label">Gross Margin 1</div>
-          <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Gross Profit 1 / Net Sales</div>
-        </div>
+  <div class="kpi-card positive">
+    <div class="kpi-label">Net Sales</div>
+    <div class="kpi-value">${money(totals.net_sales)}</div>
+    <div class="kpi-chip green">Confirmed</div>
+    <div class="kpi-note">Gross Sales - Discounts - Returns</div>
+  </div>
 
-        <div class="kpi-card">
-          <div class="kpi-label">Transactions</div>
-          <div class="kpi-value">${number(totals.transactions)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Order count in selected view</div>
-        </div>
-      `;
+  <div class="kpi-card negative">
+    <div class="kpi-label">COGS</div>
+    <div class="kpi-value">${money(totals.cogs)}</div>
+    <div class="kpi-chip red">Cost</div>
+    <div class="kpi-note">Product cost if available</div>
+  </div>
+
+  <div class="kpi-card positive">
+    <div class="kpi-label">Gross Profit 1</div>
+    <div class="kpi-value">${money(totals.gross_profit_1)}</div>
+    <div class="kpi-chip green">Calculated</div>
+    <div class="kpi-note">Net Sales - COGS</div>
+  </div>
+
+  <div class="kpi-card purple">
+    <div class="kpi-label">Gross Margin 1</div>
+    <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
+    <div class="kpi-chip">Calculated</div>
+    <div class="kpi-note">Gross Profit 1 / Net Sales</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-label">Transactions</div>
+    <div class="kpi-value">${number(totals.transactions)}</div>
+    <div class="kpi-chip">Shopify</div>
+    <div class="kpi-note">Order count in selected view</div>
+  </div>
+`;
     }
 
     function groupByMonth(rows) {
