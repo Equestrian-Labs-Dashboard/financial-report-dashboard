@@ -19,7 +19,7 @@ def build_financial_report(
         ])
 
     required_cols = [
-        "brand", "year", "month",
+        "brand", "year", "month", "channel",
         "total_sales", "gross_sales", "discounts", "returns",
         "discounts_returns", "shipping_charges", "taxes",
         "net_sales", "cogs", "gross_profit_1", "transactions"
@@ -47,6 +47,7 @@ def build_financial_report(
         shopify_df[col] = pd.to_numeric(shopify_df[col], errors="coerce").fillna(0)
 
     shopify_df["brand"] = shopify_df["brand"].astype(str)
+    shopify_df["channel"] = shopify_df["channel"].astype(str)
     shopify_df["year"] = pd.to_numeric(shopify_df["year"], errors="coerce").fillna(0).astype(int)
     shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
 
@@ -106,6 +107,17 @@ def build_financial_report(
         / shopify_by_brand_month["net_sales"].replace(0, pd.NA)
     ).fillna(0)
 
+    shopify_by_channel = (
+        shopify_df
+        .groupby(["brand", "year", "month", "channel"], as_index=False)
+        .agg(
+            total_sales=("total_sales", "sum"),
+            gross_sales=("gross_sales", "sum"),
+            net_sales=("net_sales", "sum"),
+            transactions=("transactions", "sum"),
+        )
+    )
+
     brands_available = sorted(shopify_df["brand"].dropna().unique().tolist())
     years_available = sorted([
         int(year)
@@ -119,6 +131,7 @@ def build_financial_report(
         "years_available": years_available,
         "shopify_kpis_by_brand_year": shopify_by_brand_year.to_dict(orient="records"),
         "shopify_kpis_by_brand_month": shopify_by_brand_month.to_dict(orient="records"),
+        "shopify_by_channel": shopify_by_channel.to_dict(orient="records"),
         "qb_summary": qb_summaries,
         "bill_rows": bill_rows,
     }
