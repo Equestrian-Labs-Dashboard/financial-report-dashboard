@@ -71,10 +71,7 @@ def run_shopifyql(store: str, token: str, shopifyql: str) -> dict:
           }
           rows
         }
-        parseErrors {
-          code
-          message
-        }
+        parseErrors
       }
     }
     """
@@ -90,7 +87,7 @@ def run_shopifyql(store: str, token: str, shopifyql: str) -> dict:
 def parse_shopifyql_table(response: dict) -> list[dict]:
     payload = response.get("data", {}).get("shopifyqlQuery", {})
 
-    parse_errors = payload.get("parseErrors") or []
+    parse_errors = payload.get("parseErrors")
     if parse_errors:
         raise RuntimeError(f"ShopifyQL parse errors: {parse_errors}")
 
