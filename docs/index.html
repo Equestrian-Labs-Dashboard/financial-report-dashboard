@@ -1064,15 +1064,16 @@
     function sumRows(rows) {
       const result = {
         total_sales: 0,
-        gross_sales: 0,
-        discounts: 0,
-        returns: 0,
-        discounts_returns: 0,
-        shipping_charges: 0,
-        net_sales: 0,
-        cogs: 0,
-        gross_profit_1: 0,
-        transactions: 0
+  gross_sales: 0,
+  discounts: 0,
+  returns: 0,
+  discounts_returns: 0,
+  shipping_charges: 0,
+  taxes: 0,
+  net_sales: 0,
+  cogs: 0,
+  gross_profit_1: 0,
+  transactions: 0
       };
 
       rows.forEach(row => {
@@ -1086,6 +1087,7 @@
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
         result.transactions += Number(row.transactions || 0);
+        result.taxes += Number(row.taxes || 0);
       });
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
@@ -1140,7 +1142,7 @@
           <div class="kpi-label">Total Sales</div>
           <div class="kpi-value">${money(totals.total_sales)}</div>
           <div class="kpi-chip green">Shopify</div>
-          <div class="kpi-note">Order total_sales / total_price</div>
+         <div class="kpi-note">Net Sales + Shipping + Taxes</div>
         </div>
 
         <div class="kpi-card">
@@ -1175,7 +1177,7 @@
           <div class="kpi-label">Net Sales</div>
           <div class="kpi-value">${money(totals.net_sales)}</div>
           <div class="kpi-chip green">Confirmed</div>
-          <div class="kpi-note">Gross Sales - Discounts/Returns + Shipping</div>
+          <div class="kpi-note">Gross Sales - Discounts - Returns</div>
         </div>
 
         <div class="kpi-card negative">
