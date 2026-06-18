@@ -56,10 +56,6 @@ def graphql_request(store: str, token: str, query: str, variables: dict | None =
 
 
 def run_shopifyql(store: str, token: str, shopifyql: str) -> dict:
-    """
-    Queries Shopify Analytics-style data through shopifyqlQuery.
-    This should match Shopify Analytics closer than manually summing orders.
-    """
     query = """
     query ShopifyAnalytics($query: String!) {
       shopifyqlQuery(query: $query) {
@@ -97,11 +93,7 @@ def parse_shopifyql_table(response: dict) -> list[dict]:
 
     column_names = []
     for index, column in enumerate(columns):
-        name = (
-            column.get("name")
-            or column.get("displayName")
-            or f"col_{index}"
-        )
+        name = column.get("name") or column.get("displayName") or f"col_{index}"
         column_names.append(name)
 
     parsed = []
@@ -120,6 +112,32 @@ def parse_shopifyql_table(response: dict) -> list[dict]:
 
     return parsed
 
+
+def extract_month(value: str) -> str:
+    value = str(value)
+
+    if len(value) >= 7 and value[4] == "-":
+        return value[5:7]
+
+    months = {
+        "jan": "01",
+        "feb": "02",
+        "mar": "03",
+        "apr": "04",
+        "may": "05",
+        "jun": "06",
+        "jul": "07",
+        "aug": "08",
+        "sep": "09",
+        "oct": "10",
+        "nov": "11",
+        "dec": "12",
+    }
+
+    lower = value.lower()[:3]
+    return months.get(lower, value.zfill(2))
+
+
 def pick(row: dict, *names):
     normalized = {}
 
@@ -137,6 +155,7 @@ def pick(row: dict, *names):
             return normalized.get(clean_name)
 
     return None
+
 
 def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int) -> list[dict]:
     start_date = f"{year}-01-01"
@@ -192,14 +211,13 @@ def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int)
             print(f"{brand} {year}: ShopifyQL attempt failed: {exc}")
 
     raise RuntimeError(f"All ShopifyQL attempts failed. Last error: {last_error}")
+
+
 def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[dict]:
     normalized = []
 
     for row in rows:
-        raw_month = str(
-            pick(row, "month", "Month", "date", "Date", "day", "Day") or ""
-        )
-
+        raw_month = str(pick(row, "month", "Month", "date", "Date", "day", "Day") or "")
         month = extract_month(raw_month)
 
         gross_sales = abs(money(pick(row, "gross_sales", "Gross sales")))
@@ -246,7 +264,6 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
             "source": "Shopify Analytics",
             "channel": "Shopify",
             "financial_status": "analytics",
-
             "total_sales": total_sales,
             "gross_sales": gross_sales,
             "discounts": discounts,
@@ -263,30 +280,6 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
         })
 
     return normalized
-
-def extract_month(value: str) -> str:
-    value = str(value)
-
-    if len(value) >= 7 and value[4] == "-":
-        return value[5:7]
-
-    months = {
-        "jan": "01",
-        "feb": "02",
-        "mar": "03",
-        "apr": "04",
-        "may": "05",
-        "jun": "06",
-        "jul": "07",
-        "aug": "08",
-        "sep": "09",
-        "oct": "10",
-        "nov": "11",
-        "dec": "12",
-    }
-
-    lower = value.lower()[:3]
-    return months.get(lower, value.zfill(2))
 
 
 def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
@@ -305,13 +298,13 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
         "created_at_min": start_date,
         "created_at_max": end_date,
         "limit": 250,
-       "fields": (
-    "id,created_at,total_price,current_total_price,"
-    "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
-    "total_discounts,current_total_discounts,total_shipping_price_set,"
-    "shipping_lines,source_name,financial_status,line_items,refunds,"
-    "currency,cancelled_at,test"
-),
+        "fields": (
+            "id,created_at,total_price,current_total_price,"
+            "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
+            "total_discounts,current_total_discounts,total_shipping_price_set,"
+            "shipping_lines,source_name,financial_status,line_items,refunds,"
+            "currency,cancelled_at,test"
+        ),
     }
 
     orders = []
@@ -334,6 +327,25 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
         params = None
 
     return orders
+
+
+def get_shipping_refund_amount(order: dict) -> float:
+    shipping_refunds = 0.0
+
+    for refund in order.get("refunds", []) or []:
+        for adjustment in refund.get("order_adjustments", []) or []:
+            kind = str(adjustment.get("kind", "")).lower()
+
+            if kind == "shipping_refund":
+                amount_set = adjustment.get("amount_set") or {}
+                shop_money = amount_set.get("shop_money") or {}
+
+                if shop_money.get("amount") is not None:
+                    shipping_refunds += abs(money(shop_money.get("amount")))
+                else:
+                    shipping_refunds += abs(money(adjustment.get("amount")))
+
+    return shipping_refunds
 
 
 def get_shipping_amount(order: dict) -> float:
@@ -360,30 +372,7 @@ def get_shipping_amount(order: dict) -> float:
     return max(shipping_total - shipping_refunds, 0)
 
 
-def get_shipping_refund_amount(order: dict) -> float:
-    shipping_refunds = 0.0
-
-    for refund in order.get("refunds", []) or []:
-        for adjustment in refund.get("order_adjustments", []) or []:
-            kind = str(adjustment.get("kind", "")).lower()
-
-            if kind == "shipping_refund":
-                amount_set = adjustment.get("amount_set") or {}
-                shop_money = amount_set.get("shop_money") or {}
-
-                if shop_money.get("amount") is not None:
-                    shipping_refunds += abs(money(shop_money.get("amount")))
-                else:
-                    shipping_refunds += abs(money(adjustment.get("amount")))
-
-    return shipping_refunds
-
-
 def get_return_amount(order: dict) -> float:
-    """
-    Shopify Analytics Returns should be product returns, not full refund transactions.
-    refund.transactions.amount can include product + tax + shipping, so it overstates returns.
-    """
     total_returns = 0.0
 
     for refund in order.get("refunds", []) or []:
@@ -400,9 +389,6 @@ def get_return_amount(order: dict) -> float:
 
 
 def get_tax_amount(order: dict) -> float:
-    """
-    current_total_tax better reflects refunds/order edits when available.
-    """
     if order.get("current_total_tax") is not None:
         return money(order.get("current_total_tax"))
 
@@ -442,8 +428,6 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
         month = created_at[5:7] if len(created_at) >= 7 else ""
 
         gross_sales = get_gross_sales(order)
-
-        # Shopify Analytics-style fields
         discounts = abs(money(order.get("total_discounts")))
         returns = get_return_amount(order)
         shipping_charges = get_shipping_amount(order)
@@ -452,9 +436,6 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
         discounts_returns = discounts + returns
         discounts_returns_pct = discounts_returns / gross_sales if gross_sales else 0
 
-        # Shopify-style definitions:
-        # Net sales = Gross sales - Discounts - Returns
-        # Total sales = Net sales + Shipping charges + Taxes
         net_sales = gross_sales - discounts - returns
         total_sales = net_sales + shipping_charges + taxes
 
@@ -470,7 +451,6 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "source": "Shopify Orders API",
             "channel": str(order.get("source_name", "Shopify")).title(),
             "financial_status": order.get("financial_status", ""),
-
             "total_sales": total_sales,
             "gross_sales": gross_sales,
             "discounts": discounts,
@@ -488,11 +468,8 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
 
     return rows
 
+
 def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict]:
-    """
-    Preferred: Shopify Analytics / ShopifyQL-style metrics.
-    Fallback: Orders API calculations.
-    """
     try:
         print(f"Trying Shopify Analytics-style query for {brand} {year}...")
         rows = get_shopify_analytics_monthly(brand, store, token, year)
