@@ -25,6 +25,7 @@
       --purple: #a78bfa;
       --amber: #f59e0b;
       --red: #ef4444;
+      --cyan: #22d3ee;
     }
 
     * {
@@ -345,6 +346,10 @@
       border-top: 2px solid var(--red);
     }
 
+    .kpi-card.purple {
+      border-top: 2px solid var(--purple);
+    }
+
     .kpi-label {
       color: #b9c9dc;
       font-size: 11px;
@@ -355,7 +360,7 @@
     }
 
     .kpi-value {
-      font-size: 26px;
+      font-size: 25px;
       line-height: 1;
       font-weight: 900;
       letter-spacing: -0.06em;
@@ -554,25 +559,20 @@
       text-align: right;
     }
 
-    .channel-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-weight: 900;
-    }
-
-    .channel-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--blue);
-    }
-
     .footer {
       color: #5e7b9b;
       font-size: 10.5px;
       text-align: center;
       padding: 18px 0 0;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
     }
 
     @media (max-width: 1180px) {
@@ -684,34 +684,30 @@
       </div>
 
       <div class="nav-section">
-        <div class="nav-label">Sources</div>
+        <div class="nav-label">Brands</div>
         <a class="nav-item" href="#">
           <span class="nav-dot green"></span>
-          Shopify
+          Corro
         </a>
         <a class="nav-item" href="#">
           <span class="nav-dot purple"></span>
-          QuickBooks
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-dot amber"></span>
-          BILL
+          Cavali
         </a>
       </div>
 
       <div class="nav-section">
-        <div class="nav-label">Analytics Suite</div>
+        <div class="nav-label">Sources</div>
         <a class="nav-item" href="#">
-          P&L Snapshot
-          <span class="badge-small">QB</span>
+          Shopify
+          <span class="badge-small">LIVE</span>
         </a>
         <a class="nav-item" href="#">
-          Revenue Channels
-          <span class="badge-small">API</span>
+          QuickBooks
+          <span class="badge-small">NEXT</span>
         </a>
         <a class="nav-item" href="#">
-          Invoice Activity
-          <span class="badge-small">BILL</span>
+          BILL
+          <span class="badge-small">NEXT</span>
         </a>
       </div>
     </aside>
@@ -719,31 +715,36 @@
     <main class="main">
       <section class="header">
         <div class="title">
-          <h1>Financial Report — Performance</h1>
-          <p>Shopify API · QuickBooks P&L · BILL invoices · sample draft data</p>
+          <h1>Financial Report — Shopify Performance</h1>
+          <p>Corro · Cavali · Shopify calculated KPIs · GitHub Actions refresh</p>
         </div>
 
         <div class="header-actions">
-          <div class="pill live">● Live Ready</div>
-          <div class="pill draft">Draft Preview</div>
+          <div class="pill live">● Shopify Ready</div>
+          <div class="pill draft">Draft / Live Data</div>
         </div>
       </section>
 
       <section class="tabs">
-        <button class="tab active">Financial Report</button>
-        <button class="tab">Revenue</button>
+        <button class="tab active">Shopify KPIs</button>
+        <button class="tab">Financial Report</button>
         <button class="tab">P&L</button>
       </section>
 
       <section class="filters-bar">
         <div class="filter-group">
-          <span class="filter-label">Select Year</span>
+          <span class="filter-label">Brand</span>
+          <select id="brandFilter"></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Year</span>
           <select id="yearFilter"></select>
         </div>
 
         <div class="filter-group">
-          <span class="filter-label">Channel</span>
-          <select id="channelFilter"></select>
+          <span class="filter-label">Month / MTD</span>
+          <select id="monthFilter"></select>
         </div>
 
         <div class="filter-group">
@@ -755,75 +756,79 @@
       </section>
 
       <section class="date-strip" id="dateStrip">
-        Loading report period...
+        Loading Shopify report period...
       </section>
 
       <section class="notice">
-        ⚠ Draft preview using sample data. Final version will refresh automatically through Shopify, QuickBooks, and BILL credentials.
+        ⚠ First section is Shopify-only. KPIs use Shopify-calculated or Shopify-derived fields where available: total sales, gross sales, discounts, returns, shipping, net sales, COGS, gross profit, and gross margin.
       </section>
 
       <div class="section-title">
-        <span>01 · Sales & Invoice KPIs</span>
+        <span>01 · Shopify KPIs</span>
       </div>
 
-      <section class="kpi-grid" id="salesKpis"></section>
-
-      <div class="section-title">
-        <span>02 · Financial KPIs — QuickBooks P&L</span>
-      </div>
-
-      <section class="kpi-grid" id="financialKpis"></section>
+      <section class="kpi-grid" id="shopifyKpis"></section>
 
       <section class="content-grid">
         <div class="panel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">Revenue by Channel</h2>
-              <p class="panel-subtitle">Grouped by Shopify source_name, BILL invoices, and mapped sales channels.</p>
+              <h2 class="panel-title">Gross Sales vs Net Sales</h2>
+              <p class="panel-subtitle">Monthly Shopify performance by selected brand and year.</p>
             </div>
-            <div class="panel-tag">Channel Mix</div>
+            <div class="panel-tag">Shopify</div>
           </div>
           <div class="chart-wrap large">
-            <canvas id="revenueByChannelChart"></canvas>
+            <canvas id="salesTrendChart"></canvas>
           </div>
         </div>
 
         <div class="panel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">Available Source Fields</h2>
-              <p class="panel-subtitle">Real fields used in the final pipeline.</p>
+              <h2 class="panel-title">Shopify Source Fields</h2>
+              <p class="panel-subtitle">Fields used for the first dashboard section.</p>
             </div>
           </div>
 
           <div class="source-list">
             <div class="source-item">
               <div class="source-top">
-                <div class="source-name">Shopify Orders</div>
+                <div class="source-name">Orders</div>
                 <div class="source-status">Used</div>
               </div>
               <div class="source-fields">
-                created_at, total_price, subtotal_price, total_tax, total_discounts, source_name, financial_status
+                total_price, subtotal_price, total_discounts, total_tax, source_name, financial_status
               </div>
             </div>
 
             <div class="source-item">
               <div class="source-top">
-                <div class="source-name">QuickBooks P&L</div>
+                <div class="source-name">Shipping</div>
                 <div class="source-status">Used</div>
               </div>
               <div class="source-fields">
-                Total Income, COGS, Gross Profit, Total Expenses, Net Income
+                total_shipping_price_set.shop_money.amount
               </div>
             </div>
 
             <div class="source-item">
               <div class="source-top">
-                <div class="source-name">BILL Invoices</div>
+                <div class="source-name">Refunds / Returns</div>
                 <div class="source-status">Used</div>
               </div>
               <div class="source-fields">
-                invoiceDate, amount, status, paymentStatus, invoiceId
+                refunds.transactions.amount where kind = refund
+              </div>
+            </div>
+
+            <div class="source-item">
+              <div class="source-top">
+                <div class="source-name">COGS</div>
+                <div class="source-status">If available</div>
+              </div>
+              <div class="source-fields">
+                Product cost or enriched inventory cost. If unavailable, COGS can show 0 until connected.
               </div>
             </div>
           </div>
@@ -834,13 +839,89 @@
         <div class="panel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">Monthly Revenue Trend</h2>
-              <p class="panel-subtitle">Monthly totals grouped by year, month, and channel.</p>
+              <h2 class="panel-title">Discounts + Returns by Month</h2>
+              <p class="panel-subtitle">Shopify discounts and returns as monthly totals.</p>
             </div>
-            <div class="panel-tag">Trend</div>
+            <div class="panel-tag">Risk</div>
           </div>
           <div class="chart-wrap">
-            <canvas id="monthlyTrendChart"></canvas>
+            <canvas id="discountReturnsChart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Gross Margin 1 Trend</h2>
+              <p class="panel-subtitle">Gross Profit 1 divided by Net Sales.</p>
+            </div>
+            <div class="panel-tag">Margin</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="marginTrendChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Shopify Monthly Breakdown</h2>
+            <p class="panel-subtitle">Shopify-only monthly KPI table for selected filters.</p>
+          </div>
+          <div class="panel-tag">Table</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th>Month</th>
+              <th class="right">Total Sales</th>
+              <th class="right">Gross Sales</th>
+              <th class="right">Discounts + Returns</th>
+              <th class="right">% Gross Sales</th>
+              <th class="right">Shipping</th>
+              <th class="right">Net Sales</th>
+              <th class="right">COGS</th>
+              <th class="right">Gross Profit 1</th>
+              <th class="right">Gross Margin 1</th>
+            </tr>
+          </thead>
+          <tbody id="shopifyTable"></tbody>
+        </table>
+      </section>
+
+      <section class="content-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Next Sections</h2>
+              <p class="panel-subtitle">QuickBooks and BILL can be enabled after Shopify is approved.</p>
+            </div>
+            <div class="panel-tag">Next</div>
+          </div>
+
+          <div class="source-list">
+            <div class="source-item">
+              <div class="source-top">
+                <div class="source-name">QuickBooks P&L</div>
+                <div class="source-status">Optional</div>
+              </div>
+              <div class="source-fields">
+                Total Income, COGS, Gross Profit, Total Expenses, Net Income.
+              </div>
+            </div>
+
+            <div class="source-item">
+              <div class="source-top">
+                <div class="source-name">BILL Invoices</div>
+                <div class="source-status">Optional</div>
+              </div>
+              <div class="source-fields">
+                invoiceDate, amount, status, paymentStatus, invoiceId.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -848,37 +929,13 @@
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Executive Notes</h2>
-              <p class="panel-subtitle">Auto-generated interpretation from selected view.</p>
+              <p class="panel-subtitle">Auto-generated from selected Shopify view.</p>
             </div>
             <div class="panel-tag">Notes</div>
           </div>
 
           <ul class="notes-list" id="executiveNotes"></ul>
         </div>
-      </section>
-
-      <section class="panel table-panel">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">Channel Breakdown</h2>
-            <p class="panel-subtitle">Aggregated revenue, transactions, discounts, and tax by channel.</p>
-          </div>
-          <div class="panel-tag">Summary Table</div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Channel</th>
-              <th class="right">Revenue</th>
-              <th class="right">Transactions</th>
-              <th class="right">Average Order Value</th>
-              <th class="right">Discounts</th>
-              <th class="right">Tax</th>
-            </tr>
-          </thead>
-          <tbody id="channelTable"></tbody>
-        </table>
       </section>
 
       <div class="footer" id="updatedAt">
@@ -889,10 +946,27 @@
 
   <script>
     let DATA = null;
-    let revenueByChannelChart = null;
-    let monthlyTrendChart = null;
+
+    let salesTrendChart = null;
+    let discountReturnsChart = null;
+    let marginTrendChart = null;
 
     const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#a78bfa", "#ef4444", "#22d3ee"];
+
+    const MONTHS = {
+      "01": "Jan",
+      "02": "Feb",
+      "03": "Mar",
+      "04": "Apr",
+      "05": "May",
+      "06": "Jun",
+      "07": "Jul",
+      "08": "Aug",
+      "09": "Sep",
+      "10": "Oct",
+      "11": "Nov",
+      "12": "Dec"
+    };
 
     function money(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
@@ -910,307 +984,482 @@
       return (Number(value || 0) * 100).toFixed(1) + "%";
     }
 
+    function safeArray(value) {
+      return Array.isArray(value) ? value : [];
+    }
+
     async function loadData() {
-      const response = await fetch("financial_report.json?t=" + Date.now());
-      DATA = await response.json();
+      try {
+        const response = await fetch("financial_report.json?t=" + Date.now());
 
-      document.getElementById("updatedAt").textContent =
-        "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
+        if (!response.ok) {
+          throw new Error("Could not load financial_report.json");
+        }
 
-      setupFilters();
-      render();
+        DATA = await response.json();
+
+        document.getElementById("updatedAt").textContent =
+          "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
+
+        setupFilters();
+        render();
+      } catch (error) {
+        document.getElementById("dateStrip").textContent = "Error loading report data.";
+        document.getElementById("shopifyKpis").innerHTML = `
+          <div class="empty">Could not load docs/financial_report.json. Check the GitHub Actions output and confirm the file exists.</div>
+        `;
+        console.error(error);
+      }
     }
 
     function setupFilters() {
+      const brandFilter = document.getElementById("brandFilter");
       const yearFilter = document.getElementById("yearFilter");
-      const channelFilter = document.getElementById("channelFilter");
+      const monthFilter = document.getElementById("monthFilter");
 
-      yearFilter.innerHTML = DATA.years_available
+      const brands = safeArray(DATA.brands_available);
+      const years = safeArray(DATA.years_available);
+
+      brandFilter.innerHTML =
+        `<option value="all">All Brands</option>` +
+        brands.map(brand => `<option value="${brand}">${brand}</option>`).join("");
+
+      yearFilter.innerHTML = years
         .map(year => `<option value="${year}">${year}</option>`)
         .join("");
 
-      yearFilter.value = Math.max(...DATA.years_available);
-
-      const channels = [...new Set(DATA.by_channel_year.map(row => row.channel))].sort();
-
-      channelFilter.innerHTML =
-        `<option value="all">All Channels</option>` +
-        channels.map(channel => `<option value="${channel}">${channel}</option>`).join("");
-
-      yearFilter.addEventListener("change", render);
-      channelFilter.addEventListener("change", render);
-    }
-
-    function selectedData() {
-      const year = Number(document.getElementById("yearFilter").value);
-      const channel = document.getElementById("channelFilter").value;
-
-      let channelRows = DATA.by_channel_year.filter(row => row.year === year);
-      let monthRows = DATA.by_month.filter(row => row.year === year);
-
-      if (channel !== "all") {
-        channelRows = channelRows.filter(row => row.channel === channel);
-        monthRows = monthRows.filter(row => row.channel === channel);
+      if (years.length > 0) {
+        yearFilter.value = Math.max(...years);
       }
 
+      monthFilter.innerHTML =
+        `<option value="all">All Months / YTD</option>` +
+        Object.entries(MONTHS)
+          .map(([value, label]) => `<option value="${value}">${label}</option>`)
+          .join("");
+
+      brandFilter.addEventListener("change", render);
+      yearFilter.addEventListener("change", render);
+      monthFilter.addEventListener("change", render);
+    }
+
+    function selectedFilters() {
       return {
-        year,
-        channel,
-        channelRows,
-        monthRows,
-        qb: DATA.qb_summary[String(year)] || {}
+        brand: document.getElementById("brandFilter").value,
+        year: Number(document.getElementById("yearFilter").value),
+        month: document.getElementById("monthFilter").value
+      };
+    }
+
+    function filterRows(rows, filters) {
+      return rows.filter(row => {
+        const brandMatch = filters.brand === "all" || row.brand === filters.brand;
+        const yearMatch = Number(row.year) === filters.year;
+        const monthMatch = filters.month === "all" || String(row.month).padStart(2, "0") === filters.month;
+
+        return brandMatch && yearMatch && monthMatch;
+      });
+    }
+
+    function sumRows(rows) {
+      const result = {
+        total_sales: 0,
+        gross_sales: 0,
+        discounts: 0,
+        returns: 0,
+        discounts_returns: 0,
+        shipping_charges: 0,
+        net_sales: 0,
+        cogs: 0,
+        gross_profit_1: 0,
+        transactions: 0
+      };
+
+      rows.forEach(row => {
+        result.total_sales += Number(row.total_sales || 0);
+        result.gross_sales += Number(row.gross_sales || 0);
+        result.discounts += Number(row.discounts || 0);
+        result.returns += Number(row.returns || 0);
+        result.discounts_returns += Number(row.discounts_returns || 0);
+        result.shipping_charges += Number(row.shipping_charges || 0);
+        result.net_sales += Number(row.net_sales || 0);
+        result.cogs += Number(row.cogs || 0);
+        result.gross_profit_1 += Number(row.gross_profit_1 || 0);
+        result.transactions += Number(row.transactions || 0);
+      });
+
+      result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
+      result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
+
+      return result;
+    }
+
+    function getSelectedRows() {
+      const filters = selectedFilters();
+
+      const monthlyRows = safeArray(DATA.shopify_kpis_by_brand_month);
+      const yearRows = safeArray(DATA.shopify_kpis_by_brand_year);
+
+      const baseRows = filters.month === "all" ? yearRows : monthlyRows;
+      const selectedRows = filterRows(baseRows, filters);
+
+      const trendRows = filterRows(monthlyRows, {
+        brand: filters.brand,
+        year: filters.year,
+        month: "all"
+      });
+
+      return {
+        filters,
+        selectedRows,
+        trendRows,
+        totals: sumRows(selectedRows)
       };
     }
 
     function render() {
-      const selected = selectedData();
+      const selected = getSelectedRows();
+
+      const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
+      const monthText = selected.filters.month === "all" ? "YTD / All Months" : MONTHS[selected.filters.month];
 
       document.getElementById("dateStrip").textContent =
-        `${selected.year} Financial Report · Net Sales confirmed ✓`;
+        `${brandText} · ${selected.filters.year} · ${monthText} · Shopify KPIs confirmed ✓`;
 
-      renderKpis(selected);
-      renderRevenueByChannel(selected.channelRows);
-      renderMonthlyTrend(selected.monthRows);
-      renderTable(selected.channelRows);
+      renderKpis(selected.totals);
+      renderSalesTrend(selected.trendRows, selected.filters);
+      renderDiscountReturns(selected.trendRows, selected.filters);
+      renderMarginTrend(selected.trendRows, selected.filters);
+      renderTable(selected.trendRows, selected.filters);
       renderNotes(selected);
     }
 
-    function renderKpis(selected) {
-      const totalRevenue = selected.channelRows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
-      const totalTransactions = selected.channelRows.reduce((sum, row) => sum + Number(row.transactions || 0), 0);
-      const totalDiscounts = selected.channelRows.reduce((sum, row) => sum + Number(row.discounts || 0), 0);
-      const totalTax = selected.channelRows.reduce((sum, row) => sum + Number(row.tax || 0), 0);
-      const aov = totalTransactions ? totalRevenue / totalTransactions : 0;
-
-      document.getElementById("salesKpis").innerHTML = `
+    function renderKpis(totals) {
+      document.getElementById("shopifyKpis").innerHTML = `
         <div class="kpi-card positive">
+          <div class="kpi-label">Total Sales</div>
+          <div class="kpi-value">${money(totals.total_sales)}</div>
+          <div class="kpi-chip green">Shopify</div>
+          <div class="kpi-note">Order total_sales / total_price</div>
+        </div>
+
+        <div class="kpi-card">
           <div class="kpi-label">Gross Sales</div>
-          <div class="kpi-value">${money(totalRevenue)}</div>
-          <div class="kpi-chip green">YOY —</div>
-          <div class="kpi-note">Shopify total_price + BILL invoice amount</div>
+          <div class="kpi-value">${money(totals.gross_sales)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Line item price × quantity</div>
+        </div>
+
+        <div class="kpi-card warning">
+          <div class="kpi-label">Discounts + Returns</div>
+          <div class="kpi-value">${money(totals.discounts_returns)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Discounts + refund transactions</div>
+        </div>
+
+        <div class="kpi-card warning">
+          <div class="kpi-label">% Gross Sales</div>
+          <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Shipping Charges</div>
+          <div class="kpi-value">${money(totals.shipping_charges)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">total_shipping_price_set</div>
+        </div>
+
+        <div class="kpi-card positive">
+          <div class="kpi-label">Net Sales</div>
+          <div class="kpi-value">${money(totals.net_sales)}</div>
+          <div class="kpi-chip green">Confirmed</div>
+          <div class="kpi-note">Gross Sales - Discounts/Returns + Shipping</div>
+        </div>
+
+        <div class="kpi-card negative">
+          <div class="kpi-label">COGS</div>
+          <div class="kpi-value">${money(totals.cogs)}</div>
+          <div class="kpi-chip red">Cost</div>
+          <div class="kpi-note">Product cost if available</div>
+        </div>
+
+        <div class="kpi-card positive">
+          <div class="kpi-label">Gross Profit 1</div>
+          <div class="kpi-value">${money(totals.gross_profit_1)}</div>
+          <div class="kpi-chip green">Calculated</div>
+          <div class="kpi-note">Net Sales - COGS</div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-label">Gross Margin 1</div>
+          <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">Gross Profit 1 / Net Sales</div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-label">Transactions</div>
-          <div class="kpi-value">${number(totalTransactions)}</div>
-          <div class="kpi-chip">YOY —</div>
-          <div class="kpi-note">Order count + invoice count</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Average Order Value</div>
-          <div class="kpi-value">${money(aov)}</div>
-          <div class="kpi-chip">YOY —</div>
-          <div class="kpi-note">Revenue / transactions</div>
-        </div>
-
-        <div class="kpi-card warning">
-          <div class="kpi-label">Discounts</div>
-          <div class="kpi-value">${money(totalDiscounts)}</div>
-          <div class="kpi-chip">YOY —</div>
-          <div class="kpi-note">Shopify total_discounts</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Tax Collected</div>
-          <div class="kpi-value">${money(totalTax)}</div>
-          <div class="kpi-chip">YOY —</div>
-          <div class="kpi-note">Shopify total_tax</div>
-        </div>
-      `;
-
-      document.getElementById("financialKpis").innerHTML = `
-        <div class="kpi-card">
-          <div class="kpi-label">Total Income</div>
-          <div class="kpi-value">${money(selected.qb.total_income)}</div>
-          <div class="kpi-chip">QB P&L</div>
-          <div class="kpi-note">QuickBooks Profit & Loss</div>
-        </div>
-
-        <div class="kpi-card positive">
-          <div class="kpi-label">Gross Profit</div>
-          <div class="kpi-value">${money(selected.qb.gross_profit)}</div>
-          <div class="kpi-chip green">Margin ${percent(selected.qb.gross_margin)}</div>
-          <div class="kpi-note">Total Income - COGS</div>
-        </div>
-
-        <div class="kpi-card positive">
-          <div class="kpi-label">Net Income</div>
-          <div class="kpi-value">${money(selected.qb.net_income)}</div>
-          <div class="kpi-chip green">Margin ${percent(selected.qb.net_margin)}</div>
-          <div class="kpi-note">QuickBooks Net Income</div>
-        </div>
-
-        <div class="kpi-card negative">
-          <div class="kpi-label">Total Expenses</div>
-          <div class="kpi-value">${money(selected.qb.total_expenses)}</div>
-          <div class="kpi-chip red">QB P&L</div>
-          <div class="kpi-note">Operating expense total</div>
-        </div>
-
-        <div class="kpi-card warning">
-          <div class="kpi-label">COGS</div>
-          <div class="kpi-value">${money(selected.qb.total_cogs)}</div>
-          <div class="kpi-chip">QB P&L</div>
-          <div class="kpi-note">Cost of Goods Sold</div>
+          <div class="kpi-value">${number(totals.transactions)}</div>
+          <div class="kpi-chip">Shopify</div>
+          <div class="kpi-note">Order count in selected view</div>
         </div>
       `;
     }
 
-    function renderRevenueByChannel(rows) {
-      if (revenueByChannelChart) revenueByChannelChart.destroy();
+    function groupByMonth(rows) {
+      const grouped = {};
 
-      revenueByChannelChart = new Chart(document.getElementById("revenueByChannelChart"), {
+      rows.forEach(row => {
+        const month = String(row.month).padStart(2, "0");
+
+        if (!grouped[month]) {
+          grouped[month] = {
+            month,
+            total_sales: 0,
+            gross_sales: 0,
+            discounts_returns: 0,
+            shipping_charges: 0,
+            net_sales: 0,
+            cogs: 0,
+            gross_profit_1: 0,
+            transactions: 0
+          };
+        }
+
+        grouped[month].total_sales += Number(row.total_sales || 0);
+        grouped[month].gross_sales += Number(row.gross_sales || 0);
+        grouped[month].discounts_returns += Number(row.discounts_returns || 0);
+        grouped[month].shipping_charges += Number(row.shipping_charges || 0);
+        grouped[month].net_sales += Number(row.net_sales || 0);
+        grouped[month].cogs += Number(row.cogs || 0);
+        grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
+        grouped[month].transactions += Number(row.transactions || 0);
+      });
+
+      return Object.values(grouped)
+        .sort((a, b) => a.month.localeCompare(b.month))
+        .map(row => ({
+          ...row,
+          gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+          discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
+        }));
+    }
+
+    function renderSalesTrend(rows) {
+      if (salesTrendChart) {
+        salesTrendChart.destroy();
+      }
+
+      const monthly = groupByMonth(rows);
+
+      salesTrendChart = new Chart(document.getElementById("salesTrendChart"), {
         type: "bar",
         data: {
-          labels: rows.map(row => row.channel),
-          datasets: [{
-            data: rows.map(row => row.total_revenue),
-            backgroundColor: rows.map((_, i) => COLORS[i % COLORS.length]),
-            borderColor: rows.map((_, i) => COLORS[i % COLORS.length]),
-            borderWidth: 1,
-            borderRadius: 6,
-            maxBarThickness: 42
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: context => "Revenue: " + money(context.raw)
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: { color: "rgba(127,154,183,0.06)" },
-              ticks: { color: "#8fb1d3", font: { size: 10 } }
+          labels: monthly.map(row => MONTHS[row.month] || row.month),
+          datasets: [
+            {
+              label: "Gross Sales",
+              data: monthly.map(row => row.gross_sales),
+              backgroundColor: "#3b82f6",
+              borderRadius: 5,
+              maxBarThickness: 38
             },
-            y: {
-              beginAtZero: true,
-              grid: { color: "rgba(127,154,183,0.10)" },
-              ticks: {
-                color: "#8fb1d3",
-                font: { size: 10 },
-                callback: value => "$" + Number(value).toLocaleString("en-US")
-              }
+            {
+              label: "Net Sales",
+              data: monthly.map(row => row.net_sales),
+              backgroundColor: "#22c55e",
+              borderRadius: 5,
+              maxBarThickness: 38
             }
-          }
-        }
+          ]
+        },
+        options: chartOptionsMoney()
       });
     }
 
-    function renderMonthlyTrend(rows) {
-      if (monthlyTrendChart) monthlyTrendChart.destroy();
+    function renderDiscountReturns(rows) {
+      if (discountReturnsChart) {
+        discountReturnsChart.destroy();
+      }
 
-      const months = [...new Set(rows.map(row => row.month))].sort();
-      const channels = [...new Set(rows.map(row => row.channel))].sort();
+      const monthly = groupByMonth(rows);
 
-      const datasets = channels.map((channel, index) => ({
-        label: channel,
-        data: months.map(month => {
-          const found = rows.find(row => row.month === month && row.channel === channel);
-          return found ? found.total_revenue : 0;
-        }),
-        borderColor: COLORS[index % COLORS.length],
-        backgroundColor: COLORS[index % COLORS.length],
-        tension: 0.35,
-        pointRadius: 2,
-        pointHoverRadius: 4,
-        borderWidth: 2
-      }));
-
-      monthlyTrendChart = new Chart(document.getElementById("monthlyTrendChart"), {
+      discountReturnsChart = new Chart(document.getElementById("discountReturnsChart"), {
         type: "line",
         data: {
-          labels: months,
-          datasets
+          labels: monthly.map(row => MONTHS[row.month] || row.month),
+          datasets: [
+            {
+              label: "Discounts + Returns",
+              data: monthly.map(row => row.discounts_returns),
+              borderColor: "#f59e0b",
+              backgroundColor: "#f59e0b",
+              tension: 0.35,
+              pointRadius: 2,
+              pointHoverRadius: 4,
+              borderWidth: 2
+            }
+          ]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: { color: "#b8cee5", font: { size: 10 }, boxWidth: 10 }
-            },
-            tooltip: {
-              callbacks: {
-                label: context => `${context.dataset.label}: ${money(context.raw)}`
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: { color: "rgba(127,154,183,0.06)" },
-              ticks: { color: "#8fb1d3", font: { size: 10 } }
-            },
-            y: {
-              beginAtZero: true,
-              grid: { color: "rgba(127,154,183,0.10)" },
-              ticks: {
-                color: "#8fb1d3",
-                font: { size: 10 },
-                callback: value => "$" + Number(value).toLocaleString("en-US")
-              }
-            }
-          }
-        }
+        options: chartOptionsMoney(true)
       });
     }
 
-    function renderTable(rows) {
-      document.getElementById("channelTable").innerHTML = rows
-        .sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))
-        .map((row, index) => {
-          const revenue = Number(row.total_revenue || 0);
-          const transactions = Number(row.transactions || 0);
-          const aov = transactions ? revenue / transactions : 0;
-          const color = COLORS[index % COLORS.length];
+    function renderMarginTrend(rows) {
+      if (marginTrendChart) {
+        marginTrendChart.destroy();
+      }
 
-          return `
-            <tr>
-              <td>
-                <span class="channel-pill">
-                  <span class="channel-dot" style="background:${color}"></span>
-                  ${row.channel}
-                </span>
-              </td>
-              <td class="right">${money(revenue)}</td>
-              <td class="right">${number(transactions)}</td>
-              <td class="right">${money(aov)}</td>
-              <td class="right">${money(row.discounts)}</td>
-              <td class="right">${money(row.tax)}</td>
-            </tr>
-          `;
-        })
+      const monthly = groupByMonth(rows);
+
+      marginTrendChart = new Chart(document.getElementById("marginTrendChart"), {
+        type: "line",
+        data: {
+          labels: monthly.map(row => MONTHS[row.month] || row.month),
+          datasets: [
+            {
+              label: "Gross Margin 1",
+              data: monthly.map(row => row.gross_margin_1 * 100),
+              borderColor: "#a78bfa",
+              backgroundColor: "#a78bfa",
+              tension: 0.35,
+              pointRadius: 2,
+              pointHoverRadius: 4,
+              borderWidth: 2
+            }
+          ]
+        },
+        options: chartOptionsPercent()
+      });
+    }
+
+    function chartOptionsMoney(showLegend = true) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: showLegend,
+            position: "bottom",
+            labels: { color: "#b8cee5", font: { size: 10 }, boxWidth: 10 }
+          },
+          tooltip: {
+            callbacks: {
+              label: context => `${context.dataset.label}: ${money(context.raw)}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: "rgba(127,154,183,0.06)" },
+            ticks: { color: "#8fb1d3", font: { size: 10 } }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: "rgba(127,154,183,0.10)" },
+            ticks: {
+              color: "#8fb1d3",
+              font: { size: 10 },
+              callback: value => "$" + Number(value).toLocaleString("en-US")
+            }
+          }
+        }
+      };
+    }
+
+    function chartOptionsPercent() {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { color: "#b8cee5", font: { size: 10 }, boxWidth: 10 }
+          },
+          tooltip: {
+            callbacks: {
+              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toFixed(1)}%`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: "rgba(127,154,183,0.06)" },
+            ticks: { color: "#8fb1d3", font: { size: 10 } }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: "rgba(127,154,183,0.10)" },
+            ticks: {
+              color: "#8fb1d3",
+              font: { size: 10 },
+              callback: value => Number(value).toFixed(0) + "%"
+            }
+          }
+        }
+      };
+    }
+
+    function renderTable(rows, filters) {
+      let tableRows = groupByMonth(rows);
+
+      if (filters.month !== "all") {
+        tableRows = tableRows.filter(row => row.month === filters.month);
+      }
+
+      if (!tableRows.length) {
+        document.getElementById("shopifyTable").innerHTML = `
+          <tr>
+            <td colspan="11">No Shopify data available for this filter.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      const brandText = filters.brand === "all" ? "All Brands" : filters.brand;
+
+      document.getElementById("shopifyTable").innerHTML = tableRows
+        .map(row => `
+          <tr>
+            <td>${brandText}</td>
+            <td>${MONTHS[row.month] || row.month}</td>
+            <td class="right">${money(row.total_sales)}</td>
+            <td class="right">${money(row.gross_sales)}</td>
+            <td class="right">${money(row.discounts_returns)}</td>
+            <td class="right">${percent(row.discounts_returns_pct)}</td>
+            <td class="right">${money(row.shipping_charges)}</td>
+            <td class="right">${money(row.net_sales)}</td>
+            <td class="right">${money(row.cogs)}</td>
+            <td class="right">${money(row.gross_profit_1)}</td>
+            <td class="right">${percent(row.gross_margin_1)}</td>
+          </tr>
+        `)
         .join("");
     }
 
     function renderNotes(selected) {
-      const rows = selected.channelRows;
-      const totalRevenue = rows.reduce((sum, row) => sum + Number(row.total_revenue || 0), 0);
-      const topChannel = [...rows].sort((a, b) => Number(b.total_revenue || 0) - Number(a.total_revenue || 0))[0];
+      const totals = selected.totals;
+      const brandText = selected.filters.brand === "all" ? "all brands" : selected.filters.brand;
+      const monthText = selected.filters.month === "all" ? "all months" : MONTHS[selected.filters.month];
 
       document.getElementById("executiveNotes").innerHTML = `
         <li>
           <span class="note-dot"></span>
-          <span>Top revenue channel is <strong>${topChannel ? topChannel.channel : "N/A"}</strong> with ${topChannel ? money(topChannel.total_revenue) : "$0"}.</span>
+          <span>Selected Shopify view: <strong>${brandText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${monthText}</strong>.</span>
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Total selected revenue is <strong>${money(totalRevenue)}</strong>.</span>
+          <span>Net Sales are <strong>${money(totals.net_sales)}</strong> and Gross Profit 1 is <strong>${money(totals.gross_profit_1)}</strong>.</span>
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Gross margin is <strong>${percent(selected.qb.gross_margin)}</strong> and net margin is <strong>${percent(selected.qb.net_margin)}</strong>.</span>
+          <span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span>
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>All displayed fields come from Shopify orders, QuickBooks P&L, or BILL invoices.</span>
+          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS is 0, product cost still needs to be connected or enriched.</span>
         </li>
       `;
     }
