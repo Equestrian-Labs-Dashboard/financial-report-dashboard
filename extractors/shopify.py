@@ -218,11 +218,13 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
         "created_at_min": start_date,
         "created_at_max": end_date,
         "limit": 250,
-        "fields": (
-            "id,created_at,total_price,subtotal_price,total_tax,"
-            "total_discounts,total_shipping_price_set,source_name,"
-            "financial_status,line_items,refunds,currency,cancelled_at,test"
-        ),
+       "fields": (
+    "id,created_at,total_price,current_total_price,"
+    "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
+    "total_discounts,current_total_discounts,total_shipping_price_set,"
+    "shipping_lines,source_name,financial_status,line_items,refunds,"
+    "currency,cancelled_at,test"
+),
     }
 
     orders = []
@@ -248,20 +250,76 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
 
 
 def get_shipping_amount(order: dict) -> float:
-    shipping_set = order.get("total_shipping_price_set") or {}
-    shop_money = shipping_set.get("shop_money") or {}
-    return money(shop_money.get("amount"))
+    shipping_total = 0.0
+
+    shipping_lines = order.get("shipping_lines") or []
+
+    if shipping_lines:
+        for shipping_line in shipping_lines:
+            discounted_set = shipping_line.get("discounted_price_set") or {}
+            shop_money = discounted_set.get("shop_money") or {}
+
+            if shop_money.get("amount") is not None:
+                shipping_total += money(shop_money.get("amount"))
+            else:
+                shipping_total += money(shipping_line.get("price"))
+    else:
+        shipping_set = order.get("total_shipping_price_set") or {}
+        shop_money = shipping_set.get("shop_money") or {}
+        shipping_total = money(shop_money.get("amount"))
+
+    shipping_refunds = get_shipping_refund_amount(order)
+
+    return max(shipping_total - shipping_refunds, 0)
 
 
-def get_refund_amount(order: dict) -> float:
-    total_refunds = 0.0
+def get_shipping_refund_amount(order: dict) -> float:
+    shipping_refunds = 0.0
 
     for refund in order.get("refunds", []) or []:
-        for transaction in refund.get("transactions", []) or []:
-            if str(transaction.get("kind", "")).lower() == "refund":
-                total_refunds += abs(money(transaction.get("amount")))
+        for adjustment in refund.get("order_adjustments", []) or []:
+            kind = str(adjustment.get("kind", "")).lower()
 
-    return total_refunds
+            if kind == "shipping_refund":
+                amount_set = adjustment.get("amount_set") or {}
+                shop_money = amount_set.get("shop_money") or {}
+
+                if shop_money.get("amount") is not None:
+                    shipping_refunds += abs(money(shop_money.get("amount")))
+                else:
+                    shipping_refunds += abs(money(adjustment.get("amount")))
+
+    return shipping_refunds
+
+
+def get_return_amount(order: dict) -> float:
+    """
+    Shopify Analytics Returns should be product returns, not full refund transactions.
+    refund.transactions.amount can include product + tax + shipping, so it overstates returns.
+    """
+    total_returns = 0.0
+
+    for refund in order.get("refunds", []) or []:
+        for refund_line_item in refund.get("refund_line_items", []) or []:
+            subtotal_set = refund_line_item.get("subtotal_set") or {}
+            shop_money = subtotal_set.get("shop_money") or {}
+
+            if shop_money.get("amount") is not None:
+                total_returns += abs(money(shop_money.get("amount")))
+            else:
+                total_returns += abs(money(refund_line_item.get("subtotal")))
+
+    return total_returns
+
+
+def get_tax_amount(order: dict) -> float:
+    """
+    current_total_tax better reflects refunds/order edits when available.
+    """
+    if order.get("current_total_tax") is not None:
+        return money(order.get("current_total_tax"))
+
+    return money(order.get("total_tax"))
 
 
 def get_gross_sales(order: dict) -> float:
@@ -297,22 +355,25 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
         month = created_at[5:7] if len(created_at) >= 7 else ""
 
         gross_sales = get_gross_sales(order)
+
+        # Shopify Analytics-style fields
         discounts = abs(money(order.get("total_discounts")))
-        returns = get_refund_amount(order)
-        discounts_returns = discounts + returns
+        returns = get_return_amount(order)
         shipping_charges = get_shipping_amount(order)
-        taxes = money(order.get("total_tax"))
+        taxes = get_tax_amount(order)
+
+        discounts_returns = discounts + returns
+        discounts_returns_pct = discounts_returns / gross_sales if gross_sales else 0
 
         # Shopify-style definitions:
         # Net sales = Gross sales - Discounts - Returns
-        # Total sales = Gross sales - Discounts - Returns + Taxes + Shipping
+        # Total sales = Net sales + Shipping charges + Taxes
         net_sales = gross_sales - discounts - returns
-        total_sales = net_sales + taxes + shipping_charges
+        total_sales = net_sales + shipping_charges + taxes
 
         cogs = get_cogs(order)
         gross_profit_1 = net_sales - cogs
         gross_margin_1 = gross_profit_1 / net_sales if net_sales else 0
-        discounts_returns_pct = discounts_returns / gross_sales if gross_sales else 0
 
         rows.append({
             "brand": brand,
@@ -322,6 +383,7 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "source": "Shopify Orders API",
             "channel": str(order.get("source_name", "Shopify")).title(),
             "financial_status": order.get("financial_status", ""),
+
             "total_sales": total_sales,
             "gross_sales": gross_sales,
             "discounts": discounts,
@@ -338,7 +400,6 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
         })
 
     return rows
-
 
 def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict]:
     """
