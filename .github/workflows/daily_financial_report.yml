@@ -11,10 +11,13 @@ permissions:
 jobs:
   financial-report:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -26,30 +29,26 @@ jobs:
 
       - name: Run financial report pipeline
         env:
+          PYTHONUNBUFFERED: "1"
+
           CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
           CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
 
           CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
           CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
 
-          QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
-          QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
-          QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
-          QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
-
-          BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
-          BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
-          BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
-          BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
-          BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
-
-          START_YEAR: ${{ secrets.START_YEAR }}
-        run: python main.py
+          START_YEAR: "2024"
+        run: python -u main.py
 
       - name: Commit updated dashboard data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions@github.com"
+
+          git pull --rebase origin main
+
           git add docs/financial_report.json
           git diff --staged --quiet || git commit -m "Update financial report data"
-          git push
+
+          git pull --rebase origin main
+          git push origin main
