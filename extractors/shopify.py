@@ -92,70 +92,161 @@ def parse_shopifyql_table(response: dict) -> list[dict]:
         raise RuntimeError(f"ShopifyQL parse errors: {parse_errors}")
 
     table = payload.get("tableData") or {}
+    columns = table.get("columns") or []
     rows = table.get("rows") or []
+
+    column_names = []
+    for index, column in enumerate(columns):
+        name = (
+            column.get("name")
+            or column.get("displayName")
+            or f"col_{index}"
+        )
+        column_names.append(name)
 
     parsed = []
 
     for row in rows:
-        parsed.append(row)
+        if isinstance(row, dict):
+            parsed.append(row)
+            continue
+
+        item = {}
+        for index, value in enumerate(row):
+            key = column_names[index] if index < len(column_names) else f"col_{index}"
+            item[key] = value
+
+        parsed.append(item)
 
     return parsed
 
-def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int) -> list[dict]:
-    """
-    Best-effort Shopify Analytics-style monthly report.
+def pick(row: dict, *names):
+    normalized = {}
 
-    This is designed to match Shopify Analytics closer than Orders API because
-    Shopify's analytics reports apply reporting logic to returns, discounts,
-    taxes, shipping, and sales reversals.
-    """
+    for key, value in row.items():
+        clean_key = str(key).lower().replace(" ", "_")
+        normalized[clean_key] = value
+
+    for name in names:
+        clean_name = str(name).lower().replace(" ", "_")
+
+        if name in row and row.get(name) is not None:
+            return row.get(name)
+
+        if clean_name in normalized and normalized.get(clean_name) is not None:
+            return normalized.get(clean_name)
+
+    return None
+
+def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int) -> list[dict]:
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
 
-    shopifyql = f"""
-    FROM sales
-    SHOW
-      total_sales,
-      gross_sales,
-      discounts,
-      returns,
-      net_sales,
-      shipping_charges,
-      taxes
-    GROUP BY month
-    SINCE {start_date}
-    UNTIL {end_date}
-    ORDER BY month ASC
-    """
+    queries = [
+        f"""
+        FROM sales
+        SHOW
+          total_sales,
+          gross_sales,
+          discounts,
+          sales_reversals,
+          net_sales,
+          shipping,
+          taxes,
+          orders
+        TIMESERIES month
+        SINCE {start_date}
+        UNTIL {end_date}
+        ORDER BY month ASC
+        """,
+        f"""
+        FROM sales
+        SHOW
+          total_sales,
+          gross_sales,
+          discounts,
+          returns,
+          net_sales,
+          shipping_charges,
+          taxes,
+          orders
+        TIMESERIES month
+        SINCE {start_date}
+        UNTIL {end_date}
+        ORDER BY month ASC
+        """
+    ]
 
-    response = run_shopifyql(store, token, shopifyql)
-    rows = parse_shopifyql_table(response)
+    last_error = None
 
+    for shopifyql in queries:
+        try:
+            response = run_shopifyql(store, token, shopifyql)
+            rows = parse_shopifyql_table(response)
+
+            if rows:
+                return normalize_shopifyql_rows(brand, year, rows)
+
+        except Exception as exc:
+            last_error = exc
+            print(f"{brand} {year}: ShopifyQL attempt failed: {exc}")
+
+    raise RuntimeError(f"All ShopifyQL attempts failed. Last error: {last_error}")
+def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[dict]:
     normalized = []
 
     for row in rows:
-        raw_month = str(row.get("month") or row.get("Month") or "")
+        raw_month = str(
+            pick(row, "month", "Month", "date", "Date", "day", "Day") or ""
+        )
+
         month = extract_month(raw_month)
 
-        gross_sales = money(row.get("gross_sales") or row.get("Gross sales"))
-        discounts = abs(money(row.get("discounts") or row.get("Discounts")))
-        returns = abs(money(row.get("returns") or row.get("Returns")))
+        gross_sales = abs(money(pick(row, "gross_sales", "Gross sales")))
+        discounts = abs(money(pick(row, "discounts", "Discounts")))
+
+        returns = abs(money(
+            pick(
+                row,
+                "sales_reversals",
+                "Sales reversals",
+                "returns",
+                "Returns"
+            )
+        ))
+
+        net_sales = money(pick(row, "net_sales", "Net sales"))
+
+        shipping_charges = money(
+            pick(
+                row,
+                "shipping",
+                "Shipping",
+                "shipping_charges",
+                "Shipping charges"
+            )
+        )
+
+        taxes = money(pick(row, "taxes", "Taxes"))
+        total_sales = money(pick(row, "total_sales", "Total sales"))
+        transactions = money(pick(row, "orders", "Orders"))
+
         discounts_returns = discounts + returns
-        net_sales = money(row.get("net_sales") or row.get("Net sales"))
-        shipping_charges = money(row.get("shipping_charges") or row.get("Shipping charges"))
-        taxes = money(row.get("taxes") or row.get("Taxes"))
-        total_sales = money(row.get("total_sales") or row.get("Total sales"))
+        discounts_returns_pct = discounts_returns / gross_sales if gross_sales else 0
 
         cogs = 0.0
         gross_profit_1 = net_sales - cogs
         gross_margin_1 = gross_profit_1 / net_sales if net_sales else 0
-        discounts_returns_pct = discounts_returns / gross_sales if gross_sales else 0
 
         normalized.append({
             "brand": brand,
+            "date": f"{year}-{month}-01",
             "year": year,
             "month": month,
             "source": "Shopify Analytics",
+            "channel": "Shopify",
+            "financial_status": "analytics",
+
             "total_sales": total_sales,
             "gross_sales": gross_sales,
             "discounts": discounts,
@@ -168,11 +259,10 @@ def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int)
             "cogs": cogs,
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
-            "transactions": 0,
+            "transactions": transactions,
         })
 
     return normalized
-
 
 def extract_month(value: str) -> str:
     value = str(value)
