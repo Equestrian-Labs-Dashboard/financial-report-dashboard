@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: financial-report-main
+  cancel-in-progress: true
+
 jobs:
   financial-report:
     runs-on: ubuntu-latest
@@ -40,15 +44,20 @@ jobs:
           START_YEAR: "2024"
         run: python -u main.py
 
-      - name: Commit updated dashboard data
+      - name: Commit and push updated dashboard data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions@github.com"
 
-          git pull --rebase origin main
+          git status
 
           git add docs/financial_report.json
-          git diff --staged --quiet || git commit -m "Update financial report data"
+
+          if git diff --cached --quiet; then
+            echo "No dashboard data changes to commit."
+          else
+            git commit -m "Update financial report data"
+          fi
 
           git pull --rebase origin main
           git push origin main
