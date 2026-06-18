@@ -1,107 +1,55 @@
 name: Daily Financial Report
 
 on:
-
   workflow_dispatch:
-
   schedule:
-
     - cron: "0 7 * * *"
 
-
-
 permissions:
-
   contents: write
 
-
-
 jobs:
-
   financial-report:
-
     runs-on: ubuntu-latest
 
-
-
     steps:
-
       - name: Checkout repository
-
         uses: actions/checkout@v4
 
-
-
       - name: Setup Python
-
         uses: actions/setup-python@v5
-
         with:
-
           python-version: "3.11"
 
-
-
       - name: Install dependencies
-
         run: pip install -r requirements.txt
 
+      - name: Run financial report pipeline
+        env:
+          CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
+          CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
 
+          CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
+          CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
 
-      - - name: Run financial report pipeline
+          QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
+          QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
+          QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
+          QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
 
-  env:
+          BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
+          BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
+          BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
+          BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
+          BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
 
-    CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
+          START_YEAR: ${{ secrets.START_YEAR }}
+        run: python main.py
 
-    CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
-
-
-
-    CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
-
-    CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
-
-
-
-    QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
-
-    QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
-
-    QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
-
-    QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
-
-
-
-    BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
-
-    BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
-
-    BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
-
-    BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
-
-    BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
-
-
-
-    START_YEAR: ${{ secrets.START_YEAR }}
-
-  run: python main.py
-
-
-
-      - name: Commit updated financial report
-
+      - name: Commit updated dashboard data
         run: |
-
           git config user.name "github-actions[bot]"
-
           git config user.email "github-actions@github.com"
-
           git add docs/financial_report.json
-
           git diff --staged --quiet || git commit -m "Update financial report data"
-
           git push
