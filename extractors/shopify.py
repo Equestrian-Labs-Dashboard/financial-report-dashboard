@@ -57,27 +57,23 @@ def graphql_request(store: str, token: str, query: str, variables: dict | None =
 
 def run_shopifyql(store: str, token: str, shopifyql: str) -> dict:
     """
-    Tries to query Shopify Analytics-style data.
-    If ShopifyQL is not available for the store/API version/plan,
-    the caller should fall back to Orders API.
+    Queries Shopify Analytics-style data through shopifyqlQuery.
+    This should match Shopify Analytics closer than manually summing orders.
     """
     query = """
     query ShopifyAnalytics($query: String!) {
       shopifyqlQuery(query: $query) {
-        __typename
-        ... on TableResponse {
-          tableData {
-            rowData
-            columns {
-              name
-              dataType
-              displayName
-            }
+        tableData {
+          columns {
+            name
+            dataType
+            displayName
           }
+          rows
         }
-        ... on ParseError {
-          message
+        parseErrors {
           code
+          message
         }
       }
     }
