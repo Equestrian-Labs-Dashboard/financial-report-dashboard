@@ -90,31 +90,19 @@ def run_shopifyql(store: str, token: str, shopifyql: str) -> dict:
 def parse_shopifyql_table(response: dict) -> list[dict]:
     payload = response.get("data", {}).get("shopifyqlQuery", {})
 
-    if payload.get("__typename") == "ParseError":
-        raise RuntimeError(f"ShopifyQL parse error: {payload.get('message')}")
+    parse_errors = payload.get("parseErrors") or []
+    if parse_errors:
+        raise RuntimeError(f"ShopifyQL parse errors: {parse_errors}")
 
     table = payload.get("tableData") or {}
-    columns = table.get("columns") or []
-    rows = table.get("rowData") or []
-
-    column_names = [
-        col.get("name") or col.get("displayName") or f"col_{index}"
-        for index, col in enumerate(columns)
-    ]
+    rows = table.get("rows") or []
 
     parsed = []
 
     for row in rows:
-        item = {}
-
-        for index, value in enumerate(row):
-            key = column_names[index] if index < len(column_names) else f"col_{index}"
-            item[key] = value
-
-        parsed.append(item)
+        parsed.append(row)
 
     return parsed
-
 
 def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int) -> list[dict]:
     """
