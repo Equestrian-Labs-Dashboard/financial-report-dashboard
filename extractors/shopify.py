@@ -1,4 +1,5 @@
 import time
+from datetime import datetime, timezone
 import requests
 
 API_VERSION = "2025-10"
@@ -13,7 +14,7 @@ def request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
 
         if response.status_code in [429, 500, 502, 503, 504]:
             wait_seconds = 2 ** attempt
-            print(f"Shopify retry {attempt + 1}/5. Waiting {wait_seconds}s...")
+            print(f"Shopify HTTP retry {attempt + 1}/5. Waiting {wait_seconds}s...")
             time.sleep(wait_seconds)
             continue
 
@@ -31,28 +32,63 @@ def money(value) -> float:
         return 0.0
 
 
+def get_throttle_wait_seconds(errors: list[dict]) -> int:
+    for error in errors:
+        extensions = error.get("extensions") or {}
+
+        if extensions.get("code") == "THROTTLED":
+            cost = extensions.get("cost") or {}
+            reset_at = cost.get("windowResetAt")
+
+            if reset_at:
+                try:
+                    reset_dt = datetime.fromisoformat(reset_at.replace("Z", "+00:00"))
+                    now = datetime.now(timezone.utc)
+                    return max(int((reset_dt - now).total_seconds()) + 3, 8)
+                except Exception:
+                    return 15
+
+            return 15
+
+    return 0
+
+
 def graphql_request(store: str, token: str, query: str, variables: dict | None = None) -> dict:
     url = f"https://{store}/admin/api/{API_VERSION}/graphql.json"
 
-    response = request_with_retry(
-        "POST",
-        url,
-        headers={
-            "X-Shopify-Access-Token": token,
-            "Content-Type": "application/json",
-        },
-        json={
-            "query": query,
-            "variables": variables or {},
-        },
-    )
+    for attempt in range(6):
+        response = request_with_retry(
+            "POST",
+            url,
+            headers={
+                "X-Shopify-Access-Token": token,
+                "Content-Type": "application/json",
+            },
+            json={
+                "query": query,
+                "variables": variables or {},
+            },
+        )
 
-    data = response.json()
+        data = response.json()
+        errors = data.get("errors") or []
 
-    if data.get("errors"):
-        raise RuntimeError(f"Shopify GraphQL error: {data['errors']}")
+        if errors:
+            wait_seconds = get_throttle_wait_seconds(errors)
 
-    return data
+            if wait_seconds and attempt < 5:
+                print(
+                    f"Shopify GraphQL throttled. "
+                    f"Waiting {wait_seconds}s before retry {attempt + 1}/5..."
+                )
+                time.sleep(wait_seconds)
+                continue
+
+            raise RuntimeError(f"Shopify GraphQL error: {errors}")
+
+        return data
+
+    raise RuntimeError("Shopify GraphQL failed after retries.")
 
 
 def run_shopifyql(store: str, token: str, shopifyql: str) -> dict:
@@ -93,8 +129,11 @@ def parse_shopifyql_table(response: dict) -> list[dict]:
 
     column_names = []
     for index, column in enumerate(columns):
-        name = column.get("name") or column.get("displayName") or f"col_{index}"
-        column_names.append(name)
+        column_names.append(
+            column.get("name")
+            or column.get("displayName")
+            or f"col_{index}"
+        )
 
     parsed = []
 
@@ -114,7 +153,7 @@ def parse_shopifyql_table(response: dict) -> list[dict]:
 
 
 def extract_month(value: str) -> str:
-    value = str(value)
+    value = str(value or "").strip()
 
     if len(value) >= 7 and value[4] == "-":
         return value[5:7]
@@ -158,59 +197,48 @@ def pick(row: dict, *names):
 
 
 def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int) -> list[dict]:
+    """
+    Uses the ShopifyQL query that your store already accepted in Actions.
+
+    The previous version first tried invalid columns:
+    - sales_reversals
+    - shipping
+
+    That consumed API cost and caused throttling. This version only uses:
+    - returns
+    - shipping_charges
+
+    The log should now avoid:
+    "Column Not Found: sales_reversals"
+    "Column Not Found: shipping"
+    """
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
 
-    queries = [
-        f"""
-        FROM sales
-        SHOW
-          total_sales,
-          gross_sales,
-          discounts,
-          sales_reversals,
-          net_sales,
-          shipping,
-          taxes,
-          orders
-        TIMESERIES month
-        SINCE {start_date}
-        UNTIL {end_date}
-        ORDER BY month ASC
-        """,
-        f"""
-        FROM sales
-        SHOW
-          total_sales,
-          gross_sales,
-          discounts,
-          returns,
-          net_sales,
-          shipping_charges,
-          taxes,
-          orders
-        TIMESERIES month
-        SINCE {start_date}
-        UNTIL {end_date}
-        ORDER BY month ASC
-        """
-    ]
+    shopifyql = f"""
+    FROM sales
+    SHOW
+      total_sales,
+      gross_sales,
+      discounts,
+      returns,
+      net_sales,
+      shipping_charges,
+      taxes,
+      orders
+    TIMESERIES month
+    SINCE {start_date}
+    UNTIL {end_date}
+    ORDER BY month ASC
+    """
 
-    last_error = None
+    response = run_shopifyql(store, token, shopifyql)
+    rows = parse_shopifyql_table(response)
 
-    for shopifyql in queries:
-        try:
-            response = run_shopifyql(store, token, shopifyql)
-            rows = parse_shopifyql_table(response)
+    if not rows:
+        raise RuntimeError("ShopifyQL returned no rows.")
 
-            if rows:
-                return normalize_shopifyql_rows(brand, year, rows)
-
-        except Exception as exc:
-            last_error = exc
-            print(f"{brand} {year}: ShopifyQL attempt failed: {exc}")
-
-    raise RuntimeError(f"All ShopifyQL attempts failed. Last error: {last_error}")
+    return normalize_shopifyql_rows(brand, year, rows)
 
 
 def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[dict]:
@@ -222,29 +250,9 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
 
         gross_sales = abs(money(pick(row, "gross_sales", "Gross sales")))
         discounts = abs(money(pick(row, "discounts", "Discounts")))
-
-        returns = abs(money(
-            pick(
-                row,
-                "sales_reversals",
-                "Sales reversals",
-                "returns",
-                "Returns"
-            )
-        ))
-
+        returns = abs(money(pick(row, "returns", "Returns")))
         net_sales = money(pick(row, "net_sales", "Net sales"))
-
-        shipping_charges = money(
-            pick(
-                row,
-                "shipping",
-                "Shipping",
-                "shipping_charges",
-                "Shipping charges"
-            )
-        )
-
+        shipping_charges = money(pick(row, "shipping_charges", "Shipping charges"))
         taxes = money(pick(row, "taxes", "Taxes"))
         total_sales = money(pick(row, "total_sales", "Total sales"))
         transactions = money(pick(row, "orders", "Orders"))
@@ -474,11 +482,8 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
         print(f"Trying Shopify Analytics-style query for {brand} {year}...")
         rows = get_shopify_analytics_monthly(brand, store, token, year)
 
-        if rows:
-            print(f"{brand} {year}: Shopify Analytics rows: {len(rows)}")
-            return rows
-
-        print(f"{brand} {year}: Shopify Analytics returned no rows. Falling back to Orders API.")
+        print(f"{brand} {year}: Shopify Analytics rows: {len(rows)}")
+        return rows
 
     except Exception as exc:
         print(f"{brand} {year}: Shopify Analytics query unavailable: {exc}")
