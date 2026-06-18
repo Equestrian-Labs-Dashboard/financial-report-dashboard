@@ -2,66 +2,118 @@ from datetime import datetime, timezone
 import pandas as pd
 
 
-def build_financial_report(transaction_rows: list[dict], qb_summaries: dict) -> dict:
-    df = pd.DataFrame(transaction_rows)
+def build_financial_report(
+    shopify_rows: list[dict],
+    bill_rows: list[dict],
+    qb_summaries: dict,
+) -> dict:
+    shopify_df = pd.DataFrame(shopify_rows)
+    bill_df = pd.DataFrame(bill_rows)
 
-    if df.empty:
-        return {
-            "generated_at": datetime.now(timezone.utc).isoformat(),
-            "years_available": [],
-            "kpis_by_year": [],
-            "by_channel_year": [],
-            "by_month": [],
-            "qb_summary": qb_summaries,
-        }
+    if shopify_df.empty:
+        shopify_df = pd.DataFrame(columns=[
+            "brand", "year", "month", "channel",
+            "total_sales", "gross_sales", "discounts", "returns",
+            "discounts_returns", "discounts_returns_pct",
+            "shipping_charges", "net_sales", "cogs",
+            "gross_profit_1", "gross_margin_1", "transactions"
+        ])
 
-    df["revenue"] = pd.to_numeric(df["revenue"], errors="coerce").fillna(0)
-    df["subtotal"] = pd.to_numeric(df["subtotal"], errors="coerce").fillna(0)
-    df["tax"] = pd.to_numeric(df["tax"], errors="coerce").fillna(0)
-    df["discounts"] = pd.to_numeric(df["discounts"], errors="coerce").fillna(0)
-    df["transactions"] = pd.to_numeric(df["transactions"], errors="coerce").fillna(1)
-    df["year"] = df["year"].astype(int)
-    df["month"] = df["month"].astype(str).str.zfill(2)
+    numeric_cols = [
+        "total_sales",
+        "gross_sales",
+        "discounts",
+        "returns",
+        "discounts_returns",
+        "shipping_charges",
+        "net_sales",
+        "cogs",
+        "gross_profit_1",
+        "transactions",
+    ]
 
-    by_channel_year = (
-        df.groupby(["year", "channel"], as_index=False)
+    for col in numeric_cols:
+        if col in shopify_df.columns:
+            shopify_df[col] = pd.to_numeric(shopify_df[col], errors="coerce").fillna(0)
+
+    if not shopify_df.empty:
+        shopify_df["year"] = shopify_df["year"].astype(int)
+        shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
+
+    shopify_by_brand_year = (
+        shopify_df
+        .groupby(["brand", "year"], as_index=False)
         .agg(
-            total_revenue=("revenue", "sum"),
-            subtotal=("subtotal", "sum"),
-            tax=("tax", "sum"),
+            total_sales=("total_sales", "sum"),
+            gross_sales=("gross_sales", "sum"),
             discounts=("discounts", "sum"),
+            returns=("returns", "sum"),
+            discounts_returns=("discounts_returns", "sum"),
+            shipping_charges=("shipping_charges", "sum"),
+            net_sales=("net_sales", "sum"),
+            cogs=("cogs", "sum"),
+            gross_profit_1=("gross_profit_1", "sum"),
             transactions=("transactions", "sum"),
         )
     )
 
-    by_month = (
-        df.groupby(["year", "month", "channel"], as_index=False)
-        .agg(
-            total_revenue=("revenue", "sum"),
-            transactions=("transactions", "sum"),
-        )
-    )
-
-    kpis_by_year = (
-        df.groupby(["year"], as_index=False)
-        .agg(
-            total_revenue=("revenue", "sum"),
-            subtotal=("subtotal", "sum"),
-            tax=("tax", "sum"),
-            discounts=("discounts", "sum"),
-            transactions=("transactions", "sum"),
-        )
-    )
-
-    kpis_by_year["average_order_value"] = (
-        kpis_by_year["total_revenue"] / kpis_by_year["transactions"]
+    shopify_by_brand_year["discounts_returns_pct"] = (
+        shopify_by_brand_year["discounts_returns"]
+        / shopify_by_brand_year["gross_sales"].replace(0, pd.NA)
     ).fillna(0)
+
+    shopify_by_brand_year["gross_margin_1"] = (
+        shopify_by_brand_year["gross_profit_1"]
+        / shopify_by_brand_year["net_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_brand_month = (
+        shopify_df
+        .groupby(["brand", "year", "month"], as_index=False)
+        .agg(
+            total_sales=("total_sales", "sum"),
+            gross_sales=("gross_sales", "sum"),
+            discounts=("discounts", "sum"),
+            returns=("returns", "sum"),
+            discounts_returns=("discounts_returns", "sum"),
+            shipping_charges=("shipping_charges", "sum"),
+            net_sales=("net_sales", "sum"),
+            cogs=("cogs", "sum"),
+            gross_profit_1=("gross_profit_1", "sum"),
+            transactions=("transactions", "sum"),
+        )
+    )
+
+    shopify_by_brand_month["discounts_returns_pct"] = (
+        shopify_by_brand_month["discounts_returns"]
+        / shopify_by_brand_month["gross_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_brand_month["gross_margin_1"] = (
+        shopify_by_brand_month["gross_profit_1"]
+        / shopify_by_brand_month["net_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_channel = (
+        shopify_df
+        .groupby(["brand", "year", "month", "channel"], as_index=False)
+        .agg(
+            net_sales=("net_sales", "sum"),
+            gross_sales=("gross_sales", "sum"),
+            transactions=("transactions", "sum"),
+        )
+    )
+
+    brands_available = sorted(shopify_df["brand"].dropna().unique().tolist())
+    years_available = sorted(shopify_df["year"].dropna().unique().tolist())
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "years_available": sorted(df["year"].unique().tolist()),
-        "kpis_by_year": kpis_by_year.to_dict(orient="records"),
-        "by_channel_year": by_channel_year.to_dict(orient="records"),
-        "by_month": by_month.to_dict(orient="records"),
+        "brands_available": brands_available,
+        "years_available": years_available,
+        "shopify_kpis_by_brand_year": shopify_by_brand_year.to_dict(orient="records"),
+        "shopify_kpis_by_brand_month": shopify_by_brand_month.to_dict(orient="records"),
+        "shopify_by_channel": shopify_by_channel.to_dict(orient="records"),
         "qb_summary": qb_summaries,
+        "bill_rows": bill_rows,
     }
