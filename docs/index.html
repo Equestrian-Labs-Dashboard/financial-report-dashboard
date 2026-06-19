@@ -72,13 +72,8 @@
       border-radius: 999px;
     }
 
-    .green-dot {
-      background: var(--green);
-    }
-
-    .purple-dot {
-      background: var(--purple);
-    }
+    .green-dot { background: var(--green); }
+    .purple-dot { background: var(--purple); }
 
     .company-name {
       font-size: 14px;
@@ -340,10 +335,10 @@
     }
 
     .kpi-value {
-      font-size: 25px;
+      font-size: 24px;
       line-height: 1;
       font-weight: 900;
-      letter-spacing: -0.06em;
+      letter-spacing: -0.05em;
       margin-bottom: 9px;
     }
 
@@ -507,21 +502,32 @@
       overflow-x: auto;
     }
 
+    .matrix-wrapper {
+      overflow-x: auto;
+      border: 1px solid #183250;
+      border-radius: 8px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
+      min-width: 1200px;
     }
 
     th {
       color: #8fa9c4;
       text-align: left;
       border-bottom: 1px solid #1d395c;
-      padding: 9px 8px;
+      padding: 10px 8px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-size: 10px;
       white-space: nowrap;
+      background: #0d1f34;
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
 
     td {
@@ -537,6 +543,14 @@
 
     .right {
       text-align: right;
+    }
+
+    .sticky-kpi {
+      position: sticky;
+      left: 0;
+      background: #10233a;
+      z-index: 2;
+      font-weight: 800;
     }
 
     .footer {
@@ -581,7 +595,7 @@
       .tab { flex: 1; padding: 6px 8px; }
       .kpi-grid { grid-template-columns: 1fr; }
       .kpi-card { min-height: 105px; }
-      .kpi-value { font-size: 24px; }
+      .kpi-value { font-size: 22px; }
     }
   </style>
 </head>
@@ -667,7 +681,6 @@
       </section>
 
       <div class="section-title"><span>01 · Shopify KPIs</span></div>
-
       <section class="kpi-grid" id="shopifyKpis"></section>
 
       <section class="content-grid">
@@ -759,33 +772,35 @@
       <section class="panel table-panel">
         <div class="panel-header">
           <div>
-            <h2 class="panel-title">Shopify Monthly Breakdown</h2>
-            <p class="panel-subtitle">Shopify-only monthly KPI table for selected filters.</p>
+            <h2 class="panel-title">Monthly KPI Matrix</h2>
+            <p class="panel-subtitle">KPI rows with month columns for the selected year. Values use 2 decimals.</p>
           </div>
-          <div class="panel-tag">Table</div>
+          <div class="panel-tag">By Month</div>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Brand</th>
-              <th>Month</th>
-              <th class="right">Total Sales</th>
-              <th class="right">Gross Sales</th>
-              <th class="right">Discounts</th>
-              <th class="right">Returns</th>
-              <th class="right">Disc. + Returns</th>
-              <th class="right">% Gross Sales</th>
-              <th class="right">Shipping</th>
-              <th class="right">Taxes</th>
-              <th class="right">Net Sales</th>
-              <th class="right">COGS</th>
-              <th class="right">Gross Profit 1</th>
-              <th class="right">Gross Margin 1</th>
-            </tr>
-          </thead>
-          <tbody id="shopifyTable"></tbody>
-        </table>
+        <div class="matrix-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>KPI</th>
+                <th class="right">Jan</th>
+                <th class="right">Feb</th>
+                <th class="right">Mar</th>
+                <th class="right">Apr</th>
+                <th class="right">May</th>
+                <th class="right">Jun</th>
+                <th class="right">Jul</th>
+                <th class="right">Aug</th>
+                <th class="right">Sep</th>
+                <th class="right">Oct</th>
+                <th class="right">Nov</th>
+                <th class="right">Dec</th>
+                <th class="right">Total</th>
+              </tr>
+            </thead>
+            <tbody id="monthlyMatrix"></tbody>
+          </table>
+        </div>
       </section>
 
       <section class="content-grid">
@@ -858,7 +873,8 @@
 
     function money(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       });
     }
 
@@ -867,21 +883,29 @@
       const absValue = Math.abs(numberValue);
 
       if (absValue >= 1000000) {
-        return "$" + (numberValue / 1000000).toFixed(1).replace(".0", "") + "M";
+        return "$" + (numberValue / 1000000).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + "M";
       }
 
       if (absValue >= 1000) {
-        return "$" + (numberValue / 1000).toFixed(1).replace(".0", "") + "K";
+        return "$" + (numberValue / 1000).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + "K";
       }
 
       return "$" + numberValue.toLocaleString("en-US", {
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       });
     }
 
     function number(value) {
       return Number(value || 0).toLocaleString("en-US", {
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       });
     }
 
@@ -890,20 +914,30 @@
       const absValue = Math.abs(numberValue);
 
       if (absValue >= 1000000) {
-        return (numberValue / 1000000).toFixed(1).replace(".0", "") + "M";
+        return (numberValue / 1000000).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + "M";
       }
 
       if (absValue >= 1000) {
-        return (numberValue / 1000).toFixed(1).replace(".0", "") + "K";
+        return (numberValue / 1000).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + "K";
       }
 
       return numberValue.toLocaleString("en-US", {
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       });
     }
 
     function percent(value) {
-      return (Number(value || 0) * 100).toFixed(1) + "%";
+      return Number((Number(value || 0) * 100)).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + "%";
     }
 
     function safeArray(value) {
@@ -1023,10 +1057,10 @@
       const monthlyRows = safeArray(DATA.shopify_kpis_by_brand_month);
       const yearRows = safeArray(DATA.shopify_kpis_by_brand_year);
 
-      const baseRows = filters.month === "all" ? yearRows : monthlyRows;
-      const selectedRows = filterRows(baseRows, filters);
+      const cardBaseRows = filters.month === "all" ? yearRows : monthlyRows;
+      const selectedRows = filterRows(cardBaseRows, filters);
 
-      const trendRows = filterRows(monthlyRows, {
+      const yearlyMonthlyRows = filterRows(monthlyRows, {
         brand: filters.brand,
         year: filters.year,
         month: "all"
@@ -1035,7 +1069,7 @@
       return {
         filters,
         selectedRows,
-        trendRows,
+        trendRows: yearlyMonthlyRows,
         totals: sumRows(selectedRows)
       };
     }
@@ -1053,7 +1087,7 @@
       renderSalesTrend(selected.trendRows);
       renderDiscountReturns(selected.trendRows);
       renderMarginTrend(selected.trendRows);
-      renderTable(selected.trendRows, selected.filters);
+      renderMonthlyMatrix(selected.trendRows);
       renderNotes(selected);
     }
 
@@ -1077,14 +1111,14 @@
           <div class="kpi-label">Discounts</div>
           <div class="kpi-value">${compactMoney(totals.discounts)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Order total_discounts</div>
+          <div class="kpi-note">Order discounts</div>
         </div>
 
         <div class="kpi-card warning">
           <div class="kpi-label">Returns</div>
           <div class="kpi-value">${compactMoney(totals.returns)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Refund line item subtotal</div>
+          <div class="kpi-note">Product returns</div>
         </div>
 
         <div class="kpi-card warning">
@@ -1105,14 +1139,14 @@
           <div class="kpi-label">Shipping Charges</div>
           <div class="kpi-value">${compactMoney(totals.shipping_charges)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Shipping lines - shipping refunds</div>
+          <div class="kpi-note">Shipping charges</div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-label">Taxes</div>
           <div class="kpi-value">${compactMoney(totals.taxes)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">current_total_tax</div>
+          <div class="kpi-note">Taxes</div>
         </div>
 
         <div class="kpi-card positive">
@@ -1198,9 +1232,7 @@
     }
 
     function renderSalesTrend(rows) {
-      if (salesTrendChart) {
-        salesTrendChart.destroy();
-      }
+      if (salesTrendChart) salesTrendChart.destroy();
 
       const monthly = groupByMonth(rows);
 
@@ -1214,14 +1246,14 @@
               data: monthly.map(row => row.gross_sales),
               backgroundColor: "#3b82f6",
               borderRadius: 5,
-              maxBarThickness: 38
+              maxBarThickness: 36
             },
             {
               label: "Net Sales",
               data: monthly.map(row => row.net_sales),
               backgroundColor: "#22c55e",
               borderRadius: 5,
-              maxBarThickness: 38
+              maxBarThickness: 36
             }
           ]
         },
@@ -1230,9 +1262,7 @@
     }
 
     function renderDiscountReturns(rows) {
-      if (discountReturnsChart) {
-        discountReturnsChart.destroy();
-      }
+      if (discountReturnsChart) discountReturnsChart.destroy();
 
       const monthly = groupByMonth(rows);
 
@@ -1258,9 +1288,7 @@
     }
 
     function renderMarginTrend(rows) {
-      if (marginTrendChart) {
-        marginTrendChart.destroy();
-      }
+      if (marginTrendChart) marginTrendChart.destroy();
 
       const monthly = groupByMonth(rows);
 
@@ -1330,7 +1358,10 @@
           },
           tooltip: {
             callbacks: {
-              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toFixed(1)}%`
+              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}%`
             }
           }
         },
@@ -1345,51 +1376,89 @@
             ticks: {
               color: "#8fb1d3",
               font: { size: 10 },
-              callback: value => Number(value).toFixed(0) + "%"
+              callback: value => Number(value).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }) + "%"
             }
           }
         }
       };
     }
 
-    function renderTable(rows, filters) {
-      let tableRows = groupByMonth(rows);
+    function getMonthLookup(rows) {
+      const groupedRows = groupByMonth(rows);
+      const lookup = {};
 
-      if (filters.month !== "all") {
-        tableRows = tableRows.filter(row => row.month === filters.month);
-      }
+      groupedRows.forEach(row => {
+        lookup[row.month] = row;
+      });
 
-      if (!tableRows.length) {
-        document.getElementById("shopifyTable").innerHTML = `
+      return lookup;
+    }
+
+    function getMetricValue(row, metric) {
+      if (!row) return 0;
+      return Number(row[metric] || 0);
+    }
+
+    function renderMonthlyMatrix(rows) {
+      const lookup = getMonthLookup(rows);
+      const monthKeys = Object.keys(MONTHS);
+
+      const metrics = [
+        { key: "total_sales", label: "Total Sales", formatter: money },
+        { key: "gross_sales", label: "Gross Sales", formatter: money },
+        { key: "discounts", label: "Discounts", formatter: money },
+        { key: "returns", label: "Returns", formatter: money },
+        { key: "discounts_returns", label: "Discounts + Returns", formatter: money },
+        { key: "discounts_returns_pct", label: "% Gross Sales", formatter: percent },
+        { key: "shipping_charges", label: "Shipping Charges", formatter: money },
+        { key: "taxes", label: "Taxes", formatter: money },
+        { key: "net_sales", label: "Net Sales", formatter: money },
+        { key: "cogs", label: "COGS", formatter: money },
+        { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
+        { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent },
+        { key: "transactions", label: "Transactions", formatter: number }
+      ];
+
+      const totals = sumRows(rows);
+
+      const html = metrics.map(metric => {
+        const cells = monthKeys.map(monthKey => {
+          const row = lookup[monthKey];
+          let value = 0;
+
+          if (metric.key === "discounts_returns_pct") {
+            value = row ? Number(row.discounts_returns_pct || 0) : 0;
+          } else if (metric.key === "gross_margin_1") {
+            value = row ? Number(row.gross_margin_1 || 0) : 0;
+          } else {
+            value = getMetricValue(row, metric.key);
+          }
+
+          return `<td class="right">${metric.formatter(value)}</td>`;
+        }).join("");
+
+        let totalValue = 0;
+        if (metric.key === "discounts_returns_pct") {
+          totalValue = Number(totals.discounts_returns_pct || 0);
+        } else if (metric.key === "gross_margin_1") {
+          totalValue = Number(totals.gross_margin_1 || 0);
+        } else {
+          totalValue = Number(totals[metric.key] || 0);
+        }
+
+        return `
           <tr>
-            <td colspan="14">No Shopify data available for this filter.</td>
+            <td class="sticky-kpi">${metric.label}</td>
+            ${cells}
+            <td class="right"><strong>${metric.formatter(totalValue)}</strong></td>
           </tr>
         `;
-        return;
-      }
+      }).join("");
 
-      const brandText = filters.brand === "all" ? "All Brands" : filters.brand;
-
-      document.getElementById("shopifyTable").innerHTML = tableRows
-        .map(row => `
-          <tr>
-            <td>${brandText}</td>
-            <td>${MONTHS[row.month] || row.month}</td>
-            <td class="right">${money(row.total_sales)}</td>
-            <td class="right">${money(row.gross_sales)}</td>
-            <td class="right">${money(row.discounts)}</td>
-            <td class="right">${money(row.returns)}</td>
-            <td class="right">${money(row.discounts_returns)}</td>
-            <td class="right">${percent(row.discounts_returns_pct)}</td>
-            <td class="right">${money(row.shipping_charges)}</td>
-            <td class="right">${money(row.taxes)}</td>
-            <td class="right">${money(row.net_sales)}</td>
-            <td class="right">${money(row.cogs)}</td>
-            <td class="right">${money(row.gross_profit_1)}</td>
-            <td class="right">${percent(row.gross_margin_1)}</td>
-          </tr>
-        `)
-        .join("");
+      document.getElementById("monthlyMatrix").innerHTML = html;
     }
 
     function renderNotes(selected) {
@@ -1404,7 +1473,7 @@
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Net Sales are <strong>${money(totals.net_sales)}</strong> and Gross Profit 1 is <strong>${money(totals.gross_profit_1)}</strong>.</span>
+          <span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span>
         </li>
         <li>
           <span class="note-dot"></span>
@@ -1412,7 +1481,7 @@
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS is 0, product cost still needs to be connected or enriched.</span>
+          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS remains 0, product cost still needs to be connected or enriched.</span>
         </li>
       `;
     }
