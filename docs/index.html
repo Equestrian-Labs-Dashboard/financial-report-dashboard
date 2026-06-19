@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Financial Report Dashboard</title>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 
   <style>
@@ -14,6 +13,7 @@
       --sidebar: #0b1728;
       --panel: #0e1c2f;
       --panel-2: #10233a;
+      --panel-3: #132a45;
       --border: #1e3a5f;
       --border-soft: #183250;
       --text: #f8fafc;
@@ -24,7 +24,30 @@
       --purple: #a78bfa;
       --amber: #f59e0b;
       --red: #ef4444;
-      --cyan: #22d3ee;
+      --table-even: rgba(19, 42, 69, 0.35);
+      --table-hover: rgba(59, 130, 246, 0.10);
+      --shadow: none;
+    }
+
+    html[data-theme="light"] {
+      --bg: #f3f6fb;
+      --sidebar: #ffffff;
+      --panel: #ffffff;
+      --panel-2: #edf4fb;
+      --panel-3: #e7f0fa;
+      --border: #c9d8ea;
+      --border-soft: #d8e3f0;
+      --text: #142033;
+      --muted: #60748c;
+      --muted-2: #74869a;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --purple: #7c3aed;
+      --amber: #d97706;
+      --red: #dc2626;
+      --table-even: rgba(231, 240, 250, 0.72);
+      --table-hover: rgba(37, 99, 235, 0.08);
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
     }
 
     * {
@@ -38,6 +61,7 @@
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 13px;
+      font-weight: 500;
     }
 
     .layout {
@@ -72,17 +96,12 @@
       border-radius: 999px;
     }
 
-    .green-dot {
-      background: var(--green);
-    }
-
-    .purple-dot {
-      background: var(--purple);
-    }
+    .green-dot { background: var(--green); }
+    .purple-dot { background: var(--purple); }
 
     .company-name {
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 700;
       line-height: 1.1;
     }
 
@@ -101,8 +120,9 @@
       margin-bottom: 7px;
       color: var(--muted-2);
       font-size: 10px;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      font-weight: 650;
     }
 
     .nav-item {
@@ -110,15 +130,15 @@
       align-items: center;
       gap: 9px;
       padding: 9px 12px;
-      color: #b8cee5;
+      color: var(--muted);
       text-decoration: none;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 650;
     }
 
     .nav-item.active {
-      background: #13243b;
-      color: white;
+      background: var(--panel-3);
+      color: var(--text);
     }
 
     .nav-dot {
@@ -141,6 +161,7 @@
       border: 1px solid rgba(245, 158, 11, 0.36);
       padding: 2px 6px;
       border-radius: 999px;
+      font-weight: 650;
     }
 
     .main {
@@ -160,8 +181,8 @@
       margin: 0;
       font-size: 24px;
       line-height: 1.05;
-      font-weight: 850;
-      letter-spacing: -0.04em;
+      font-weight: 720;
+      letter-spacing: -0.035em;
     }
 
     .title p {
@@ -175,29 +196,36 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      align-items: center;
     }
 
-    .pill {
+    .pill,
+    .theme-toggle {
       border: 1px solid var(--border);
       background: var(--panel-2);
-      color: #cfe3f8;
+      color: var(--text);
       border-radius: 999px;
       padding: 6px 10px;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 650;
       white-space: nowrap;
+      cursor: default;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
     }
 
     .pill.live {
       background: rgba(34, 197, 94, 0.12);
       border-color: rgba(34, 197, 94, 0.35);
-      color: #86efac;
+      color: var(--green);
     }
 
     .pill.draft {
       background: rgba(245, 158, 11, 0.12);
       border-color: rgba(245, 158, 11, 0.35);
-      color: #fcd34d;
+      color: var(--amber);
     }
 
     .tabs {
@@ -212,22 +240,22 @@
     .tab {
       border: 0;
       background: transparent;
-      color: #8fb1d3;
+      color: var(--muted);
       padding: 6px 13px;
       border-radius: 6px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 650;
       cursor: default;
     }
 
     .tab.active {
-      background: #192f4c;
-      color: white;
+      background: var(--panel-3);
+      color: var(--text);
       border: 1px solid var(--border);
     }
 
     .filters-bar {
-      background: #0b1a2d;
+      background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 10px 14px;
@@ -236,6 +264,7 @@
       align-items: center;
       flex-wrap: wrap;
       margin-bottom: 12px;
+      box-shadow: var(--shadow);
     }
 
     .filter-group {
@@ -247,44 +276,33 @@
     .filter-label {
       color: var(--muted-2);
       font-size: 10px;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
-      font-weight: 900;
+      font-weight: 650;
       white-space: nowrap;
     }
 
     select {
-      background: #13243b;
-      border: 1px solid #25496f;
-      color: white;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
       border-radius: 6px;
       padding: 7px 28px 7px 10px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 650;
       outline: none;
       min-width: 130px;
     }
 
     .date-strip {
-      background: #13243b;
+      background: var(--panel-2);
       border: 1px solid var(--border-soft);
       border-radius: 7px;
       padding: 8px 12px;
-      color: white;
+      color: var(--text);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 650;
       margin-bottom: 12px;
-    }
-
-    .notice {
-      background: rgba(245, 158, 11, 0.10);
-      border: 1px solid rgba(245, 158, 11, 0.34);
-      color: #fbbf24;
-      border-radius: 7px;
-      padding: 9px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 18px;
     }
 
     .section-title {
@@ -298,16 +316,16 @@
     .section-title::after {
       content: "";
       height: 1px;
-      background: #25496f;
+      background: var(--border);
       flex: 1;
     }
 
     .section-title span {
       color: var(--muted);
       font-size: 10px;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      font-weight: 900;
+      font-weight: 700;
       white-space: nowrap;
     }
 
@@ -320,9 +338,10 @@
     .kpi-card {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 9px;
       padding: 13px 14px;
       min-height: 116px;
+      box-shadow: var(--shadow);
     }
 
     .kpi-card.positive { border-top: 2px solid var(--green); }
@@ -331,49 +350,49 @@
     .kpi-card.purple { border-top: 2px solid var(--purple); }
 
     .kpi-label {
-      color: #b9c9dc;
+      color: var(--muted);
       font-size: 11px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      font-weight: 900;
+      font-weight: 700;
       margin-bottom: 10px;
     }
 
     .kpi-value {
-      font-size: 25px;
+      font-size: 24px;
       line-height: 1;
-      font-weight: 900;
-      letter-spacing: -0.06em;
+      font-weight: 720;
+      letter-spacing: -0.04em;
       margin-bottom: 9px;
     }
 
     .kpi-chip {
       display: inline-flex;
       align-items: center;
-      background: #12304e;
-      border: 1px solid #1d4d78;
-      color: #6fa5d9;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--blue);
       border-radius: 999px;
       padding: 3px 8px;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 650;
       margin-bottom: 7px;
     }
 
     .kpi-chip.green {
       background: rgba(34, 197, 94, 0.12);
       border-color: rgba(34, 197, 94, 0.35);
-      color: #86efac;
+      color: var(--green);
     }
 
     .kpi-chip.red {
       background: rgba(239, 68, 68, 0.13);
       border-color: rgba(239, 68, 68, 0.36);
-      color: #fca5a5;
+      color: var(--red);
     }
 
     .kpi-note {
-      color: #6f8aac;
+      color: var(--muted);
       font-size: 10.5px;
       line-height: 1.35;
       font-style: italic;
@@ -389,9 +408,10 @@
     .panel {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 9px;
       padding: 14px;
       min-width: 0;
+      box-shadow: var(--shadow);
     }
 
     .panel-header {
@@ -405,7 +425,7 @@
     .panel-title {
       margin: 0;
       font-size: 14px;
-      font-weight: 900;
+      font-weight: 720;
       letter-spacing: -0.02em;
     }
 
@@ -416,12 +436,12 @@
     }
 
     .panel-tag {
-      color: #9bbbe0;
+      color: var(--blue);
       border: 1px solid var(--border);
-      background: #10233a;
+      background: var(--panel-2);
       border-radius: 999px;
       font-size: 10px;
-      font-weight: 900;
+      font-weight: 650;
       padding: 4px 8px;
       white-space: nowrap;
     }
@@ -442,8 +462,8 @@
     }
 
     .source-item {
-      background: #10233a;
-      border: 1px solid #1d395c;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 10px;
     }
@@ -458,21 +478,21 @@
 
     .source-name {
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .source-status {
-      color: #86efac;
+      color: var(--green);
       background: rgba(34, 197, 94, 0.12);
       border: 1px solid rgba(34, 197, 94, 0.35);
       border-radius: 999px;
       font-size: 9px;
       padding: 2px 6px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .source-fields {
-      color: #7f9ab7;
+      color: var(--muted);
       font-size: 10px;
       line-height: 1.4;
     }
@@ -488,7 +508,7 @@
     .notes-list li {
       display: flex;
       gap: 8px;
-      color: #b7c9dc;
+      color: var(--muted);
       font-size: 11px;
       line-height: 1.45;
     }
@@ -503,87 +523,6 @@
     }
 
     .table-panel {
-      margin-top: 12px;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      min-width: 1180px;
-    }
-
- th {
-  color: #9fb9d6;
-  text-align: center;
-  border-bottom: 1px solid #1d395c;
-  padding: 12px 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 10px;
-  white-space: nowrap;
-  background: #0d1f34;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  vertical-align: middle;
-}
-
-th:first-child {
-  text-align: left;
-}
-
-.month-head {
-  min-width: 92px;
-  text-align: center;
-}
-
-.total-col {
-  min-width: 110px;
-  background: rgba(59, 130, 246, 0.12) !important;
-  font-weight: 900;
-  color: white;
-}
-
-td {
-  color: #dbeafe;
-  border-bottom: 1px solid #122942;
-  padding: 10px 10px;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-
-.right {
-  text-align: right;
-}
-
-    td {
-      color: #dbeafe;
-      border-bottom: 1px solid #122942;
-      padding: 10px 8px;
-      white-space: nowrap;
-    }
-
-    tbody tr:nth-child(even) td {
-      background: rgba(19, 42, 69, 0.35);
-    }
-
-    tbody tr:hover td {
-      background: rgba(59, 130, 246, 0.10);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .right {
-      text-align: right;
-    }
-
-
-
-    .table-panel {
       margin-bottom: 14px;
       padding: 0;
       overflow: hidden;
@@ -595,8 +534,8 @@ td {
       align-items: center;
       gap: 12px;
       padding: 13px 14px;
-      border-bottom: 1px solid #183250;
-      background: linear-gradient(90deg, #10233a 0%, #0e1c2f 100%);
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--panel-2);
     }
 
     .matrix-heading {
@@ -604,7 +543,7 @@ td {
       align-items: center;
       gap: 10px;
       font-size: 13px;
-      font-weight: 900;
+      font-weight: 720;
       letter-spacing: -0.01em;
     }
 
@@ -618,46 +557,95 @@ td {
     }
 
     .matrix-meta {
-      color: #8fb1d3;
+      color: var(--muted);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 650;
     }
 
     .matrix-wrapper {
       overflow-x: auto;
     }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 1180px;
+    }
+
+    th {
+      color: var(--muted);
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 10px;
+      white-space: nowrap;
+      background: var(--panel-2);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      vertical-align: middle;
+      font-weight: 700;
+    }
+
+    td {
+      color: var(--text);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 10px 10px;
+      white-space: nowrap;
+      vertical-align: middle;
+      font-weight: 560;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: var(--table-even);
+    }
+
+    tbody tr:hover td {
+      background: var(--table-hover);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .month-head {
+      min-width: 92px;
+      text-align: center;
+    }
+
     .sticky-kpi {
-  position: sticky;
-  left: 0;
-  background: #10233a !important;
-  z-index: 2;
-  font-weight: 900;
-  color: white;
-  min-width: 210px;
-  max-width: 210px;
-  text-align: left !important;
-}
+      position: sticky;
+      left: 0;
+      background: var(--panel-2) !important;
+      z-index: 2;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 210px;
+      max-width: 210px;
+      text-align: left !important;
+    }
 
     th.sticky-kpi {
       z-index: 3;
-      background: #0d1f34 !important;
-    }
-
-    .selected-month {
-      background: rgba(34, 197, 94, 0.12) !important;
-      color: #eafff0;
-      font-weight: 900;
+      background: var(--panel-2) !important;
     }
 
     .total-col {
+      min-width: 110px;
       background: rgba(59, 130, 246, 0.12) !important;
-      font-weight: 900;
-      color: white;
+      font-weight: 700;
+      color: var(--text);
     }
 
     .footer {
-      color: #5e7b9b;
+      color: var(--muted);
       font-size: 10.5px;
       text-align: center;
       padding: 18px 0 0;
@@ -698,7 +686,7 @@ td {
       .tab { flex: 1; padding: 6px 8px; }
       .kpi-grid { grid-template-columns: 1fr; }
       .kpi-card { min-height: 105px; }
-      .kpi-value { font-size: 24px; }
+      .kpi-value { font-size: 22px; }
     }
   </style>
 </head>
@@ -742,6 +730,7 @@ td {
         </div>
 
         <div class="header-actions">
+          <button class="theme-toggle" id="themeToggle" type="button">Light Mode</button>
           <div class="pill live">● Shopify Ready</div>
           <div class="pill draft">Draft / Live Data</div>
         </div>
@@ -780,28 +769,28 @@ td {
       <section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
 
       <section class="panel table-panel">
-      <div class="matrix-topbar">
-  <div class="matrix-heading">Shopify KPIs by Month</div>
-  <div class="matrix-meta" id="matrixMeta">Loading...</div>
-</div>
+        <div class="matrix-topbar">
+          <div class="matrix-heading">Shopify KPIs by Month</div>
+          <div class="matrix-meta" id="matrixMeta">Loading...</div>
+        </div>
 
         <div class="matrix-wrapper">
           <table>
             <thead>
               <tr>
                 <th class="sticky-kpi">KPI</th>
-                <th class="right month-head" data-month="01">Jan</th>
-                <th class="right month-head" data-month="02">Feb</th>
-                <th class="right month-head" data-month="03">Mar</th>
-                <th class="right month-head" data-month="04">Apr</th>
-                <th class="right month-head" data-month="05">May</th>
-                <th class="right month-head" data-month="06">Jun</th>
-                <th class="right month-head" data-month="07">Jul</th>
-                <th class="right month-head" data-month="08">Aug</th>
-                <th class="right month-head" data-month="09">Sep</th>
-                <th class="right month-head" data-month="10">Oct</th>
-                <th class="right month-head" data-month="11">Nov</th>
-                <th class="right month-head" data-month="12">Dec</th>
+                <th class="right month-head">Jan</th>
+                <th class="right month-head">Feb</th>
+                <th class="right month-head">Mar</th>
+                <th class="right month-head">Apr</th>
+                <th class="right month-head">May</th>
+                <th class="right month-head">Jun</th>
+                <th class="right month-head">Jul</th>
+                <th class="right month-head">Aug</th>
+                <th class="right month-head">Sep</th>
+                <th class="right month-head">Oct</th>
+                <th class="right month-head">Nov</th>
+                <th class="right month-head">Dec</th>
                 <th class="right total-col">Total</th>
               </tr>
             </thead>
@@ -811,7 +800,6 @@ td {
       </section>
 
       <div class="section-title"><span>01 · Shopify KPI Cards</span></div>
-
       <section class="kpi-grid" id="shopifyKpis"></section>
 
       <section class="content-grid">
@@ -900,7 +888,6 @@ td {
         </div>
       </section>
 
-
       <section class="content-grid">
         <div class="panel">
           <div class="panel-header">
@@ -968,6 +955,31 @@ td {
       "11": "Nov",
       "12": "Dec"
     };
+
+    const MONTH_ORDER = [
+      "01", "02", "03", "04", "05", "06",
+      "07", "08", "09", "10", "11", "12"
+    ];
+
+    function setupTheme() {
+      const savedTheme = localStorage.getItem("financialReportTheme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateThemeButton(savedTheme);
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "dark";
+        const next = current === "dark" ? "light" : "dark";
+
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("financialReportTheme", next);
+        updateThemeButton(next);
+      });
+    }
+
+    function updateThemeButton(theme) {
+      const button = document.getElementById("themeToggle");
+      button.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
 
     function money(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
@@ -1088,9 +1100,12 @@ td {
 
       monthFilter.innerHTML =
         `<option value="all">All Months / YTD</option>` +
-        Object.entries(MONTHS)
-          .map(([value, label]) => `<option value="${value}">${label}</option>`)
+        MONTH_ORDER
+          .map(value => `<option value="${value}">${MONTHS[value]}</option>`)
           .join("");
+
+      // Always start with the full-year view. The user can then pick Jan, Feb, etc.
+      monthFilter.value = "all";
 
       brandFilter.addEventListener("change", render);
       yearFilter.addEventListener("change", render);
@@ -1181,10 +1196,10 @@ td {
       document.getElementById("dateStrip").textContent =
         `${brandText} · ${selected.filters.year} · ${monthText} · Shopify KPIs confirmed ✓`;
 
-      document.getElementById("matrixMeta").textContent = `${brandText} · ${selected.filters.year}`;
+      document.getElementById("matrixMeta").textContent =
+        `${brandText} · ${selected.filters.year}`;
 
-      highlightSelectedMonth(selected.filters.month);
-      renderMonthlyMatrix(selected.trendRows, selected.filters);
+      renderMonthlyMatrix(selected.trendRows);
       renderKpis(selected.totals);
       renderSalesTrend(selected.trendRows);
       renderDiscountReturns(selected.trendRows);
@@ -1212,14 +1227,14 @@ td {
           <div class="kpi-label">Discounts</div>
           <div class="kpi-value">${compactMoney(totals.discounts)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Order total_discounts</div>
+          <div class="kpi-note">Order discounts</div>
         </div>
 
         <div class="kpi-card warning">
           <div class="kpi-label">Returns</div>
           <div class="kpi-value">${compactMoney(totals.returns)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Refund line item subtotal</div>
+          <div class="kpi-note">Product returns</div>
         </div>
 
         <div class="kpi-card warning">
@@ -1240,14 +1255,14 @@ td {
           <div class="kpi-label">Shipping Charges</div>
           <div class="kpi-value">${compactMoney(totals.shipping_charges)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Shipping lines - shipping refunds</div>
+          <div class="kpi-note">Shipping charges</div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-label">Taxes</div>
           <div class="kpi-value">${compactMoney(totals.taxes)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">current_total_tax</div>
+          <div class="kpi-note">Taxes</div>
         </div>
 
         <div class="kpi-card positive">
@@ -1333,9 +1348,7 @@ td {
     }
 
     function renderSalesTrend(rows) {
-      if (salesTrendChart) {
-        salesTrendChart.destroy();
-      }
+      if (salesTrendChart) salesTrendChart.destroy();
 
       const monthly = groupByMonth(rows);
 
@@ -1349,14 +1362,14 @@ td {
               data: monthly.map(row => row.gross_sales),
               backgroundColor: "#3b82f6",
               borderRadius: 5,
-              maxBarThickness: 38
+              maxBarThickness: 36
             },
             {
               label: "Net Sales",
               data: monthly.map(row => row.net_sales),
               backgroundColor: "#22c55e",
               borderRadius: 5,
-              maxBarThickness: 38
+              maxBarThickness: 36
             }
           ]
         },
@@ -1365,9 +1378,7 @@ td {
     }
 
     function renderDiscountReturns(rows) {
-      if (discountReturnsChart) {
-        discountReturnsChart.destroy();
-      }
+      if (discountReturnsChart) discountReturnsChart.destroy();
 
       const monthly = groupByMonth(rows);
 
@@ -1393,9 +1404,7 @@ td {
     }
 
     function renderMarginTrend(rows) {
-      if (marginTrendChart) {
-        marginTrendChart.destroy();
-      }
+      if (marginTrendChart) marginTrendChart.destroy();
 
       const monthly = groupByMonth(rows);
 
@@ -1428,7 +1437,7 @@ td {
           legend: {
             display: showLegend,
             position: "bottom",
-            labels: { color: "#b8cee5", font: { size: 10 }, boxWidth: 10 }
+            labels: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 }, boxWidth: 10 }
           },
           tooltip: {
             callbacks: {
@@ -1438,14 +1447,14 @@ td {
         },
         scales: {
           x: {
-            grid: { color: "rgba(127,154,183,0.06)" },
-            ticks: { color: "#8fb1d3", font: { size: 10 } }
+            grid: { color: "rgba(127,154,183,0.10)" },
+            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 } }
           },
           y: {
             beginAtZero: true,
-            grid: { color: "rgba(127,154,183,0.10)" },
+            grid: { color: "rgba(127,154,183,0.14)" },
             ticks: {
-              color: "#8fb1d3",
+              color: getComputedStyle(document.documentElement).getPropertyValue("--muted"),
               font: { size: 10 },
               callback: value => compactMoney(value)
             }
@@ -1461,41 +1470,36 @@ td {
         plugins: {
           legend: {
             position: "bottom",
-            labels: { color: "#b8cee5", font: { size: 10 }, boxWidth: 10 }
+            labels: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 }, boxWidth: 10 }
           },
           tooltip: {
             callbacks: {
-              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}%`
             }
           }
         },
         scales: {
           x: {
-            grid: { color: "rgba(127,154,183,0.06)" },
-            ticks: { color: "#8fb1d3", font: { size: 10 } }
+            grid: { color: "rgba(127,154,183,0.10)" },
+            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 } }
           },
           y: {
             beginAtZero: true,
-            grid: { color: "rgba(127,154,183,0.10)" },
+            grid: { color: "rgba(127,154,183,0.14)" },
             ticks: {
-              color: "#8fb1d3",
+              color: getComputedStyle(document.documentElement).getPropertyValue("--muted"),
               font: { size: 10 },
-              callback: value => Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%"
+              callback: value => Number(value).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }) + "%"
             }
           }
         }
       };
-    }
-
-
-    function highlightSelectedMonth(selectedMonth) {
-      document.querySelectorAll(".month-head").forEach(cell => {
-        cell.classList.remove("selected-month");
-
-        if (selectedMonth !== "all" && cell.dataset.month === selectedMonth) {
-          cell.classList.add("selected-month");
-        }
-      });
     }
 
     function getMonthLookup(rows) {
@@ -1514,9 +1518,9 @@ td {
       return Number(row[metric] || 0);
     }
 
-    function renderMonthlyMatrix(rows, filters) {
+    function renderMonthlyMatrix(rows) {
       const lookup = getMonthLookup(rows);
-      const monthKeys = Object.keys(MONTHS);
+      const monthKeys = MONTH_ORDER;
 
       const metrics = [
         { key: "total_sales", label: "Total Sales", formatter: money },
@@ -1549,10 +1553,7 @@ td {
             value = getMetricValue(row, metric.key);
           }
 
-          const isSelected = filters.month !== "all" && filters.month === monthKey;
-          const selectedClass = isSelected ? " selected-month" : "";
-
-          return `<td class="right${selectedClass}">${metric.formatter(value)}</td>`;
+          return `<td class="right">${metric.formatter(value)}</td>`;
         }).join("");
 
         let totalValue = 0;
@@ -1588,7 +1589,7 @@ td {
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Net Sales are <strong>${money(totals.net_sales)}</strong> and Gross Profit 1 is <strong>${money(totals.gross_profit_1)}</strong>.</span>
+          <span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span>
         </li>
         <li>
           <span class="note-dot"></span>
@@ -1596,11 +1597,12 @@ td {
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS is 0, product cost still needs to be connected or enriched.</span>
+          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS remains 0, product cost still needs to be connected or enriched.</span>
         </li>
       `;
     }
 
+    setupTheme();
     loadData();
   </script>
 </body>
