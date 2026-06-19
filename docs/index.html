@@ -514,16 +514,49 @@
       min-width: 1180px;
     }
 
-    th {
-      color: #8fa9c4;
-      text-align: left;
-      border-bottom: 1px solid #1d395c;
-      padding: 9px 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 10px;
-      white-space: nowrap;
-    }
+ th {
+  color: #9fb9d6;
+  text-align: center;
+  border-bottom: 1px solid #1d395c;
+  padding: 12px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 10px;
+  white-space: nowrap;
+  background: #0d1f34;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  vertical-align: middle;
+}
+
+th:first-child {
+  text-align: left;
+}
+
+.month-head {
+  min-width: 92px;
+  text-align: center;
+}
+
+.total-col {
+  min-width: 110px;
+  background: rgba(59, 130, 246, 0.12) !important;
+  font-weight: 900;
+  color: white;
+}
+
+td {
+  color: #dbeafe;
+  border-bottom: 1px solid #122942;
+  padding: 10px 10px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.right {
+  text-align: right;
+}
 
     td {
       color: #dbeafe;
@@ -595,14 +628,16 @@
     }
 
     .sticky-kpi {
-      position: sticky;
-      left: 0;
-      background: #10233a !important;
-      z-index: 2;
-      font-weight: 900;
-      color: white;
-      min-width: 180px;
-    }
+  position: sticky;
+  left: 0;
+  background: #10233a !important;
+  z-index: 2;
+  font-weight: 900;
+  color: white;
+  min-width: 210px;
+  max-width: 210px;
+  text-align: left !important;
+}
 
     th.sticky-kpi {
       z-index: 3;
@@ -744,15 +779,11 @@
 
       <section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
 
-      <section class="notice">
-        ⚠ First section is Shopify-only. KPIs use Shopify-calculated or Shopify-derived fields where available: total sales, gross sales, discounts, returns, shipping, taxes, net sales, COGS, gross profit, and gross margin.
-      </section>
-
       <section class="panel table-panel">
-        <div class="matrix-topbar">
-          <div class="matrix-heading">Shopify KPI by Month</div>
-          <div class="matrix-meta" id="matrixMeta">Loading...</div>
-        </div>
+      <div class="matrix-topbar">
+  <div class="matrix-heading">Shopify KPIs by Month</div>
+  <div class="matrix-meta" id="matrixMeta">Loading...</div>
+</div>
 
         <div class="matrix-wrapper">
           <table>
