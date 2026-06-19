@@ -72,8 +72,13 @@
       border-radius: 999px;
     }
 
-    .green-dot { background: var(--green); }
-    .purple-dot { background: var(--purple); }
+    .green-dot {
+      background: var(--green);
+    }
+
+    .purple-dot {
+      background: var(--purple);
+    }
 
     .company-name {
       font-size: 14px;
@@ -335,10 +340,10 @@
     }
 
     .kpi-value {
-      font-size: 24px;
+      font-size: 25px;
       line-height: 1;
       font-weight: 900;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.06em;
       margin-bottom: 9px;
     }
 
@@ -502,32 +507,22 @@
       overflow-x: auto;
     }
 
-    .matrix-wrapper {
-      overflow-x: auto;
-      border: 1px solid #183250;
-      border-radius: 8px;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
-      min-width: 1200px;
+      min-width: 1180px;
     }
 
     th {
       color: #8fa9c4;
       text-align: left;
       border-bottom: 1px solid #1d395c;
-      padding: 10px 8px;
+      padding: 9px 8px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-size: 10px;
       white-space: nowrap;
-      background: #0d1f34;
-      position: sticky;
-      top: 0;
-      z-index: 1;
     }
 
     td {
@@ -535,6 +530,14 @@
       border-bottom: 1px solid #122942;
       padding: 10px 8px;
       white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: rgba(19, 42, 69, 0.35);
+    }
+
+    tbody tr:hover td {
+      background: rgba(59, 130, 246, 0.10);
     }
 
     tr:last-child td {
@@ -545,12 +548,77 @@
       text-align: right;
     }
 
+
+
+    .table-panel {
+      margin-bottom: 14px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .matrix-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      border-bottom: 1px solid #183250;
+      background: linear-gradient(90deg, #10233a 0%, #0e1c2f 100%);
+    }
+
+    .matrix-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+    }
+
+    .matrix-heading::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+    }
+
+    .matrix-meta {
+      color: #8fb1d3;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .matrix-wrapper {
+      overflow-x: auto;
+    }
+
     .sticky-kpi {
       position: sticky;
       left: 0;
-      background: #10233a;
+      background: #10233a !important;
       z-index: 2;
-      font-weight: 800;
+      font-weight: 900;
+      color: white;
+      min-width: 180px;
+    }
+
+    th.sticky-kpi {
+      z-index: 3;
+      background: #0d1f34 !important;
+    }
+
+    .selected-month {
+      background: rgba(34, 197, 94, 0.12) !important;
+      color: #eafff0;
+      font-weight: 900;
+    }
+
+    .total-col {
+      background: rgba(59, 130, 246, 0.12) !important;
+      font-weight: 900;
+      color: white;
     }
 
     .footer {
@@ -595,7 +663,7 @@
       .tab { flex: 1; padding: 6px 8px; }
       .kpi-grid { grid-template-columns: 1fr; }
       .kpi-card { min-height: 105px; }
-      .kpi-value { font-size: 22px; }
+      .kpi-value { font-size: 24px; }
     }
   </style>
 </head>
@@ -680,7 +748,39 @@
         ⚠ First section is Shopify-only. KPIs use Shopify-calculated or Shopify-derived fields where available: total sales, gross sales, discounts, returns, shipping, taxes, net sales, COGS, gross profit, and gross margin.
       </section>
 
-      <div class="section-title"><span>01 · Shopify KPIs</span></div>
+      <section class="panel table-panel">
+        <div class="matrix-topbar">
+          <div class="matrix-heading">Shopify KPI by Month</div>
+          <div class="matrix-meta" id="matrixMeta">Loading...</div>
+        </div>
+
+        <div class="matrix-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th class="sticky-kpi">KPI</th>
+                <th class="right month-head" data-month="01">Jan</th>
+                <th class="right month-head" data-month="02">Feb</th>
+                <th class="right month-head" data-month="03">Mar</th>
+                <th class="right month-head" data-month="04">Apr</th>
+                <th class="right month-head" data-month="05">May</th>
+                <th class="right month-head" data-month="06">Jun</th>
+                <th class="right month-head" data-month="07">Jul</th>
+                <th class="right month-head" data-month="08">Aug</th>
+                <th class="right month-head" data-month="09">Sep</th>
+                <th class="right month-head" data-month="10">Oct</th>
+                <th class="right month-head" data-month="11">Nov</th>
+                <th class="right month-head" data-month="12">Dec</th>
+                <th class="right total-col">Total</th>
+              </tr>
+            </thead>
+            <tbody id="monthlyMatrix"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="section-title"><span>01 · Shopify KPI Cards</span></div>
+
       <section class="kpi-grid" id="shopifyKpis"></section>
 
       <section class="content-grid">
@@ -769,39 +869,6 @@
         </div>
       </section>
 
-      <section class="panel table-panel">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">Monthly KPI Matrix</h2>
-            <p class="panel-subtitle">KPI rows with month columns for the selected year. Values use 2 decimals.</p>
-          </div>
-          <div class="panel-tag">By Month</div>
-        </div>
-
-        <div class="matrix-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>KPI</th>
-                <th class="right">Jan</th>
-                <th class="right">Feb</th>
-                <th class="right">Mar</th>
-                <th class="right">Apr</th>
-                <th class="right">May</th>
-                <th class="right">Jun</th>
-                <th class="right">Jul</th>
-                <th class="right">Aug</th>
-                <th class="right">Sep</th>
-                <th class="right">Oct</th>
-                <th class="right">Nov</th>
-                <th class="right">Dec</th>
-                <th class="right">Total</th>
-              </tr>
-            </thead>
-            <tbody id="monthlyMatrix"></tbody>
-          </table>
-        </div>
-      </section>
 
       <section class="content-grid">
         <div class="panel">
@@ -1083,11 +1150,14 @@
       document.getElementById("dateStrip").textContent =
         `${brandText} · ${selected.filters.year} · ${monthText} · Shopify KPIs confirmed ✓`;
 
+      document.getElementById("matrixMeta").textContent = `${brandText} · ${selected.filters.year}`;
+
+      highlightSelectedMonth(selected.filters.month);
+      renderMonthlyMatrix(selected.trendRows, selected.filters);
       renderKpis(selected.totals);
       renderSalesTrend(selected.trendRows);
       renderDiscountReturns(selected.trendRows);
       renderMarginTrend(selected.trendRows);
-      renderMonthlyMatrix(selected.trendRows);
       renderNotes(selected);
     }
 
@@ -1111,14 +1181,14 @@
           <div class="kpi-label">Discounts</div>
           <div class="kpi-value">${compactMoney(totals.discounts)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Order discounts</div>
+          <div class="kpi-note">Order total_discounts</div>
         </div>
 
         <div class="kpi-card warning">
           <div class="kpi-label">Returns</div>
           <div class="kpi-value">${compactMoney(totals.returns)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Product returns</div>
+          <div class="kpi-note">Refund line item subtotal</div>
         </div>
 
         <div class="kpi-card warning">
@@ -1139,14 +1209,14 @@
           <div class="kpi-label">Shipping Charges</div>
           <div class="kpi-value">${compactMoney(totals.shipping_charges)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Shipping charges</div>
+          <div class="kpi-note">Shipping lines - shipping refunds</div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-label">Taxes</div>
           <div class="kpi-value">${compactMoney(totals.taxes)}</div>
           <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Taxes</div>
+          <div class="kpi-note">current_total_tax</div>
         </div>
 
         <div class="kpi-card positive">
@@ -1232,7 +1302,9 @@
     }
 
     function renderSalesTrend(rows) {
-      if (salesTrendChart) salesTrendChart.destroy();
+      if (salesTrendChart) {
+        salesTrendChart.destroy();
+      }
 
       const monthly = groupByMonth(rows);
 
@@ -1246,14 +1318,14 @@
               data: monthly.map(row => row.gross_sales),
               backgroundColor: "#3b82f6",
               borderRadius: 5,
-              maxBarThickness: 36
+              maxBarThickness: 38
             },
             {
               label: "Net Sales",
               data: monthly.map(row => row.net_sales),
               backgroundColor: "#22c55e",
               borderRadius: 5,
-              maxBarThickness: 36
+              maxBarThickness: 38
             }
           ]
         },
@@ -1262,7 +1334,9 @@
     }
 
     function renderDiscountReturns(rows) {
-      if (discountReturnsChart) discountReturnsChart.destroy();
+      if (discountReturnsChart) {
+        discountReturnsChart.destroy();
+      }
 
       const monthly = groupByMonth(rows);
 
@@ -1288,7 +1362,9 @@
     }
 
     function renderMarginTrend(rows) {
-      if (marginTrendChart) marginTrendChart.destroy();
+      if (marginTrendChart) {
+        marginTrendChart.destroy();
+      }
 
       const monthly = groupByMonth(rows);
 
@@ -1358,10 +1434,7 @@
           },
           tooltip: {
             callbacks: {
-              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })}%`
+              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
             }
           }
         },
@@ -1376,14 +1449,22 @@
             ticks: {
               color: "#8fb1d3",
               font: { size: 10 },
-              callback: value => Number(value).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              }) + "%"
+              callback: value => Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%"
             }
           }
         }
       };
+    }
+
+
+    function highlightSelectedMonth(selectedMonth) {
+      document.querySelectorAll(".month-head").forEach(cell => {
+        cell.classList.remove("selected-month");
+
+        if (selectedMonth !== "all" && cell.dataset.month === selectedMonth) {
+          cell.classList.add("selected-month");
+        }
+      });
     }
 
     function getMonthLookup(rows) {
@@ -1402,7 +1483,7 @@
       return Number(row[metric] || 0);
     }
 
-    function renderMonthlyMatrix(rows) {
+    function renderMonthlyMatrix(rows, filters) {
       const lookup = getMonthLookup(rows);
       const monthKeys = Object.keys(MONTHS);
 
@@ -1437,7 +1518,10 @@
             value = getMetricValue(row, metric.key);
           }
 
-          return `<td class="right">${metric.formatter(value)}</td>`;
+          const isSelected = filters.month !== "all" && filters.month === monthKey;
+          const selectedClass = isSelected ? " selected-month" : "";
+
+          return `<td class="right${selectedClass}">${metric.formatter(value)}</td>`;
         }).join("");
 
         let totalValue = 0;
@@ -1453,7 +1537,7 @@
           <tr>
             <td class="sticky-kpi">${metric.label}</td>
             ${cells}
-            <td class="right"><strong>${metric.formatter(totalValue)}</strong></td>
+            <td class="right total-col">${metric.formatter(totalValue)}</td>
           </tr>
         `;
       }).join("");
@@ -1473,7 +1557,7 @@
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span>
+          <span>Net Sales are <strong>${money(totals.net_sales)}</strong> and Gross Profit 1 is <strong>${money(totals.gross_profit_1)}</strong>.</span>
         </li>
         <li>
           <span class="note-dot"></span>
@@ -1481,7 +1565,7 @@
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS remains 0, product cost still needs to be connected or enriched.</span>
+          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS is 0, product cost still needs to be connected or enriched.</span>
         </li>
       `;
     }
