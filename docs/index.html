@@ -644,6 +644,13 @@
       color: var(--text);
     }
 
+    .selected-month {
+      background: rgba(34, 197, 94, 0.18) !important;
+      color: var(--text) !important;
+      font-weight: 700 !important;
+      box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.28);
+    }
+
     .footer {
       color: var(--muted);
       font-size: 10.5px;
@@ -779,18 +786,18 @@
             <thead>
               <tr>
                 <th class="sticky-kpi">KPI</th>
-                <th class="right month-head">Jan</th>
-                <th class="right month-head">Feb</th>
-                <th class="right month-head">Mar</th>
-                <th class="right month-head">Apr</th>
-                <th class="right month-head">May</th>
-                <th class="right month-head">Jun</th>
-                <th class="right month-head">Jul</th>
-                <th class="right month-head">Aug</th>
-                <th class="right month-head">Sep</th>
-                <th class="right month-head">Oct</th>
-                <th class="right month-head">Nov</th>
-                <th class="right month-head">Dec</th>
+                <th class="right month-head" data-month="01">Jan</th>
+                <th class="right month-head" data-month="02">Feb</th>
+                <th class="right month-head" data-month="03">Mar</th>
+                <th class="right month-head" data-month="04">Apr</th>
+                <th class="right month-head" data-month="05">May</th>
+                <th class="right month-head" data-month="06">Jun</th>
+                <th class="right month-head" data-month="07">Jul</th>
+                <th class="right month-head" data-month="08">Aug</th>
+                <th class="right month-head" data-month="09">Sep</th>
+                <th class="right month-head" data-month="10">Oct</th>
+                <th class="right month-head" data-month="11">Nov</th>
+                <th class="right month-head" data-month="12">Dec</th>
                 <th class="right total-col">Total</th>
               </tr>
             </thead>
@@ -1199,12 +1206,23 @@
       document.getElementById("matrixMeta").textContent =
         `${brandText} · ${selected.filters.year}`;
 
-      renderMonthlyMatrix(selected.trendRows);
+      highlightSelectedMonth(selected.filters.month);
+      renderMonthlyMatrix(selected.trendRows, selected.filters);
       renderKpis(selected.totals);
       renderSalesTrend(selected.trendRows);
       renderDiscountReturns(selected.trendRows);
       renderMarginTrend(selected.trendRows);
       renderNotes(selected);
+    }
+
+    function highlightSelectedMonth(selectedMonth) {
+      document.querySelectorAll(".month-head").forEach(cell => {
+        cell.classList.remove("selected-month");
+
+        if (selectedMonth !== "all" && cell.dataset.month === selectedMonth) {
+          cell.classList.add("selected-month");
+        }
+      });
     }
 
     function renderKpis(totals) {
@@ -1518,7 +1536,7 @@
       return Number(row[metric] || 0);
     }
 
-    function renderMonthlyMatrix(rows) {
+    function renderMonthlyMatrix(rows, filters) {
       const lookup = getMonthLookup(rows);
       const monthKeys = MONTH_ORDER;
 
@@ -1553,7 +1571,11 @@
             value = getMetricValue(row, metric.key);
           }
 
-          return `<td class="right">${metric.formatter(value)}</td>`;
+          const selectedClass = filters && filters.month !== "all" && filters.month === monthKey
+            ? " selected-month"
+            : "";
+
+          return `<td class="right${selectedClass}">${metric.formatter(value)}</td>`;
         }).join("");
 
         let totalValue = 0;
