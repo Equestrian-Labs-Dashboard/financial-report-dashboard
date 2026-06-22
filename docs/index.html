@@ -122,7 +122,8 @@
       font-weight: 650;
     }
 
-    .nav-item.active {
+    .nav-item.active,
+    .brand-nav.active-brand {
       background: var(--panel-3);
       color: var(--text);
     }
@@ -710,15 +711,8 @@
 
       <div class="nav-section">
         <div class="nav-label">Brands</div>
-        <a class="nav-item" href="#"><span class="nav-dot green"></span>Corro</a>
-        <a class="nav-item" href="#"><span class="nav-dot purple"></span>Cavali</a>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-label">Sources</div>
-        <a class="nav-item" href="#">Shopify<span class="badge-small">LIVE</span></a>
-        <a class="nav-item" href="#">QuickBooks<span class="badge-small">NEXT</span></a>
-        <a class="nav-item" href="#">BILL<span class="badge-small">NEXT</span></a>
+        <a class="nav-item brand-nav" href="#" data-brand="Corro"><span class="nav-dot green"></span>Corro</a>
+        <a class="nav-item brand-nav" href="#" data-brand="Cavali"><span class="nav-dot purple"></span>Cavali</a>
       </div>
     </aside>
 
@@ -820,8 +814,8 @@
       <div class="section-title"><span>01 · Shopify KPI Cards</span></div>
       <section class="kpi-grid" id="shopifyKpis"></section>
 
-      <section class="content-grid">
-        <div class="panel">
+      <section class="panel">
+        <div>
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Gross Sales vs Net Sales</h2>
@@ -831,49 +825,6 @@
           </div>
           <div class="chart-wrap large">
             <canvas id="salesTrendChart"></canvas>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-header">
-            <div>
-              <h2 class="panel-title">Shopify Source Fields</h2>
-              <p class="panel-subtitle">Fields used for the first dashboard section.</p>
-            </div>
-          </div>
-
-          <div class="source-list">
-            <div class="source-item">
-              <div class="source-top">
-                <div class="source-name">Orders</div>
-                <div class="source-status">Used</div>
-              </div>
-              <div class="source-fields">total_price, current_total_price, subtotal_price, total_discounts, current_total_tax, source_name, financial_status</div>
-            </div>
-
-            <div class="source-item">
-              <div class="source-top">
-                <div class="source-name">Shipping</div>
-                <div class="source-status">Used</div>
-              </div>
-              <div class="source-fields">shipping_lines.discounted_price_set and shipping refunds</div>
-            </div>
-
-            <div class="source-item">
-              <div class="source-top">
-                <div class="source-name">Refunds / Returns</div>
-                <div class="source-status">Used</div>
-              </div>
-              <div class="source-fields">refund_line_items.subtotal_set.shop_money.amount</div>
-            </div>
-
-            <div class="source-item">
-              <div class="source-top">
-                <div class="source-name">COGS</div>
-                <div class="source-status">If available</div>
-              </div>
-              <div class="source-fields">Product cost or enriched inventory cost. If unavailable, COGS can show 0 until connected.</div>
-            </div>
           </div>
         </div>
       </section>
@@ -906,36 +857,8 @@
         </div>
       </section>
 
-      <section class="content-grid">
-        <div class="panel">
-          <div class="panel-header">
-            <div>
-              <h2 class="panel-title">Next Sections</h2>
-              <p class="panel-subtitle">QuickBooks and BILL can be enabled after Shopify is approved.</p>
-            </div>
-            <div class="panel-tag">Next</div>
-          </div>
-
-          <div class="source-list">
-            <div class="source-item">
-              <div class="source-top">
-                <div class="source-name">QuickBooks P&L</div>
-                <div class="source-status">Optional</div>
-              </div>
-              <div class="source-fields">Total Income, COGS, Gross Profit, Total Expenses, Net Income.</div>
-            </div>
-
-            <div class="source-item">
-              <div class="source-top">
-                <div class="source-name">BILL Invoices</div>
-                <div class="source-status">Optional</div>
-              </div>
-              <div class="source-fields">invoiceDate, amount, status, paymentStatus, invoiceId.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
+      <section class="panel">
+        <div>
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Executive Notes</h2>
@@ -1111,6 +1034,7 @@
           "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
 
         setupFilters();
+        setupBrandNav();
         render();
       } catch (error) {
         document.getElementById("dateStrip").textContent = "Error loading report data.";
@@ -1185,6 +1109,29 @@
       });
 
       syncQuarterVisibility();
+    }
+
+
+    function setupBrandNav() {
+      document.querySelectorAll(".brand-nav").forEach(item => {
+        item.addEventListener("click", event => {
+          event.preventDefault();
+
+          const brand = item.dataset.brand;
+          const brandFilter = document.getElementById("brandFilter");
+
+          if (brandFilter && [...brandFilter.options].some(option => option.value === brand)) {
+            brandFilter.value = brand;
+            brandFilter.dispatchEvent(new Event("change"));
+          }
+        });
+      });
+    }
+
+    function updateBrandNavActive(selectedBrand) {
+      document.querySelectorAll(".brand-nav").forEach(item => {
+        item.classList.toggle("active-brand", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
+      });
     }
 
     function selectedFilters() {
@@ -1276,6 +1223,7 @@
       const selected = getSelectedRows();
 
       const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
+      updateBrandNavActive(selected.filters.brand);
 
       let periodText = "YTD / All Months";
       if (selected.filters.quarter !== "all") {
