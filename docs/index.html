@@ -607,6 +607,13 @@
       color: var(--text);
     }
 
+    .quarter-col {
+      min-width: 96px;
+      background: rgba(167, 139, 250, 0.11) !important;
+      font-weight: 700;
+      color: var(--text);
+    }
+
     .selected-month {
       background: rgba(34, 197, 94, 0.18) !important;
       color: var(--text) !important;
@@ -771,7 +778,11 @@
                 <th class="right month-head" data-month="10">Oct</th>
                 <th class="right month-head" data-month="11">Nov</th>
                 <th class="right month-head" data-month="12">Dec</th>
-                <th class="right total-col">Total</th>
+                <th class="right total-col">YTY</th>
+                <th class="right quarter-col">Q1</th>
+                <th class="right quarter-col">Q2</th>
+                <th class="right quarter-col">Q3</th>
+                <th class="right quarter-col">Q4</th>
               </tr>
             </thead>
             <tbody id="monthlyMatrix"></tbody>
@@ -1312,10 +1323,10 @@
         </div>
 
         <div class="kpi-card warning">
-          <div class="kpi-label">% Gross Sales</div>
-          <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
+          <div class="kpi-label">$ Discount + Returns</div>
+          <div class="kpi-value">${compactMoney(totals.discounts_returns)}</div>
           <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
+          <div class="kpi-note">Discounts + product returns</div>
         </div>
 
         <div class="kpi-card">
@@ -1358,13 +1369,6 @@
           <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
           <div class="kpi-chip">Calculated</div>
           <div class="kpi-note">Gross Profit 1 / Net Sales</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Transactions</div>
-          <div class="kpi-value">${compactNumber(totals.transactions)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Order count in selected view</div>
         </div>
       `;
     }
@@ -1598,31 +1602,43 @@
         { key: "gross_sales", label: "Gross Sales", formatter: money },
         { key: "discounts", label: "Discounts", formatter: money },
         { key: "returns", label: "Returns", formatter: money },
-        { key: "discounts_returns", label: "Discounts + Returns", formatter: money },
-        { key: "discounts_returns_pct", label: "% Gross Sales", formatter: percent },
+        { key: "discounts_returns", label: "$ Discount + Returns", formatter: money },
         { key: "shipping_charges", label: "Shipping Charges", formatter: money },
         { key: "taxes", label: "Taxes", formatter: money },
         { key: "net_sales", label: "Net Sales", formatter: money },
         { key: "cogs", label: "COGS", formatter: money },
         { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
-        { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent },
-        { key: "transactions", label: "Transactions", formatter: number }
+        { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent }
       ];
 
-      const totals = sumRows(rows);
+      const ytyTotals = sumRows(rows);
+
+      function quarterRows(quarterKey) {
+        return rows.filter(row => QUARTERS[quarterKey].includes(String(row.month).padStart(2, "0")));
+      }
+
+      function getTotalValue(metricKey, totalRow) {
+        if (metricKey === "gross_margin_1") {
+          return Number(totalRow.gross_margin_1 || 0);
+        }
+
+        return Number(totalRow[metricKey] || 0);
+      }
+
+      function getMonthlyValue(metricKey, monthRow) {
+        if (!monthRow) return 0;
+
+        if (metricKey === "gross_margin_1") {
+          return Number(monthRow.gross_margin_1 || 0);
+        }
+
+        return Number(monthRow[metricKey] || 0);
+      }
 
       const html = metrics.map(metric => {
-        const cells = monthKeys.map(monthKey => {
+        const monthCells = monthKeys.map(monthKey => {
           const row = lookup[monthKey];
-          let value = 0;
-
-          if (metric.key === "discounts_returns_pct") {
-            value = row ? Number(row.discounts_returns_pct || 0) : 0;
-          } else if (metric.key === "gross_margin_1") {
-            value = row ? Number(row.gross_margin_1 || 0) : 0;
-          } else {
-            value = getMetricValue(row, metric.key);
-          }
+          const value = getMonthlyValue(metric.key, row);
 
           const isSelectedMonth = filters && filters.month !== "all" && filters.month === monthKey;
           const isSelectedQuarter = filters && filters.quarter !== "all" && QUARTERS[filters.quarter].includes(monthKey);
@@ -1631,20 +1647,22 @@
           return `<td class="right${selectedClass}">${metric.formatter(value)}</td>`;
         }).join("");
 
-        let totalValue = 0;
-        if (metric.key === "discounts_returns_pct") {
-          totalValue = Number(totals.discounts_returns_pct || 0);
-        } else if (metric.key === "gross_margin_1") {
-          totalValue = Number(totals.gross_margin_1 || 0);
-        } else {
-          totalValue = Number(totals[metric.key] || 0);
-        }
+        const ytyValue = getTotalValue(metric.key, ytyTotals);
+
+        const quarterCells = ["Q1", "Q2", "Q3", "Q4"].map(quarterKey => {
+          const qTotals = sumRows(quarterRows(quarterKey));
+          const qValue = getTotalValue(metric.key, qTotals);
+          const selectedClass = filters && filters.quarter === quarterKey ? " selected-month" : "";
+
+          return `<td class="right quarter-col${selectedClass}">${metric.formatter(qValue)}</td>`;
+        }).join("");
 
         return `
           <tr>
             <td class="sticky-kpi">${metric.label}</td>
-            ${cells}
-            <td class="right total-col">${metric.formatter(totalValue)}</td>
+            ${monthCells}
+            <td class="right total-col">${metric.formatter(ytyValue)}</td>
+            ${quarterCells}
           </tr>
         `;
       }).join("");
