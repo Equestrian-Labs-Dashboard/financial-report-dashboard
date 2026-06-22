@@ -50,9 +50,7 @@
       --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -84,18 +82,8 @@
       border-bottom: 1px solid var(--border-soft);
     }
 
-    .window-dots {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .dot-ui {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-    }
-
+    .window-dots { display: flex; gap: 6px; margin-bottom: 10px; }
+    .dot-ui { width: 7px; height: 7px; border-radius: 999px; }
     .green-dot { background: var(--green); }
     .purple-dot { background: var(--purple); }
 
@@ -111,9 +99,7 @@
       margin-top: 4px;
     }
 
-    .nav-section {
-      padding: 18px 0 4px;
-    }
+    .nav-section { padding: 18px 0 4px; }
 
     .nav-label {
       padding: 0 12px;
@@ -151,7 +137,6 @@
 
     .nav-dot.green { background: var(--green); }
     .nav-dot.purple { background: var(--purple); }
-    .nav-dot.amber { background: var(--amber); }
 
     .badge-small {
       margin-left: auto;
@@ -212,9 +197,7 @@
       cursor: default;
     }
 
-    .theme-toggle {
-      cursor: pointer;
-    }
+    .theme-toggle { cursor: pointer; }
 
     .pill.live {
       background: rgba(34, 197, 94, 0.12);
@@ -452,14 +435,9 @@
       height: 240px;
     }
 
-    .chart-wrap.large {
-      height: 260px;
-    }
+    .chart-wrap.large { height: 260px; }
 
-    .source-list {
-      display: grid;
-      gap: 8px;
-    }
+    .source-list { display: grid; gap: 8px; }
 
     .source-item {
       background: var(--panel-2);
@@ -476,10 +454,7 @@
       margin-bottom: 5px;
     }
 
-    .source-name {
-      font-size: 12px;
-      font-weight: 700;
-    }
+    .source-name { font-size: 12px; font-weight: 700; }
 
     .source-status {
       color: var(--green);
@@ -562,9 +537,7 @@
       font-weight: 650;
     }
 
-    .matrix-wrapper {
-      overflow-x: auto;
-    }
+    .matrix-wrapper { overflow-x: auto; }
 
     table {
       width: 100%;
@@ -599,21 +572,11 @@
       font-weight: 560;
     }
 
-    tbody tr:nth-child(even) td {
-      background: var(--table-even);
-    }
+    tbody tr:nth-child(even) td { background: var(--table-even); }
+    tbody tr:hover td { background: var(--table-hover); }
+    tr:last-child td { border-bottom: none; }
 
-    tbody tr:hover td {
-      background: var(--table-hover);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .right {
-      text-align: right;
-    }
+    .right { text-align: right; }
 
     .month-head {
       min-width: 92px;
@@ -683,8 +646,7 @@
       .filter-group { width: 100%; flex-direction: column; align-items: flex-start; }
       select { width: 100%; }
       .kpi-grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
-      .chart-wrap,
-      .chart-wrap.large { height: 220px; }
+      .chart-wrap, .chart-wrap.large { height: 220px; }
     }
 
     @media (max-width: 520px) {
@@ -1005,12 +967,22 @@
         document.documentElement.setAttribute("data-theme", next);
         localStorage.setItem("financialReportTheme", next);
         updateThemeButton(next);
+        renderChartsAgain();
       });
     }
 
     function updateThemeButton(theme) {
       const button = document.getElementById("themeToggle");
       button.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function renderChartsAgain() {
+      if (DATA) {
+        const selected = getSelectedRows();
+        renderSalesTrend(selected.trendRows);
+        renderDiscountReturns(selected.trendRows);
+        renderMarginTrend(selected.trendRows);
+      }
     }
 
     function money(value) {
@@ -1161,6 +1133,7 @@
         if (monthFilter.value !== "all") {
           quarterFilter.value = "all";
         }
+
         render();
       });
 
@@ -1168,6 +1141,7 @@
         if (quarterFilter.value !== "all") {
           monthFilter.value = "all";
         }
+
         render();
       });
 
@@ -1181,7 +1155,6 @@
         month: document.getElementById("monthFilter").value,
         quarter: document.getElementById("quarterFilter").value
       };
-    };
     }
 
     function filterRows(rows, filters) {
@@ -1194,7 +1167,6 @@
 
         return brandMatch && yearMatch && monthMatch && quarterMatch;
       });
-    });
     }
 
     function sumRows(rows) {
@@ -1524,6 +1496,10 @@
       });
     }
 
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
     function chartOptionsMoney(showLegend = true) {
       return {
         responsive: true,
@@ -1532,7 +1508,7 @@
           legend: {
             display: showLegend,
             position: "bottom",
-            labels: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 }, boxWidth: 10 }
+            labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 }
           },
           tooltip: {
             callbacks: {
@@ -1543,13 +1519,13 @@
         scales: {
           x: {
             grid: { color: "rgba(127,154,183,0.10)" },
-            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 } }
+            ticks: { color: cssVar("--muted"), font: { size: 10 } }
           },
           y: {
             beginAtZero: true,
             grid: { color: "rgba(127,154,183,0.14)" },
             ticks: {
-              color: getComputedStyle(document.documentElement).getPropertyValue("--muted"),
+              color: cssVar("--muted"),
               font: { size: 10 },
               callback: value => compactMoney(value)
             }
@@ -1565,7 +1541,7 @@
         plugins: {
           legend: {
             position: "bottom",
-            labels: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 }, boxWidth: 10 }
+            labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 }
           },
           tooltip: {
             callbacks: {
@@ -1579,13 +1555,13 @@
         scales: {
           x: {
             grid: { color: "rgba(127,154,183,0.10)" },
-            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue("--muted"), font: { size: 10 } }
+            ticks: { color: cssVar("--muted"), font: { size: 10 } }
           },
           y: {
             beginAtZero: true,
             grid: { color: "rgba(127,154,183,0.14)" },
             ticks: {
-              color: getComputedStyle(document.documentElement).getPropertyValue("--muted"),
+              color: cssVar("--muted"),
               font: { size: 10 },
               callback: value => Number(value).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
@@ -1648,9 +1624,9 @@
             value = getMetricValue(row, metric.key);
           }
 
-          const selectedClass = filters && filters.month !== "all" && filters.month === monthKey
-            ? " selected-month"
-            : "";
+          const isSelectedMonth = filters && filters.month !== "all" && filters.month === monthKey;
+          const isSelectedQuarter = filters && filters.quarter !== "all" && QUARTERS[filters.quarter].includes(monthKey);
+          const selectedClass = isSelectedMonth || isSelectedQuarter ? " selected-month" : "";
 
           return `<td class="right${selectedClass}">${metric.formatter(value)}</td>`;
         }).join("");
@@ -1679,12 +1655,18 @@
     function renderNotes(selected) {
       const totals = selected.totals;
       const brandText = selected.filters.brand === "all" ? "all brands" : selected.filters.brand;
-      const monthText = selected.filters.month === "all" ? "all months" : MONTHS[selected.filters.month];
+
+      let periodText = "all months";
+      if (selected.filters.quarter !== "all") {
+        periodText = QUARTER_LABELS[selected.filters.quarter];
+      } else if (selected.filters.month !== "all") {
+        periodText = MONTHS[selected.filters.month];
+      }
 
       document.getElementById("executiveNotes").innerHTML = `
         <li>
           <span class="note-dot"></span>
-          <span>Selected Shopify view: <strong>${brandText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${monthText}</strong>.</span>
+          <span>Selected Shopify view: <strong>${brandText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span>
         </li>
         <li>
           <span class="note-dot"></span>
