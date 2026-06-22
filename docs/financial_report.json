@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-22T12:50:43.574842+00:00",
+  "generated_at": "2026-06-22T15:18:44.767245+00:00",
   "brands_available": [
     "Cavali",
     "Corro"
@@ -21,11 +21,11 @@
       "shipping_charges": 3702.15,
       "taxes": 12837.65,
       "net_sales": 246705.03,
-      "cogs": 0.0,
-      "gross_profit_1": 246705.03,
+      "cogs": 148261.53,
+      "gross_profit_1": 96311.79000000001,
       "transactions": 3606.0,
       "discounts_returns_pct": 0.05574189547040142,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3903924861199628
     },
     {
       "brand": "Cavali",
@@ -38,11 +38,11 @@
       "shipping_charges": 1973.62,
       "taxes": 9144.79,
       "net_sales": 145836.07,
-      "cogs": 0.0,
-      "gross_profit_1": 145836.07,
+      "cogs": 90724.09,
+      "gross_profit_1": 55417.46,
       "transactions": 2227.0,
       "discounts_returns_pct": 0.04554141492612138,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3799983090603031
     },
     {
       "brand": "Cavali",
@@ -55,11 +55,11 @@
       "shipping_charges": 6981.0,
       "taxes": 3653.83,
       "net_sales": 54599.74,
-      "cogs": 0.0,
-      "gross_profit_1": 54599.74,
+      "cogs": 28464.81,
+      "gross_profit_1": 18767.58,
       "transactions": 768.0,
       "discounts_returns_pct": 0.07350044229534741,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3437302082390869
     },
     {
       "brand": "Corro",
@@ -72,11 +72,11 @@
       "shipping_charges": 46739.49,
       "taxes": 33541.51,
       "net_sales": 1196406.9,
-      "cogs": 0.0,
-      "gross_profit_1": 1196406.9,
+      "cogs": 845034.23,
+      "gross_profit_1": 338196.27999999997,
       "transactions": 8525.0,
       "discounts_returns_pct": 0.21895159545059553,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.28267663785623437
     },
     {
       "brand": "Corro",
@@ -89,28 +89,28 @@
       "shipping_charges": 43725.7,
       "taxes": 48856.24,
       "net_sales": 1512014.03,
-      "cogs": 0.0,
-      "gross_profit_1": 1512014.03,
+      "cogs": 1093111.38,
+      "gross_profit_1": 352147.74,
       "transactions": 8876.0,
       "discounts_returns_pct": 0.17620746325140269,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.23289978334394157
     },
     {
       "brand": "Corro",
       "year": 2026,
-      "total_sales": 499528.55,
-      "gross_sales": 560051.79,
-      "discounts": 60729.19,
+      "total_sales": 499897.05,
+      "gross_sales": 560400.55,
+      "discounts": 60747.49,
       "returns": 33275.41,
-      "discounts_returns": 94004.6,
-      "shipping_charges": 14530.99,
-      "taxes": 18950.37,
-      "net_sales": 466047.19,
-      "cogs": 0.0,
-      "gross_profit_1": 466047.19,
-      "transactions": 2575.0,
-      "discounts_returns_pct": 0.16784983403052778,
-      "gross_margin_1": 1.0
+      "discounts_returns": 94022.9,
+      "shipping_charges": 14560.96,
+      "taxes": 18958.44,
+      "net_sales": 466377.65,
+      "cogs": 314221.18,
+      "gross_profit_1": 142329.82,
+      "transactions": 2578.0,
+      "discounts_returns_pct": 0.167778029482662,
+      "gross_margin_1": 0.3051814768567919
     }
   ],
   "shopify_kpis_by_brand_month": [
@@ -126,11 +126,11 @@
       "shipping_charges": 80.84,
       "taxes": 25.07,
       "net_sales": 510.41,
-      "cogs": 0.0,
-      "gross_profit_1": 510.41,
+      "cogs": 206.85,
+      "gross_profit_1": 231.8,
       "transactions": 11.0,
       "discounts_returns_pct": 0.30523378479548086,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.4541447071961756
     },
     {
       "brand": "Cavali",
@@ -144,11 +144,11 @@
       "shipping_charges": 51.63,
       "taxes": 43.9,
       "net_sales": 875.68,
-      "cogs": 0.0,
-      "gross_profit_1": 875.68,
+      "cogs": 548.65,
+      "gross_profit_1": 327.03,
       "transactions": 12.0,
       "discounts_returns_pct": 0.2884584132349595,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.37345834094646446
     },
     {
       "brand": "Cavali",
@@ -162,11 +162,11 @@
       "shipping_charges": 438.0,
       "taxes": 3140.22,
       "net_sales": 64155.42,
-      "cogs": 0.0,
-      "gross_profit_1": 64155.42,
+      "cogs": 39230.11,
+      "gross_profit_1": 24925.31,
       "transactions": 981.0,
       "discounts_returns_pct": 0.009692921145182961,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.38851448560386637
     },
     {
       "brand": "Cavali",
@@ -180,11 +180,11 @@
       "shipping_charges": 263.0,
       "taxes": 134.52,
       "net_sales": 2910.44,
-      "cogs": 0.0,
-      "gross_profit_1": 2910.44,
+      "cogs": 957.73,
+      "gross_profit_1": 1952.71,
       "transactions": 32.0,
       "discounts_returns_pct": 0.11019120353668455,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.6709329173595745
     },
     {
       "brand": "Cavali",
@@ -198,11 +198,11 @@
       "shipping_charges": 225.0,
       "taxes": 126.82,
       "net_sales": 1855.96,
-      "cogs": 0.0,
-      "gross_profit_1": 1855.96,
+      "cogs": 1037.14,
+      "gross_profit_1": 818.82,
       "transactions": 29.0,
       "discounts_returns_pct": 0.20208425587164283,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.44118407724304404
     },
     {
       "brand": "Cavali",
@@ -216,11 +216,11 @@
       "shipping_charges": 338.0,
       "taxes": 2668.5,
       "net_sales": 54031.47,
-      "cogs": 0.0,
-      "gross_profit_1": 54031.47,
+      "cogs": 35309.3,
+      "gross_profit_1": 18722.17,
       "transactions": 886.0,
       "discounts_returns_pct": 0.020768459271926814,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3465049164866327
     },
     {
       "brand": "Cavali",
@@ -234,11 +234,11 @@
       "shipping_charges": 518.0,
       "taxes": 350.6,
       "net_sales": 5393.98,
-      "cogs": 0.0,
-      "gross_profit_1": 5393.98,
+      "cogs": 4279.71,
+      "gross_profit_1": 1114.27,
       "transactions": 60.0,
       "discounts_returns_pct": 0.014434549367985997,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.20657659094027045
     },
     {
       "brand": "Cavali",
@@ -252,11 +252,11 @@
       "shipping_charges": -33.0,
       "taxes": 326.57,
       "net_sales": 6300.94,
-      "cogs": 0.0,
-      "gross_profit_1": 6300.94,
+      "cogs": 3024.17,
+      "gross_profit_1": 1285.93,
       "transactions": 51.0,
       "discounts_returns_pct": 0.014644416913816622,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.20408542217510406
     },
     {
       "brand": "Cavali",
@@ -270,11 +270,11 @@
       "shipping_charges": 208.0,
       "taxes": 2523.73,
       "net_sales": 50966.26,
-      "cogs": 0.0,
-      "gross_profit_1": 50966.26,
+      "cogs": 32669.19,
+      "gross_profit_1": 18297.07,
       "transactions": 822.0,
       "discounts_returns_pct": 0.01829832052552342,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3590035839396495
     },
     {
       "brand": "Cavali",
@@ -288,11 +288,11 @@
       "shipping_charges": 556.0,
       "taxes": 52.27,
       "net_sales": 3636.93,
-      "cogs": 0.0,
-      "gross_profit_1": 3636.93,
+      "cogs": 3658.99,
+      "gross_profit_1": -22.06,
       "transactions": 28.0,
       "discounts_returns_pct": 0.6831304905429577,
-      "gross_margin_1": 1.0
+      "gross_margin_1": -0.00606555528976362
     },
     {
       "brand": "Cavali",
@@ -306,11 +306,11 @@
       "shipping_charges": 68.68,
       "taxes": 40.93,
       "net_sales": 670.5,
-      "cogs": 0.0,
-      "gross_profit_1": 670.5,
+      "cogs": 332.96,
+      "gross_profit_1": 268.54,
       "transactions": 12.0,
       "discounts_returns_pct": 0.09330628803245436,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.40050708426547355
     },
     {
       "brand": "Cavali",
@@ -324,11 +324,11 @@
       "shipping_charges": 988.0,
       "taxes": 3404.52,
       "net_sales": 55397.04,
-      "cogs": 0.0,
-      "gross_profit_1": 55397.04,
+      "cogs": 27006.73,
+      "gross_profit_1": 28390.2,
       "transactions": 682.0,
       "discounts_returns_pct": 0.04065402490519026,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.5124858656708012
     },
     {
       "brand": "Cavali",
@@ -342,11 +342,11 @@
       "shipping_charges": 36.0,
       "taxes": 102.8,
       "net_sales": 1219.49,
-      "cogs": 0.0,
-      "gross_profit_1": 1219.49,
+      "cogs": 611.17,
+      "gross_profit_1": 646.8,
       "transactions": 14.0,
       "discounts_returns_pct": 0.2101595238249448,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.5303856530188849
     },
     {
       "brand": "Cavali",
@@ -360,11 +360,11 @@
       "shipping_charges": -8.0,
       "taxes": 59.54,
       "net_sales": 888.0,
-      "cogs": 0.0,
-      "gross_profit_1": 888.0,
+      "cogs": 589.0,
+      "gross_profit_1": 359.0,
       "transactions": 12.0,
       "discounts_returns_pct": 0.23198007299648857,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.40427927927927926
     },
     {
       "brand": "Cavali",
@@ -378,11 +378,11 @@
       "shipping_charges": 1014.79,
       "taxes": 2625.15,
       "net_sales": 41925.37,
-      "cogs": 0.0,
-      "gross_profit_1": 41925.37,
+      "cogs": 24723.18,
+      "gross_profit_1": 17202.19,
       "transactions": 620.0,
       "discounts_returns_pct": 0.0331839249595924,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.4103050253343023
     },
     {
       "brand": "Cavali",
@@ -396,11 +396,11 @@
       "shipping_charges": 114.0,
       "taxes": 162.97,
       "net_sales": 3096.77,
-      "cogs": 0.0,
-      "gross_profit_1": 3096.77,
+      "cogs": 2054.76,
+      "gross_profit_1": 1042.01,
       "transactions": 22.0,
       "discounts_returns_pct": 0.07109068711998728,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3364828514871947
     },
     {
       "brand": "Cavali",
@@ -414,11 +414,11 @@
       "shipping_charges": 42.0,
       "taxes": 135.34,
       "net_sales": 1945.4,
-      "cogs": 0.0,
-      "gross_profit_1": 1945.4,
+      "cogs": 1309.0,
+      "gross_profit_1": 636.4,
       "transactions": 14.0,
       "discounts_returns_pct": 0.07113765822029326,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.32713066721496864
     },
     {
       "brand": "Cavali",
@@ -432,11 +432,11 @@
       "shipping_charges": 161.83,
       "taxes": 2367.84,
       "net_sales": 38470.64,
-      "cogs": 0.0,
-      "gross_profit_1": 38470.64,
+      "cogs": 23310.0,
+      "gross_profit_1": 15160.64,
       "transactions": 570.0,
       "discounts_returns_pct": 0.02789665300808801,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.39408338410798466
     },
     {
       "brand": "Cavali",
@@ -450,11 +450,11 @@
       "shipping_charges": 90.0,
       "taxes": 120.1,
       "net_sales": 2505.84,
-      "cogs": 0.0,
-      "gross_profit_1": 2505.84,
+      "cogs": 1826.07,
+      "gross_profit_1": 679.77,
       "transactions": 21.0,
       "discounts_returns_pct": 0.212651172143793,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.27127430322766016
     },
     {
       "brand": "Cavali",
@@ -468,11 +468,11 @@
       "shipping_charges": 27.0,
       "taxes": 23.23,
       "net_sales": 552.4,
-      "cogs": 0.0,
-      "gross_profit_1": 552.4,
+      "cogs": 522.48,
+      "gross_profit_1": 29.92,
       "transactions": 11.0,
       "discounts_returns_pct": 0.0,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.05416364952932658
     },
     {
       "brand": "Cavali",
@@ -486,11 +486,11 @@
       "shipping_charges": 214.0,
       "taxes": 2249.23,
       "net_sales": 35141.79,
-      "cogs": 0.0,
-      "gross_profit_1": 35141.79,
+      "cogs": 22171.88,
+      "gross_profit_1": 12969.91,
       "transactions": 548.0,
       "discounts_returns_pct": 0.01925664333263842,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.36907368691236275
     },
     {
       "brand": "Cavali",
@@ -504,11 +504,11 @@
       "shipping_charges": 64.0,
       "taxes": 25.33,
       "net_sales": 106.99,
-      "cogs": 0.0,
-      "gross_profit_1": 106.99,
+      "cogs": 457.35,
+      "gross_profit_1": -143.36,
       "transactions": 63.0,
       "discounts_returns_pct": 0.9116507981073336,
-      "gross_margin_1": 1.0
+      "gross_margin_1": -1.3399383119917752
     },
     {
       "brand": "Cavali",
@@ -522,11 +522,11 @@
       "shipping_charges": 46.0,
       "taxes": 32.08,
       "net_sales": 394.99,
-      "cogs": 0.0,
-      "gross_profit_1": 394.99,
+      "cogs": 259.09,
+      "gross_profit_1": 135.9,
       "transactions": 5.0,
       "discounts_returns_pct": 0.0,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.34405934327451326
     },
     {
       "brand": "Cavali",
@@ -540,11 +540,11 @@
       "shipping_charges": 172.0,
       "taxes": 1241.18,
       "net_sales": 19588.39,
-      "cogs": 0.0,
-      "gross_profit_1": 19588.39,
+      "cogs": 12890.11,
+      "gross_profit_1": 6698.28,
       "transactions": 327.0,
       "discounts_returns_pct": 0.04699725946622595,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3419515335359363
     },
     {
       "brand": "Cavali",
@@ -558,11 +558,11 @@
       "shipping_charges": 12.0,
       "taxes": 58.21,
       "net_sales": 782.26,
-      "cogs": 0.0,
-      "gross_profit_1": 782.26,
+      "cogs": 624.11,
+      "gross_profit_1": 158.15,
       "transactions": 12.0,
       "discounts_returns_pct": 0.18061360232117232,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.2021706338046174
     },
     {
       "brand": "Cavali",
@@ -576,11 +576,11 @@
       "shipping_charges": 138.0,
       "taxes": 68.37,
       "net_sales": 1328.93,
-      "cogs": 0.0,
-      "gross_profit_1": 1328.93,
+      "cogs": 184.5,
+      "gross_profit_1": 92.43,
       "transactions": 9.0,
       "discounts_returns_pct": 0.0,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.06955219612771177
     },
     {
       "brand": "Cavali",
@@ -594,11 +594,11 @@
       "shipping_charges": 2326.0,
       "taxes": 1705.64,
       "net_sales": 26089.42,
-      "cogs": 0.0,
-      "gross_profit_1": 26089.42,
+      "cogs": 14360.0,
+      "gross_profit_1": 10079.8,
       "transactions": 378.0,
       "discounts_returns_pct": 0.040801935351039736,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.38635584846271015
     },
     {
       "brand": "Cavali",
@@ -612,11 +612,11 @@
       "shipping_charges": 60.0,
       "taxes": 51.61,
       "net_sales": 988.84,
-      "cogs": 0.0,
-      "gross_profit_1": 988.84,
+      "cogs": 215.35,
+      "gross_profit_1": -145.37,
       "transactions": 17.0,
       "discounts_returns_pct": 0.5270902978043684,
-      "gross_margin_1": 1.0
+      "gross_margin_1": -0.1470106387282068
     },
     {
       "brand": "Cavali",
@@ -630,11 +630,11 @@
       "shipping_charges": 48.0,
       "taxes": 117.84,
       "net_sales": 1927.91,
-      "cogs": 0.0,
-      "gross_profit_1": 1927.91,
+      "cogs": 41.0,
+      "gross_profit_1": 128.91,
       "transactions": 10.0,
       "discounts_returns_pct": 0.1943240656773552,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.06686515449372636
     },
     {
       "brand": "Cavali",
@@ -648,11 +648,11 @@
       "shipping_charges": 4397.0,
       "taxes": 1652.16,
       "net_sales": 23482.38,
-      "cogs": 0.0,
-      "gross_profit_1": 23482.38,
+      "cogs": 13039.85,
+      "gross_profit_1": 8453.66,
       "transactions": 342.0,
       "discounts_returns_pct": 0.059369480915107097,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.360000136272388
     },
     {
       "brand": "Cavali",
@@ -774,11 +774,11 @@
       "shipping_charges": 7082.62,
       "taxes": 4147.12,
       "net_sales": 162594.21,
-      "cogs": 0.0,
-      "gross_profit_1": 162594.21,
+      "cogs": 100649.99,
+      "gross_profit_1": 58673.59,
       "transactions": 1243.0,
       "discounts_returns_pct": 0.10490535936356836,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.36085903673937714
     },
     {
       "brand": "Corro",
@@ -792,11 +792,11 @@
       "shipping_charges": 4845.59,
       "taxes": 2333.97,
       "net_sales": 106567.98,
-      "cogs": 0.0,
-      "gross_profit_1": 106567.98,
+      "cogs": 82062.23,
+      "gross_profit_1": 21671.01,
       "transactions": 933.0,
       "discounts_returns_pct": 0.3433088764607295,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.2033538591986073
     },
     {
       "brand": "Corro",
@@ -810,11 +810,11 @@
       "shipping_charges": 5385.52,
       "taxes": 3707.26,
       "net_sales": 118402.1,
-      "cogs": 0.0,
-      "gross_profit_1": 118402.1,
+      "cogs": 92034.19,
+      "gross_profit_1": 25263.14,
       "transactions": 898.0,
       "discounts_returns_pct": 0.2934522023223408,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.21336733047809117
     },
     {
       "brand": "Corro",
@@ -828,11 +828,11 @@
       "shipping_charges": 3751.29,
       "taxes": 2758.2,
       "net_sales": 95284.29,
-      "cogs": 0.0,
-      "gross_profit_1": 95284.29,
+      "cogs": 77846.71,
+      "gross_profit_1": 16385.98,
       "transactions": 768.0,
       "discounts_returns_pct": 0.2778205076705379,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.171969377113478
     },
     {
       "brand": "Corro",
@@ -846,11 +846,11 @@
       "shipping_charges": 3367.25,
       "taxes": 3351.98,
       "net_sales": 102264.11,
-      "cogs": 0.0,
-      "gross_profit_1": 102264.11,
+      "cogs": 85618.37,
+      "gross_profit_1": 16420.72,
       "transactions": 606.0,
       "discounts_returns_pct": 0.2884977615992781,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.16057168052408613
     },
     {
       "brand": "Corro",
@@ -864,11 +864,11 @@
       "shipping_charges": 4396.28,
       "taxes": 2330.41,
       "net_sales": 91674.69,
-      "cogs": 0.0,
-      "gross_profit_1": 91674.69,
+      "cogs": 62580.33,
+      "gross_profit_1": 28136.27,
       "transactions": 708.0,
       "discounts_returns_pct": 0.1451390488375064,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.30691426390424664
     },
     {
       "brand": "Corro",
@@ -882,11 +882,11 @@
       "shipping_charges": 2697.85,
       "taxes": 1790.26,
       "net_sales": 60700.75,
-      "cogs": 0.0,
-      "gross_profit_1": 60700.75,
+      "cogs": 44474.92,
+      "gross_profit_1": 15066.56,
       "transactions": 479.0,
       "discounts_returns_pct": 0.19270192941854908,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.2482104422103516
     },
     {
       "brand": "Corro",
@@ -900,11 +900,11 @@
       "shipping_charges": 2738.77,
       "taxes": 2083.23,
       "net_sales": 81135.6,
-      "cogs": 0.0,
-      "gross_profit_1": 81135.6,
+      "cogs": 54186.78,
+      "gross_profit_1": 26314.07,
       "transactions": 498.0,
       "discounts_returns_pct": 0.12746367228020924,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3243221224715168
     },
     {
       "brand": "Corro",
@@ -918,11 +918,11 @@
       "shipping_charges": 2845.74,
       "taxes": 1878.7,
       "net_sales": 80589.03,
-      "cogs": 0.0,
-      "gross_profit_1": 80589.03,
+      "cogs": 53570.82,
+      "gross_profit_1": 26469.6,
       "transactions": 532.0,
       "discounts_returns_pct": 0.1545876002660789,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3284516515461223
     },
     {
       "brand": "Corro",
@@ -936,11 +936,11 @@
       "shipping_charges": 2358.1,
       "taxes": 2938.06,
       "net_sales": 82776.47,
-      "cogs": 0.0,
-      "gross_profit_1": 82776.47,
+      "cogs": 55566.11,
+      "gross_profit_1": 26012.58,
       "transactions": 494.0,
       "discounts_returns_pct": 0.22401623129539694,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3142508976282753
     },
     {
       "brand": "Corro",
@@ -954,11 +954,11 @@
       "shipping_charges": 3125.06,
       "taxes": 3110.68,
       "net_sales": 110473.02,
-      "cogs": 0.0,
-      "gross_profit_1": 110473.02,
+      "cogs": 56813.3,
+      "gross_profit_1": 53583.78,
       "transactions": 636.0,
       "discounts_returns_pct": 0.10809983389651141,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.4850395146253809
     },
     {
       "brand": "Corro",
@@ -972,11 +972,11 @@
       "shipping_charges": 4145.42,
       "taxes": 3111.64,
       "net_sales": 103944.65,
-      "cogs": 0.0,
-      "gross_profit_1": 103944.65,
+      "cogs": 79630.48,
+      "gross_profit_1": 24198.98,
       "transactions": 730.0,
       "discounts_returns_pct": 0.2748353592711228,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.23280640225350704
     },
     {
       "brand": "Corro",
@@ -990,11 +990,11 @@
       "shipping_charges": 3702.48,
       "taxes": 2875.72,
       "net_sales": 82316.46,
-      "cogs": 0.0,
-      "gross_profit_1": 82316.46,
+      "cogs": 54627.04,
+      "gross_profit_1": 26823.18,
       "transactions": 604.0,
       "discounts_returns_pct": 0.11735747422995456,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3258543916976021
     },
     {
       "brand": "Corro",
@@ -1008,11 +1008,11 @@
       "shipping_charges": 2726.81,
       "taxes": 4375.87,
       "net_sales": 103357.46,
-      "cogs": 0.0,
-      "gross_profit_1": 103357.46,
+      "cogs": 79408.56,
+      "gross_profit_1": 20915.95,
       "transactions": 644.0,
       "discounts_returns_pct": 0.21482596337167303,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.202365170351516
     },
     {
       "brand": "Corro",
@@ -1026,11 +1026,11 @@
       "shipping_charges": 3009.49,
       "taxes": 3700.92,
       "net_sales": 117105.77,
-      "cogs": 0.0,
-      "gross_profit_1": 117105.77,
+      "cogs": 83788.65,
+      "gross_profit_1": 32091.74,
       "transactions": 750.0,
       "discounts_returns_pct": 0.16692831369415584,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.2740406386465842
     },
     {
       "brand": "Corro",
@@ -1044,11 +1044,11 @@
       "shipping_charges": 3436.15,
       "taxes": 4404.26,
       "net_sales": 121914.44,
-      "cogs": 0.0,
-      "gross_profit_1": 121914.44,
+      "cogs": 85923.22,
+      "gross_profit_1": 30992.21,
       "transactions": 897.0,
       "discounts_returns_pct": 0.13332342827732355,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.2542127905439257
     },
     {
       "brand": "Corro",
@@ -1062,11 +1062,11 @@
       "shipping_charges": 4804.13,
       "taxes": 5431.76,
       "net_sales": 160667.46,
-      "cogs": 0.0,
-      "gross_profit_1": 160667.46,
+      "cogs": 125568.05,
+      "gross_profit_1": 33281.36,
       "transactions": 925.0,
       "discounts_returns_pct": 0.19646269956592197,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.20714437136181776
     },
     {
       "brand": "Corro",
@@ -1080,11 +1080,11 @@
       "shipping_charges": 4136.6,
       "taxes": 3791.63,
       "net_sales": 138738.97,
-      "cogs": 0.0,
-      "gross_profit_1": 138738.97,
+      "cogs": 101936.96,
+      "gross_profit_1": 36009.3,
       "transactions": 761.0,
       "discounts_returns_pct": 0.15063325554454063,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.25954711931334074
     },
     {
       "brand": "Corro",
@@ -1098,11 +1098,11 @@
       "shipping_charges": 5271.46,
       "taxes": 4301.64,
       "net_sales": 164838.14,
-      "cogs": 0.0,
-      "gross_profit_1": 164838.14,
+      "cogs": 127915.09,
+      "gross_profit_1": 35812.51,
       "transactions": 891.0,
       "discounts_returns_pct": 0.2530446680612951,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.21725863929306652
     },
     {
       "brand": "Corro",
@@ -1116,11 +1116,11 @@
       "shipping_charges": 2418.57,
       "taxes": 2399.42,
       "net_sales": 98760.54,
-      "cogs": 0.0,
-      "gross_profit_1": 98760.54,
+      "cogs": 66471.06,
+      "gross_profit_1": 22299.26,
       "transactions": 517.0,
       "discounts_returns_pct": 0.1480225146500765,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.22579119150219307
     },
     {
       "brand": "Corro",
@@ -1134,11 +1134,11 @@
       "shipping_charges": 3076.29,
       "taxes": 3769.01,
       "net_sales": 116529.49,
-      "cogs": 0.0,
-      "gross_profit_1": 116529.49,
+      "cogs": 89297.81,
+      "gross_profit_1": 25420.09,
       "transactions": 611.0,
       "discounts_returns_pct": 0.22490668475513884,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.2181429782280863
     },
     {
       "brand": "Corro",
@@ -1152,11 +1152,11 @@
       "shipping_charges": 2663.85,
       "taxes": 3826.76,
       "net_sales": 128680.25,
-      "cogs": 0.0,
-      "gross_profit_1": 128680.25,
+      "cogs": 87032.34,
+      "gross_profit_1": 34977.36,
       "transactions": 626.0,
       "discounts_returns_pct": 0.12043418532391102,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.27181607123082213
     },
     {
       "brand": "Corro",
@@ -1170,11 +1170,11 @@
       "shipping_charges": 3572.42,
       "taxes": 5392.88,
       "net_sales": 158513.4,
-      "cogs": 0.0,
-      "gross_profit_1": 158513.4,
+      "cogs": 91561.28,
+      "gross_profit_1": 33141.92,
       "transactions": 815.0,
       "discounts_returns_pct": 0.09635012178574398,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.20907961093510075
     },
     {
       "brand": "Corro",
@@ -1188,11 +1188,11 @@
       "shipping_charges": 4907.45,
       "taxes": 4586.37,
       "net_sales": 120591.65,
-      "cogs": 0.0,
-      "gross_profit_1": 120591.65,
+      "cogs": 99581.32,
+      "gross_profit_1": 20382.86,
       "transactions": 835.0,
       "discounts_returns_pct": 0.23357244859352394,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.16902380886238808
     },
     {
       "brand": "Corro",
@@ -1206,11 +1206,11 @@
       "shipping_charges": 3366.19,
       "taxes": 4557.11,
       "net_sales": 116961.62,
-      "cogs": 0.0,
-      "gross_profit_1": 116961.62,
+      "cogs": 78630.51,
+      "gross_profit_1": 37082.17,
       "transactions": 618.0,
       "discounts_returns_pct": 0.15529476814332518,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.31704562573603207
     },
     {
       "brand": "Corro",
@@ -1224,11 +1224,11 @@
       "shipping_charges": 1849.17,
       "taxes": 3387.91,
       "net_sales": 69867.74,
-      "cogs": 0.0,
-      "gross_profit_1": 69867.74,
+      "cogs": 47299.21,
+      "gross_profit_1": 20485.51,
       "transactions": 401.0,
       "discounts_returns_pct": 0.20327517293433542,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.29320413111974136
     },
     {
       "brand": "Corro",
@@ -1242,11 +1242,11 @@
       "shipping_charges": 916.21,
       "taxes": 2756.5,
       "net_sales": 55492.69,
-      "cogs": 0.0,
-      "gross_profit_1": 55492.69,
+      "cogs": 35791.16,
+      "gross_profit_1": 16869.38,
       "transactions": 286.0,
       "discounts_returns_pct": 0.16439331631382353,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.30399283220907114
     },
     {
       "brand": "Corro",
@@ -1260,11 +1260,11 @@
       "shipping_charges": 2758.54,
       "taxes": 3769.72,
       "net_sales": 86126.37,
-      "cogs": 0.0,
-      "gross_profit_1": 86126.37,
+      "cogs": 64052.05,
+      "gross_profit_1": 21864.35,
       "transactions": 444.0,
       "discounts_returns_pct": 0.25122317106833214,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.25386359601594727
     },
     {
       "brand": "Corro",
@@ -1278,29 +1278,29 @@
       "shipping_charges": 3559.97,
       "taxes": 2897.6,
       "net_sales": 89228.58,
-      "cogs": 0.0,
-      "gross_profit_1": 89228.58,
+      "cogs": 59448.98,
+      "gross_profit_1": 28548.5,
       "transactions": 528.0,
       "discounts_returns_pct": 0.0958775188895501,
-      "gross_margin_1": 1.0
+      "gross_margin_1": 0.3199479359640151
     },
     {
       "brand": "Corro",
       "year": 2026,
       "month": "06",
-      "total_sales": 52032.63,
-      "gross_sales": 53770.06,
-      "discounts": 1934.73,
+      "total_sales": 52401.13,
+      "gross_sales": 54118.82,
+      "discounts": 1953.03,
       "returns": 3465.14,
-      "discounts_returns": 5399.87,
-      "shipping_charges": 2080.91,
-      "taxes": 1581.53,
-      "net_sales": 48370.19,
-      "cogs": 0.0,
-      "gross_profit_1": 48370.19,
-      "transactions": 298.0,
-      "discounts_returns_pct": 0.1004252180488547,
-      "gross_margin_1": 1.0
+      "discounts_returns": 5418.17,
+      "shipping_charges": 2110.88,
+      "taxes": 1589.6,
+      "net_sales": 48700.65,
+      "cogs": 28999.27,
+      "gross_profit_1": 17479.91,
+      "transactions": 301.0,
+      "discounts_returns_pct": 0.10011618878608218,
+      "gross_margin_1": 0.35892559955565273
     },
     {
       "brand": "Corro",
@@ -2067,10 +2067,10 @@
       "year": 2026,
       "month": "06",
       "channel": "Shopify",
-      "total_sales": 52032.63,
-      "gross_sales": 53770.06,
-      "net_sales": 48370.19,
-      "transactions": 298.0
+      "total_sales": 52401.13,
+      "gross_sales": 54118.82,
+      "net_sales": 48700.65,
+      "transactions": 301.0
     },
     {
       "brand": "Corro",
