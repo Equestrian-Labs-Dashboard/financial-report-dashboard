@@ -1035,8 +1035,7 @@
 
     function money(value) {
       return "$" + Number(value || 0).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
       });
     }
 
@@ -1046,28 +1045,24 @@
 
       if (absValue >= 1000000) {
         return "$" + (numberValue / 1000000).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          maximumFractionDigits: 0
         }) + "M";
       }
 
       if (absValue >= 1000) {
         return "$" + (numberValue / 1000).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          maximumFractionDigits: 0
         }) + "K";
       }
 
       return "$" + numberValue.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
       });
     }
 
     function number(value) {
       return Number(value || 0).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
       });
     }
 
@@ -1077,28 +1072,24 @@
 
       if (absValue >= 1000000) {
         return (numberValue / 1000000).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          maximumFractionDigits: 0
         }) + "M";
       }
 
       if (absValue >= 1000) {
         return (numberValue / 1000).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          maximumFractionDigits: 0
         }) + "K";
       }
 
       return numberValue.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
       });
     }
 
     function percent(value) {
       return Number((Number(value || 0) * 100)).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
       }) + "%";
     }
 
@@ -1587,8 +1578,7 @@
           tooltip: {
             callbacks: {
               label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                maximumFractionDigits: 0
               })}%`
             }
           }
@@ -1605,8 +1595,7 @@
               color: cssVar("--muted"),
               font: { size: 10 },
               callback: value => Number(value).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                maximumFractionDigits: 0
               }) + "%"
             }
           }
