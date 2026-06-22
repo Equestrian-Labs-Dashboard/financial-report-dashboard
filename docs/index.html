@@ -537,6 +537,30 @@
       font-weight: 650;
     }
 
+    .matrix-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .matrix-toggle {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 10.5px;
+      font-weight: 650;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .monthly-table.is-collapsed .monthly-detail {
+      display: none;
+    }
+
     .matrix-wrapper { overflow-x: auto; }
 
     table {
@@ -758,26 +782,29 @@
       <section class="panel table-panel">
         <div class="matrix-topbar">
           <div class="matrix-heading">Shopify KPIs by Month</div>
-          <div class="matrix-meta" id="matrixMeta">Loading...</div>
+          <div class="matrix-actions">
+            <button class="matrix-toggle" id="matrixToggle" type="button">Expand months</button>
+            <div class="matrix-meta" id="matrixMeta">Loading...</div>
+          </div>
         </div>
 
         <div class="matrix-wrapper">
-          <table>
+          <table class="monthly-table is-collapsed" id="monthlyTable">
             <thead>
               <tr>
                 <th class="sticky-kpi">KPI</th>
-                <th class="right month-head" data-month="01">Jan</th>
-                <th class="right month-head" data-month="02">Feb</th>
-                <th class="right month-head" data-month="03">Mar</th>
-                <th class="right month-head" data-month="04">Apr</th>
-                <th class="right month-head" data-month="05">May</th>
-                <th class="right month-head" data-month="06">Jun</th>
-                <th class="right month-head" data-month="07">Jul</th>
-                <th class="right month-head" data-month="08">Aug</th>
-                <th class="right month-head" data-month="09">Sep</th>
-                <th class="right month-head" data-month="10">Oct</th>
-                <th class="right month-head" data-month="11">Nov</th>
-                <th class="right month-head" data-month="12">Dec</th>
+                <th class="right month-head monthly-detail" data-month="01">Jan</th>
+                <th class="right month-head monthly-detail" data-month="02">Feb</th>
+                <th class="right month-head monthly-detail" data-month="03">Mar</th>
+                <th class="right month-head monthly-detail" data-month="04">Apr</th>
+                <th class="right month-head monthly-detail" data-month="05">May</th>
+                <th class="right month-head monthly-detail" data-month="06">Jun</th>
+                <th class="right month-head monthly-detail" data-month="07">Jul</th>
+                <th class="right month-head monthly-detail" data-month="08">Aug</th>
+                <th class="right month-head monthly-detail" data-month="09">Sep</th>
+                <th class="right month-head monthly-detail" data-month="10">Oct</th>
+                <th class="right month-head monthly-detail" data-month="11">Nov</th>
+                <th class="right month-head monthly-detail" data-month="12">Dec</th>
                 <th class="right total-col">YTY</th>
                 <th class="right quarter-col">Q1</th>
                 <th class="right quarter-col">Q2</th>
@@ -985,6 +1012,16 @@
     function updateThemeButton(theme) {
       const button = document.getElementById("themeToggle");
       button.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function setupMatrixToggle() {
+      const button = document.getElementById("matrixToggle");
+      const table = document.getElementById("monthlyTable");
+
+      button.addEventListener("click", () => {
+        const isCollapsed = table.classList.toggle("is-collapsed");
+        button.textContent = isCollapsed ? "Expand months" : "Collapse months";
+      });
     }
 
     function renderChartsAgain() {
@@ -1323,10 +1360,10 @@
         </div>
 
         <div class="kpi-card warning">
-          <div class="kpi-label">$ Discount + Returns</div>
-          <div class="kpi-value">${compactMoney(totals.discounts_returns)}</div>
+          <div class="kpi-label">% Discount + Returns</div>
+          <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
           <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Discounts + product returns</div>
+          <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
         </div>
 
         <div class="kpi-card">
@@ -1602,7 +1639,7 @@
         { key: "gross_sales", label: "Gross Sales", formatter: money },
         { key: "discounts", label: "Discounts", formatter: money },
         { key: "returns", label: "Returns", formatter: money },
-        { key: "discounts_returns", label: "$ Discount + Returns", formatter: money },
+        { key: "discounts_returns_pct", label: "% Discount + Returns", formatter: percent },
         { key: "shipping_charges", label: "Shipping Charges", formatter: money },
         { key: "taxes", label: "Taxes", formatter: money },
         { key: "net_sales", label: "Net Sales", formatter: money },
@@ -1622,6 +1659,10 @@
           return Number(totalRow.gross_margin_1 || 0);
         }
 
+        if (metricKey === "discounts_returns_pct") {
+          return Number(totalRow.discounts_returns_pct || 0);
+        }
+
         return Number(totalRow[metricKey] || 0);
       }
 
@@ -1630,6 +1671,10 @@
 
         if (metricKey === "gross_margin_1") {
           return Number(monthRow.gross_margin_1 || 0);
+        }
+
+        if (metricKey === "discounts_returns_pct") {
+          return Number(monthRow.discounts_returns_pct || 0);
         }
 
         return Number(monthRow[metricKey] || 0);
@@ -1644,7 +1689,7 @@
           const isSelectedQuarter = filters && filters.quarter !== "all" && QUARTERS[filters.quarter].includes(monthKey);
           const selectedClass = isSelectedMonth || isSelectedQuarter ? " selected-month" : "";
 
-          return `<td class="right${selectedClass}">${metric.formatter(value)}</td>`;
+          return `<td class="right monthly-detail${selectedClass}">${metric.formatter(value)}</td>`;
         }).join("");
 
         const ytyValue = getTotalValue(metric.key, ytyTotals);
@@ -1702,6 +1747,7 @@
     }
 
     setupTheme();
+    setupMatrixToggle();
     loadData();
   </script>
 </body>
