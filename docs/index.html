@@ -122,7 +122,7 @@
       font-weight: 650;
     }
 
-    .nav-item.active,
+    .dashboard-nav.active-view,
     .brand-nav.active-brand {
       background: var(--panel-3);
       color: var(--text);
@@ -706,7 +706,7 @@
 
       <div class="nav-section">
         <div class="nav-label">Performance</div>
-        <a class="nav-item active" href="#"><span class="nav-dot"></span>Dashboard</a>
+        <a class="nav-item dashboard-nav" href="#" data-brand="all"><span class="nav-dot"></span>Dashboard</a>
       </div>
 
       <div class="nav-section">
@@ -1113,14 +1113,16 @@
 
 
     function setupBrandNav() {
-      document.querySelectorAll(".brand-nav").forEach(item => {
+      document.querySelectorAll(".brand-nav, .dashboard-nav").forEach(item => {
         item.addEventListener("click", event => {
           event.preventDefault();
 
           const brand = item.dataset.brand;
           const brandFilter = document.getElementById("brandFilter");
 
-          if (brandFilter && [...brandFilter.options].some(option => option.value === brand)) {
+          if (!brandFilter) return;
+
+          if ([...brandFilter.options].some(option => option.value === brand)) {
             brandFilter.value = brand;
             brandFilter.dispatchEvent(new Event("change"));
           }
@@ -1129,8 +1131,17 @@
     }
 
     function updateBrandNavActive(selectedBrand) {
+      const dashboardNav = document.querySelector(".dashboard-nav");
+
+      if (dashboardNav) {
+        dashboardNav.classList.toggle("active-view", selectedBrand === "all");
+      }
+
       document.querySelectorAll(".brand-nav").forEach(item => {
-        item.classList.toggle("active-brand", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
+        item.classList.toggle(
+          "active-brand",
+          selectedBrand !== "all" && item.dataset.brand === selectedBrand
+        );
       });
     }
 
