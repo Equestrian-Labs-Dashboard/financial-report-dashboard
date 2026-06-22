@@ -198,47 +198,73 @@ def pick(row: dict, *names):
 
 def get_shopify_analytics_monthly(brand: str, store: str, token: str, year: int) -> list[dict]:
     """
-    Uses the ShopifyQL query that your store already accepted in Actions.
+    Uses ShopifyQL monthly Analytics data.
 
-    The previous version first tried invalid columns:
-    - sales_reversals
-    - shipping
+    First attempt includes Shopify profit fields:
+    - cost_of_goods_sold
+    - gross_profit
+    - gross_margin
 
-    That consumed API cost and caused throttling. This version only uses:
-    - returns
-    - shipping_charges
-
-    The log should now avoid:
-    "Column Not Found: sales_reversals"
-    "Column Not Found: shipping"
+    If the store/API does not expose those fields, it falls back to the accepted
+    sales query and COGS remains 0 until Shopify exposes profit fields through
+    ShopifyQL for that store.
     """
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
 
-    shopifyql = f"""
-    FROM sales
-    SHOW
-      total_sales,
-      gross_sales,
-      discounts,
-      returns,
-      net_sales,
-      shipping_charges,
-      taxes,
-      orders
-    TIMESERIES month
-    SINCE {start_date}
-    UNTIL {end_date}
-    ORDER BY month ASC
-    """
+    queries = [
+        f"""
+        FROM sales
+        SHOW
+          total_sales,
+          gross_sales,
+          discounts,
+          returns,
+          net_sales,
+          shipping_charges,
+          taxes,
+          cost_of_goods_sold,
+          gross_profit,
+          gross_margin,
+          orders
+        TIMESERIES month
+        SINCE {start_date}
+        UNTIL {end_date}
+        ORDER BY month ASC
+        """,
+        f"""
+        FROM sales
+        SHOW
+          total_sales,
+          gross_sales,
+          discounts,
+          returns,
+          net_sales,
+          shipping_charges,
+          taxes,
+          orders
+        TIMESERIES month
+        SINCE {start_date}
+        UNTIL {end_date}
+        ORDER BY month ASC
+        """
+    ]
 
-    response = run_shopifyql(store, token, shopifyql)
-    rows = parse_shopifyql_table(response)
+    last_error = None
 
-    if not rows:
-        raise RuntimeError("ShopifyQL returned no rows.")
+    for shopifyql in queries:
+        try:
+            response = run_shopifyql(store, token, shopifyql)
+            rows = parse_shopifyql_table(response)
 
-    return normalize_shopifyql_rows(brand, year, rows)
+            if rows:
+                return normalize_shopifyql_rows(brand, year, rows)
+
+        except Exception as exc:
+            last_error = exc
+            print(f"{brand} {year}: ShopifyQL attempt failed: {exc}")
+
+    raise RuntimeError(f"All ShopifyQL attempts failed. Last error: {last_error}")
 
 
 def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[dict]:
@@ -257,12 +283,34 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
         total_sales = money(pick(row, "total_sales", "Total sales"))
         transactions = money(pick(row, "orders", "Orders"))
 
+        cogs = abs(money(
+            pick(
+                row,
+                "cost_of_goods_sold",
+                "Cost of goods sold",
+                "costs",
+                "Costs",
+                "cogs",
+                "COGS"
+            )
+        ))
+
         discounts_returns = discounts + returns
         discounts_returns_pct = discounts_returns / gross_sales if gross_sales else 0
 
-        cogs = 0.0
-        gross_profit_1 = net_sales - cogs
-        gross_margin_1 = gross_profit_1 / net_sales if net_sales else 0
+        analytics_gross_profit = pick(row, "gross_profit", "Gross profit")
+        analytics_gross_margin = pick(row, "gross_margin", "Gross margin")
+
+        if analytics_gross_profit is not None:
+            gross_profit_1 = money(analytics_gross_profit)
+        else:
+            gross_profit_1 = net_sales - cogs
+
+        if analytics_gross_margin is not None:
+            gross_margin_raw = money(analytics_gross_margin)
+            gross_margin_1 = gross_margin_raw / 100 if gross_margin_raw > 1 else gross_margin_raw
+        else:
+            gross_margin_1 = gross_profit_1 / net_sales if net_sales else 0
 
         normalized.append({
             "brand": brand,
