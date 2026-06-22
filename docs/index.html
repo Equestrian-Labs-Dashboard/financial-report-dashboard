@@ -765,6 +765,17 @@
           <select id="monthFilter"></select>
         </div>
 
+        <div class="filter-group" id="quarterFilterGroup">
+          <span class="filter-label">Quarter</span>
+          <select id="quarterFilter">
+            <option value="all">All Quarters</option>
+            <option value="Q1">Q1 · Jan–Mar</option>
+            <option value="Q2">Q2 · Apr–Jun</option>
+            <option value="Q3">Q3 · Jul–Sep</option>
+            <option value="Q4">Q4 · Oct–Dec</option>
+          </select>
+        </div>
+
         <div class="filter-group">
           <span class="filter-label">Compare Vs</span>
           <select>
@@ -968,6 +979,20 @@
       "07", "08", "09", "10", "11", "12"
     ];
 
+    const QUARTERS = {
+      Q1: ["01", "02", "03"],
+      Q2: ["04", "05", "06"],
+      Q3: ["07", "08", "09"],
+      Q4: ["10", "11", "12"]
+    };
+
+    const QUARTER_LABELS = {
+      Q1: "Q1 · Jan–Mar",
+      Q2: "Q2 · Apr–Jun",
+      Q3: "Q3 · Jul–Sep",
+      Q4: "Q4 · Oct–Dec"
+    };
+
     function setupTheme() {
       const savedTheme = localStorage.getItem("financialReportTheme") || "dark";
       document.documentElement.setAttribute("data-theme", savedTheme);
@@ -1089,6 +1114,8 @@
       const brandFilter = document.getElementById("brandFilter");
       const yearFilter = document.getElementById("yearFilter");
       const monthFilter = document.getElementById("monthFilter");
+      const quarterFilter = document.getElementById("quarterFilter");
+      const quarterFilterGroup = document.getElementById("quarterFilterGroup");
 
       const brands = safeArray(DATA.brands_available);
       const years = safeArray(DATA.years_available);
@@ -1111,29 +1138,63 @@
           .map(value => `<option value="${value}">${MONTHS[value]}</option>`)
           .join("");
 
-      // Always start with the full-year view. The user can then pick Jan, Feb, etc.
       monthFilter.value = "all";
+      quarterFilter.value = "all";
 
-      brandFilter.addEventListener("change", render);
+      function syncQuarterVisibility() {
+        const isCavali = brandFilter.value === "Cavali";
+        quarterFilterGroup.style.display = isCavali ? "flex" : "none";
+
+        if (!isCavali) {
+          quarterFilter.value = "all";
+        }
+      }
+
+      brandFilter.addEventListener("change", () => {
+        syncQuarterVisibility();
+        render();
+      });
+
       yearFilter.addEventListener("change", render);
-      monthFilter.addEventListener("change", render);
+
+      monthFilter.addEventListener("change", () => {
+        if (monthFilter.value !== "all") {
+          quarterFilter.value = "all";
+        }
+        render();
+      });
+
+      quarterFilter.addEventListener("change", () => {
+        if (quarterFilter.value !== "all") {
+          monthFilter.value = "all";
+        }
+        render();
+      });
+
+      syncQuarterVisibility();
     }
 
     function selectedFilters() {
       return {
         brand: document.getElementById("brandFilter").value,
         year: Number(document.getElementById("yearFilter").value),
-        month: document.getElementById("monthFilter").value
+        month: document.getElementById("monthFilter").value,
+        quarter: document.getElementById("quarterFilter").value
       };
+    };
     }
 
     function filterRows(rows, filters) {
       return rows.filter(row => {
+        const rowMonth = String(row.month).padStart(2, "0");
         const brandMatch = filters.brand === "all" || row.brand === filters.brand;
         const yearMatch = Number(row.year) === filters.year;
-        const monthMatch = filters.month === "all" || String(row.month).padStart(2, "0") === filters.month;
-        return brandMatch && yearMatch && monthMatch;
+        const monthMatch = filters.month === "all" || rowMonth === filters.month;
+        const quarterMatch = !filters.quarter || filters.quarter === "all" || QUARTERS[filters.quarter].includes(rowMonth);
+
+        return brandMatch && yearMatch && monthMatch && quarterMatch;
       });
+    });
     }
 
     function sumRows(rows) {
@@ -1177,13 +1238,19 @@
       const monthlyRows = safeArray(DATA.shopify_kpis_by_brand_month);
       const yearRows = safeArray(DATA.shopify_kpis_by_brand_year);
 
-      const cardBaseRows = filters.month === "all" ? yearRows : monthlyRows;
-      const selectedRows = filterRows(cardBaseRows, filters);
+      let selectedRows;
+
+      if (filters.month !== "all" || filters.quarter !== "all") {
+        selectedRows = filterRows(monthlyRows, filters);
+      } else {
+        selectedRows = filterRows(yearRows, filters);
+      }
 
       const yearlyMonthlyRows = filterRows(monthlyRows, {
         brand: filters.brand,
         year: filters.year,
-        month: "all"
+        month: "all",
+        quarter: "all"
       });
 
       return {
@@ -1198,15 +1265,21 @@
       const selected = getSelectedRows();
 
       const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
-      const monthText = selected.filters.month === "all" ? "YTD / All Months" : MONTHS[selected.filters.month];
+
+      let periodText = "YTD / All Months";
+      if (selected.filters.quarter !== "all") {
+        periodText = QUARTER_LABELS[selected.filters.quarter];
+      } else if (selected.filters.month !== "all") {
+        periodText = MONTHS[selected.filters.month];
+      }
 
       document.getElementById("dateStrip").textContent =
-        `${brandText} · ${selected.filters.year} · ${monthText} · Shopify KPIs confirmed ✓`;
+        `${brandText} · ${selected.filters.year} · ${periodText} · Shopify KPIs confirmed ✓`;
 
       document.getElementById("matrixMeta").textContent =
         `${brandText} · ${selected.filters.year}`;
 
-      highlightSelectedMonth(selected.filters.month);
+      highlightSelectedPeriod(selected.filters);
       renderMonthlyMatrix(selected.trendRows, selected.filters);
       renderKpis(selected.totals);
       renderSalesTrend(selected.trendRows);
@@ -1215,11 +1288,15 @@
       renderNotes(selected);
     }
 
-    function highlightSelectedMonth(selectedMonth) {
+    function highlightSelectedPeriod(filters) {
       document.querySelectorAll(".month-head").forEach(cell => {
         cell.classList.remove("selected-month");
 
-        if (selectedMonth !== "all" && cell.dataset.month === selectedMonth) {
+        if (filters.month !== "all" && cell.dataset.month === filters.month) {
+          cell.classList.add("selected-month");
+        }
+
+        if (filters.quarter !== "all" && QUARTERS[filters.quarter].includes(cell.dataset.month)) {
           cell.classList.add("selected-month");
         }
       });
