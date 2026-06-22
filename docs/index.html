@@ -762,13 +762,6 @@
             <option value="Q4">Q4 · Oct–Dec</option>
           </select>
         </div>
-
-        <div class="filter-group">
-          <span class="filter-label">Compare Vs</span>
-          <select>
-            <option>Same period last year (YOY)</option>
-          </select>
-        </div>
       </section>
 
       <section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
@@ -784,28 +777,7 @@
 
         <div class="matrix-wrapper">
           <table class="monthly-table is-collapsed" id="monthlyTable">
-            <thead>
-              <tr>
-                <th class="sticky-kpi">KPI</th>
-                <th class="right month-head monthly-detail" data-month="01">Jan</th>
-                <th class="right month-head monthly-detail" data-month="02">Feb</th>
-                <th class="right month-head monthly-detail" data-month="03">Mar</th>
-                <th class="right month-head monthly-detail" data-month="04">Apr</th>
-                <th class="right month-head monthly-detail" data-month="05">May</th>
-                <th class="right month-head monthly-detail" data-month="06">Jun</th>
-                <th class="right month-head monthly-detail" data-month="07">Jul</th>
-                <th class="right month-head monthly-detail" data-month="08">Aug</th>
-                <th class="right month-head monthly-detail" data-month="09">Sep</th>
-                <th class="right month-head monthly-detail" data-month="10">Oct</th>
-                <th class="right month-head monthly-detail" data-month="11">Nov</th>
-                <th class="right month-head monthly-detail" data-month="12">Dec</th>
-                <th class="right total-col">YTY</th>
-                <th class="right quarter-col">Q1</th>
-                <th class="right quarter-col">Q2</th>
-                <th class="right quarter-col">Q3</th>
-                <th class="right quarter-col">Q4</th>
-              </tr>
-            </thead>
+            <thead id="monthlyMatrixHead"></thead>
             <tbody id="monthlyMatrix"></tbody>
           </table>
         </div>
@@ -1249,8 +1221,8 @@
       document.getElementById("matrixMeta").textContent =
         `${brandText} · ${selected.filters.year}`;
 
-      highlightSelectedPeriod(selected.filters);
       renderMonthlyMatrix(selected.trendRows, selected.filters);
+      highlightSelectedPeriod(selected.filters);
       renderKpis(selected.totals);
       renderSalesTrend(selected.trendRows);
       renderDiscountReturns(selected.trendRows);
@@ -1580,7 +1552,47 @@
 
     function renderMonthlyMatrix(rows, filters) {
       const lookup = getMonthLookup(rows);
-      const monthKeys = MONTH_ORDER;
+      const isQuarterSelected = filters && filters.quarter !== "all";
+      const selectedQuarter = isQuarterSelected ? filters.quarter : null;
+
+      const monthKeys = isQuarterSelected ? QUARTERS[selectedQuarter] : MONTH_ORDER;
+      const quarterKeys = isQuarterSelected ? [selectedQuarter] : ["Q1", "Q2", "Q3", "Q4"];
+
+      const table = document.getElementById("monthlyTable");
+      const toggle = document.getElementById("matrixToggle");
+
+      if (isQuarterSelected) {
+        table.classList.remove("is-collapsed");
+        toggle.style.display = "none";
+      } else {
+        toggle.style.display = "inline-flex";
+      }
+
+      const monthHeaders = monthKeys
+        .map(monthKey => {
+          const selectedClass = isQuarterSelected || (filters.month !== "all" && filters.month === monthKey)
+            ? " selected-month"
+            : "";
+
+          return `<th class="right month-head monthly-detail${selectedClass}" data-month="${monthKey}">${MONTHS[monthKey]}</th>`;
+        })
+        .join("");
+
+      const quarterHeaders = quarterKeys
+        .map(quarterKey => {
+          const selectedClass = isQuarterSelected && quarterKey === selectedQuarter ? " selected-month" : "";
+          return `<th class="right quarter-col${selectedClass}">${quarterKey}</th>`;
+        })
+        .join("");
+
+      document.getElementById("monthlyMatrixHead").innerHTML = `
+        <tr>
+          <th class="sticky-kpi">KPI</th>
+          ${monthHeaders}
+          <th class="right total-col">YTY</th>
+          ${quarterHeaders}
+        </tr>
+      `;
 
       const metrics = [
         { key: "total_sales", label: "Total Sales", formatter: money },
@@ -1632,20 +1644,19 @@
         const monthCells = monthKeys.map(monthKey => {
           const row = lookup[monthKey];
           const value = getMonthlyValue(metric.key, row);
-
-          const isSelectedMonth = filters && filters.month !== "all" && filters.month === monthKey;
-          const isSelectedQuarter = filters && filters.quarter !== "all" && QUARTERS[filters.quarter].includes(monthKey);
-          const selectedClass = isSelectedMonth || isSelectedQuarter ? " selected-month" : "";
+          const selectedClass = isQuarterSelected || (filters && filters.month !== "all" && filters.month === monthKey)
+            ? " selected-month"
+            : "";
 
           return `<td class="right monthly-detail${selectedClass}">${metric.formatter(value)}</td>`;
         }).join("");
 
         const ytyValue = getTotalValue(metric.key, ytyTotals);
 
-        const quarterCells = ["Q1", "Q2", "Q3", "Q4"].map(quarterKey => {
+        const quarterCells = quarterKeys.map(quarterKey => {
           const qTotals = sumRows(quarterRows(quarterKey));
           const qValue = getTotalValue(metric.key, qTotals);
-          const selectedClass = filters && filters.quarter === quarterKey ? " selected-month" : "";
+          const selectedClass = isQuarterSelected && quarterKey === selectedQuarter ? " selected-month" : "";
 
           return `<td class="right quarter-col${selectedClass}">${metric.formatter(qValue)}</td>`;
         }).join("");
