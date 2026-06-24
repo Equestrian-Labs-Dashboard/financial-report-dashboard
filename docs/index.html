@@ -1150,7 +1150,8 @@
         net_sales: 0,
         cogs: 0,
         gross_profit_1: 0,
-        transactions: 0
+        transactions: 0,
+        net_gross_ratio: 0
       };
 
       rows.forEach(row => {
@@ -1169,6 +1170,7 @@
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
+      result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
 
       return result;
     }
@@ -1261,20 +1263,6 @@
         </div>
 
         <div class="kpi-card warning">
-          <div class="kpi-label">Discounts</div>
-          <div class="kpi-value">${compactMoney(totals.discounts)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Order discounts</div>
-        </div>
-
-        <div class="kpi-card warning">
-          <div class="kpi-label">Returns</div>
-          <div class="kpi-value">${compactMoney(totals.returns)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Product returns</div>
-        </div>
-
-        <div class="kpi-card warning">
           <div class="kpi-label">Discounts + Returns</div>
           <div class="kpi-value">${compactMoney(totals.discounts_returns)}</div>
           <div class="kpi-chip">Calculated</div>
@@ -1305,7 +1293,7 @@
         <div class="kpi-card positive">
           <div class="kpi-label">Net Sales</div>
           <div class="kpi-value">${compactMoney(totals.net_sales)}</div>
-          <div class="kpi-chip green">Confirmed</div>
+          <div class="kpi-chip green">Shopify</div>
           <div class="kpi-note">Gross Sales - Discounts - Returns</div>
         </div>
 
@@ -1321,6 +1309,13 @@
           <div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div>
           <div class="kpi-chip green">Calculated</div>
           <div class="kpi-note">Net Sales - COGS</div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-label">Net / Gross Ratio</div>
+          <div class="kpi-value">${percent(totals.net_gross_ratio)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">Net Sales / Gross Sales</div>
         </div>
 
         <div class="kpi-card purple">
@@ -1373,6 +1368,7 @@
         .map(row => ({
           ...row,
           gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+          net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
           discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
         }));
     }
@@ -1392,18 +1388,32 @@
               data: monthly.map(row => row.gross_sales),
               backgroundColor: "#3b82f6",
               borderRadius: 5,
-              maxBarThickness: 36
+              maxBarThickness: 36,
+              yAxisID: "y"
             },
             {
               label: "Net Sales",
               data: monthly.map(row => row.net_sales),
               backgroundColor: "#22c55e",
               borderRadius: 5,
-              maxBarThickness: 36
+              maxBarThickness: 36,
+              yAxisID: "y"
+            },
+            {
+              type: "line",
+              label: "Net / Gross Ratio",
+              data: monthly.map(row => row.net_gross_ratio * 100),
+              borderColor: "#a78bfa",
+              backgroundColor: "#a78bfa",
+              tension: 0.35,
+              pointRadius: 2,
+              pointHoverRadius: 4,
+              borderWidth: 2,
+              yAxisID: "y1"
             }
           ]
         },
-        options: chartOptionsMoney()
+        options: chartOptionsMoneyWithRatio()
       });
     }
 
@@ -1425,11 +1435,23 @@
               tension: 0.35,
               pointRadius: 2,
               pointHoverRadius: 4,
-              borderWidth: 2
+              borderWidth: 2,
+              yAxisID: "y"
+            },
+            {
+              label: "% Discount + Returns",
+              data: monthly.map(row => row.discounts_returns_pct * 100),
+              borderColor: "#a78bfa",
+              backgroundColor: "#a78bfa",
+              tension: 0.35,
+              pointRadius: 2,
+              pointHoverRadius: 4,
+              borderWidth: 2,
+              yAxisID: "y1"
             }
           ]
         },
-        options: chartOptionsMoney(true)
+        options: chartOptionsMoneyWithRatio(true)
       });
     }
 
@@ -1491,6 +1513,65 @@
               color: cssVar("--muted"),
               font: { size: 10 },
               callback: value => compactMoney(value)
+            }
+          }
+        }
+      };
+    }
+
+    function chartOptionsMoneyWithRatio(showLegend = true) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            display: showLegend,
+            position: "bottom",
+            labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 }
+          },
+          tooltip: {
+            callbacks: {
+              label: context => {
+                if (context.dataset.yAxisID === "y1") {
+                  return `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
+                    maximumFractionDigits: 0
+                  })}%`;
+                }
+
+                return `${context.dataset.label}: ${money(context.raw)}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: "rgba(127,154,183,0.10)" },
+            ticks: { color: cssVar("--muted"), font: { size: 10 } }
+          },
+          y: {
+            beginAtZero: true,
+            position: "left",
+            grid: { color: "rgba(127,154,183,0.14)" },
+            ticks: {
+              color: cssVar("--muted"),
+              font: { size: 10 },
+              callback: value => compactMoney(value)
+            }
+          },
+          y1: {
+            beginAtZero: true,
+            position: "right",
+            grid: { drawOnChartArea: false },
+            ticks: {
+              color: cssVar("--muted"),
+              font: { size: 10 },
+              callback: value => Number(value).toLocaleString("en-US", {
+                maximumFractionDigits: 0
+              }) + "%"
             }
           }
         }
@@ -1589,7 +1670,7 @@
         <tr>
           <th class="sticky-kpi">KPI</th>
           ${monthHeaders}
-          <th class="right total-col">YTY</th>
+          <th class="right total-col">YTD</th>
           ${quarterHeaders}
         </tr>
       `;
@@ -1603,6 +1684,7 @@
         { key: "shipping_charges", label: "Shipping Charges", formatter: money },
         { key: "taxes", label: "Taxes", formatter: money },
         { key: "net_sales", label: "Net Sales", formatter: money },
+        { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
         { key: "cogs", label: "COGS", formatter: money },
         { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
         { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent }
@@ -1619,6 +1701,10 @@
           return Number(totalRow.gross_margin_1 || 0);
         }
 
+        if (metricKey === "net_gross_ratio") {
+          return Number(totalRow.net_gross_ratio || 0);
+        }
+
         if (metricKey === "discounts_returns_pct") {
           return Number(totalRow.discounts_returns_pct || 0);
         }
@@ -1631,6 +1717,10 @@
 
         if (metricKey === "gross_margin_1") {
           return Number(monthRow.gross_margin_1 || 0);
+        }
+
+        if (metricKey === "net_gross_ratio") {
+          return Number(monthRow.net_gross_ratio || 0);
         }
 
         if (metricKey === "discounts_returns_pct") {
@@ -1700,7 +1790,7 @@
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Gross Margin 1 is <strong>${percent(totals.gross_margin_1)}</strong>. If COGS remains 0, product cost still needs to be connected or enriched.</span>
+          <span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Gross Margin 1 is calculated as Gross Profit 1 / Net Sales.</span>
         </li>
       `;
     }
