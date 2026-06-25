@@ -333,8 +333,10 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": transactions,
-            "abandoned_checkouts": 0,
-            "abandoned_checkout_rate": 0,
+            "sessions_reached_checkout": 0,
+            "sessions_completed_checkout": 0,
+            "checkout_abandonments": 0,
+            "checkout_abandonment_rate": 0,
         })
 
     return normalized
@@ -522,94 +524,114 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": 1,
-            "abandoned_checkouts": 0,
-            "abandoned_checkout_rate": 0,
+            "sessions_reached_checkout": 0,
+            "sessions_completed_checkout": 0,
+            "checkout_abandonments": 0,
+            "checkout_abandonment_rate": 0,
         })
 
     return rows
 
 
 
-def get_abandoned_checkouts_monthly(brand: str, store: str, token: str, year: int) -> dict[str, int]:
-    """
-    Returns monthly abandoned checkout counts.
 
-    Shopify defines an abandoned checkout as a checkout where the customer added
-    contact information but didn't complete the purchase. This query requires:
-    - read_orders access scope
-    - staff/app permission to manage abandoned checkouts
 
-    If permissions are missing, this safely returns zeros and the dashboard still works.
+def get_checkout_funnel_monthly(brand: str, store: str, token: str, year: int) -> dict[str, dict[str, float]]:
     """
-    query = """
-    query AbandonedCheckouts($first: Int!, $after: String, $query: String!) {
-      abandonedCheckouts(first: $first, after: $after, query: $query, sortKey: CREATED_AT) {
-        nodes {
-          id
-          createdAt
-          completedAt
+    Pulls checkout funnel metrics from ShopifyQL sessions.
+
+    Shopify Analytics fields used:
+    - sessions_that_reached_checkout
+    - sessions_that_reached_and_completed_checkout
+
+    Dashboard calculation:
+    - checkout_abandonments = reached_checkout - completed_checkout
+    - checkout_abandonment_rate = checkout_abandonments / reached_checkout
+    """
+    start_date = f"{year}-01-01"
+    end_date = f"{year}-12-31"
+
+    monthly = {
+        str(month).zfill(2): {
+            "sessions_reached_checkout": 0,
+            "sessions_completed_checkout": 0,
+            "checkout_abandonments": 0,
+            "checkout_abandonment_rate": 0,
         }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
+        for month in range(1, 13)
     }
-    """
 
-    monthly = {str(month).zfill(2): 0 for month in range(1, 13)}
-    after = None
-    search_query = f"created_at:>={year}-01-01 created_at:<={year}-12-31"
+    shopifyql = f"""
+    FROM sessions
+    SHOW
+      sessions_that_reached_checkout,
+      sessions_that_reached_and_completed_checkout
+    TIMESERIES month
+    SINCE {start_date}
+    UNTIL {end_date}
+    ORDER BY month ASC
+    """
 
     try:
-        while True:
-            data = graphql_request(
-                store=store,
-                token=token,
-                query=query,
-                variables={
-                    "first": 250,
-                    "after": after,
-                    "query": search_query,
-                },
+        response = run_shopifyql(store, token, shopifyql)
+        rows = parse_shopifyql_table(response)
+
+        for row in rows:
+            raw_month = str(pick(row, "month", "Month", "date", "Date", "day", "Day") or "")
+            month = extract_month(raw_month)
+
+            reached = money(
+                pick(
+                    row,
+                    "sessions_that_reached_checkout",
+                    "Sessions that reached checkout",
+                )
+            )
+            completed = money(
+                pick(
+                    row,
+                    "sessions_that_reached_and_completed_checkout",
+                    "Sessions that reached and completed checkout",
+                )
             )
 
-            connection = data.get("data", {}).get("abandonedCheckouts", {})
-            nodes = connection.get("nodes", []) or []
+            abandoned = max(reached - completed, 0)
+            rate = abandoned / reached if reached else 0
 
-            for node in nodes:
-                created_at = node.get("createdAt") or ""
-                if len(created_at) >= 7:
-                    month = created_at[5:7]
-                    if month in monthly:
-                        monthly[month] += 1
+            if month in monthly:
+                monthly[month] = {
+                    "sessions_reached_checkout": reached,
+                    "sessions_completed_checkout": completed,
+                    "checkout_abandonments": abandoned,
+                    "checkout_abandonment_rate": rate,
+                }
 
-            page_info = connection.get("pageInfo") or {}
-            if not page_info.get("hasNextPage"):
-                break
-
-            after = page_info.get("endCursor")
+        total_reached = sum(item["sessions_reached_checkout"] for item in monthly.values())
+        total_completed = sum(item["sessions_completed_checkout"] for item in monthly.values())
+        print(
+            f"{brand} {year}: checkout funnel reached={int(total_reached)} "
+            f"completed={int(total_completed)}"
+        )
 
     except Exception as exc:
-        print(f"{brand} {year}: Abandoned checkouts unavailable: {exc}")
-        return monthly
+        print(f"{brand} {year}: Shopify sessions checkout funnel unavailable: {exc}")
 
-    print(f"{brand} {year}: Abandoned checkouts: {sum(monthly.values())}")
     return monthly
 
 
-def attach_abandoned_checkout_metrics(rows: list[dict], abandoned_by_month: dict[str, int]) -> list[dict]:
+def attach_checkout_funnel_metrics(rows: list[dict], checkout_funnel_by_month: dict[str, dict[str, float]]) -> list[dict]:
     for row in rows:
         month = str(row.get("month", "")).zfill(2)
-        abandoned = int(abandoned_by_month.get(month, 0) or 0)
-        transactions = float(row.get("transactions") or 0)
+        funnel = checkout_funnel_by_month.get(month, {})
 
-        row["abandoned_checkouts"] = abandoned
-        row["abandoned_checkout_rate"] = (
-            abandoned / (abandoned + transactions)
-            if (abandoned + transactions)
-            else 0
-        )
+        reached = float(funnel.get("sessions_reached_checkout") or 0)
+        completed = float(funnel.get("sessions_completed_checkout") or 0)
+        abandoned = max(reached - completed, 0)
+
+        row["sessions_reached_checkout"] = reached
+        row["sessions_completed_checkout"] = completed
+        row["checkout_abandonments"] = abandoned
+        row["checkout_abandonment_rate"] = abandoned / reached if reached else 0
 
     return rows
 
@@ -630,11 +652,11 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
         print(f"{brand} Shopify orders: {len(orders)}")
         rows = normalize_shopify_orders(brand=brand, orders=orders, year=year)
 
-    abandoned_by_month = get_abandoned_checkouts_monthly(
+    checkout_funnel_by_month = get_checkout_funnel_monthly(
         brand=brand,
         store=store,
         token=token,
         year=year,
     )
 
-    return attach_abandoned_checkout_metrics(rows, abandoned_by_month)
+    return attach_checkout_funnel_metrics(rows, checkout_funnel_by_month)
