@@ -540,13 +540,15 @@ def get_checkout_funnel_monthly(brand: str, store: str, token: str, year: int) -
     """
     Pulls checkout funnel metrics from ShopifyQL sessions.
 
-    Shopify Analytics fields used:
-    - sessions_that_reached_checkout
-    - sessions_that_reached_and_completed_checkout
+    Preferred ShopifyQL formula:
+    - Reached Checkout: sessions_that_reached_checkout
+    - Completed Checkout: sessions_that_reached_and_completed_checkout
+    - Checkout Abandonments: reached - completed
+    - Checkout Abandonment Rate: (reached - completed) / reached
 
-    Dashboard calculation:
-    - checkout_abandonments = reached_checkout - completed_checkout
-    - checkout_abandonment_rate = checkout_abandonments / reached_checkout
+    The first query uses GROUP BY month because that is what Shopify Analytics
+    accepts for this sessions funnel in some stores. The second query keeps
+    TIMESERIES month as a backup.
     """
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
@@ -557,64 +559,105 @@ def get_checkout_funnel_monthly(brand: str, store: str, token: str, year: int) -
             "sessions_completed_checkout": 0,
             "checkout_abandonments": 0,
             "checkout_abandonment_rate": 0,
+            "checkout_funnel_source": "none",
         }
         for month in range(1, 13)
     }
 
-    shopifyql = f"""
-    FROM sessions
-    SHOW
-      sessions_that_reached_checkout,
-      sessions_that_reached_and_completed_checkout
-    TIMESERIES month
-    SINCE {start_date}
-    UNTIL {end_date}
-    ORDER BY month ASC
-    """
+    shopifyql_attempts = [
+        f"""
+        FROM sessions
+        SHOW
+          sessions_that_reached_checkout,
+          sessions_that_reached_and_completed_checkout
+        GROUP BY month
+        SINCE {start_date}
+        UNTIL {end_date}
+        ORDER BY month ASC
+        """,
+        f"""
+        FROM sessions
+        SHOW
+          sessions_that_reached_checkout,
+          sessions_that_reached_and_completed_checkout
+        TIMESERIES month
+        SINCE {start_date}
+        UNTIL {end_date}
+        ORDER BY month ASC
+        """,
+    ]
 
-    try:
-        response = run_shopifyql(store, token, shopifyql)
-        rows = parse_shopifyql_table(response)
+    last_error = None
 
-        for row in rows:
-            raw_month = str(pick(row, "month", "Month", "date", "Date", "day", "Day") or "")
-            month = extract_month(raw_month)
+    for shopifyql in shopifyql_attempts:
+        try:
+            response = run_shopifyql(store, token, shopifyql)
+            rows = parse_shopifyql_table(response)
 
-            reached = money(
-                pick(
-                    row,
-                    "sessions_that_reached_checkout",
-                    "Sessions that reached checkout",
+            for row in rows:
+                raw_month = str(
+                    pick(
+                        row,
+                        "month",
+                        "Month",
+                        "date",
+                        "Date",
+                        "day",
+                        "Day",
+                        "group",
+                        "Group",
+                    )
+                    or ""
                 )
-            )
-            completed = money(
-                pick(
-                    row,
-                    "sessions_that_reached_and_completed_checkout",
-                    "Sessions that reached and completed checkout",
+                month = extract_month(raw_month)
+
+                reached = money(
+                    pick(
+                        row,
+                        "sessions_that_reached_checkout",
+                        "Sessions that reached checkout",
+                        "Reached checkout",
+                    )
                 )
+                completed = money(
+                    pick(
+                        row,
+                        "sessions_that_reached_and_completed_checkout",
+                        "Sessions that reached and completed checkout",
+                        "Completed checkout",
+                    )
+                )
+
+                abandoned = max(reached - completed, 0)
+                rate = abandoned / reached if reached else 0
+
+                if month in monthly:
+                    monthly[month] = {
+                        "sessions_reached_checkout": reached,
+                        "sessions_completed_checkout": completed,
+                        "checkout_abandonments": abandoned,
+                        "checkout_abandonment_rate": rate,
+                        "checkout_funnel_source": "shopifyql_sessions",
+                    }
+
+            total_reached = sum(item["sessions_reached_checkout"] for item in monthly.values())
+            total_completed = sum(item["sessions_completed_checkout"] for item in monthly.values())
+
+            print(
+                f"{brand} {year}: ShopifyQL checkout funnel reached={int(total_reached)} "
+                f"completed={int(total_completed)}"
             )
 
-            abandoned = max(reached - completed, 0)
-            rate = abandoned / reached if reached else 0
+            return monthly
 
-            if month in monthly:
-                monthly[month] = {
-                    "sessions_reached_checkout": reached,
-                    "sessions_completed_checkout": completed,
-                    "checkout_abandonments": abandoned,
-                    "checkout_abandonment_rate": rate,
-                }
+        except Exception as exc:
+            last_error = exc
+            print(f"{brand} {year}: ShopifyQL sessions checkout funnel attempt failed: {exc}")
 
-        total_reached = sum(item["sessions_reached_checkout"] for item in monthly.values())
-        total_completed = sum(item["sessions_completed_checkout"] for item in monthly.values())
-        print(
-            f"{brand} {year}: checkout funnel reached={int(total_reached)} "
-            f"completed={int(total_completed)}"
-        )
-
-    except Exception as exc:
-        print(f"{brand} {year}: Shopify sessions checkout funnel unavailable: {exc}")
+    print(
+        f"{brand} {year}: ShopifyQL checkout funnel unavailable after all attempts. "
+        f"Last error: {last_error}"
+    )
 
     return monthly
 
@@ -632,6 +675,7 @@ def attach_checkout_funnel_metrics(rows: list[dict], checkout_funnel_by_month: d
         row["sessions_completed_checkout"] = completed
         row["checkout_abandonments"] = abandoned
         row["checkout_abandonment_rate"] = abandoned / reached if reached else 0
+        row["checkout_funnel_source"] = funnel.get("checkout_funnel_source") or "none"
 
     return rows
 
