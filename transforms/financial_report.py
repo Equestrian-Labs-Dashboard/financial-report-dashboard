@@ -15,14 +15,21 @@ def build_financial_report(
             "total_sales", "gross_sales", "discounts", "returns",
             "discounts_returns", "discounts_returns_pct",
             "shipping_charges", "taxes", "net_sales", "cogs",
-            "gross_profit_1", "gross_margin_1", "transactions"
+            "gross_profit_1", "gross_margin_1", "transactions",
+            "sessions_reached_checkout",
+            "sessions_completed_checkout",
+            "checkout_abandonments",
+            "checkout_abandonment_rate",
         ])
 
     required_cols = [
         "brand", "year", "month", "channel",
         "total_sales", "gross_sales", "discounts", "returns",
         "discounts_returns", "shipping_charges", "taxes",
-        "net_sales", "cogs", "gross_profit_1", "transactions"
+        "net_sales", "cogs", "gross_profit_1", "transactions",
+        "sessions_reached_checkout",
+        "sessions_completed_checkout",
+        "checkout_abandonments",
     ]
 
     for col in required_cols:
@@ -41,6 +48,9 @@ def build_financial_report(
         "cogs",
         "gross_profit_1",
         "transactions",
+        "sessions_reached_checkout",
+        "sessions_completed_checkout",
+        "checkout_abandonments",
     ]
 
     for col in numeric_cols:
@@ -50,6 +60,14 @@ def build_financial_report(
     shopify_df["channel"] = shopify_df["channel"].astype(str)
     shopify_df["year"] = pd.to_numeric(shopify_df["year"], errors="coerce").fillna(0).astype(int)
     shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
+
+    # Recalculate abandonment count from Shopify session funnel when reached/completed are present.
+    # Formula requested:
+    # Checkout Abandonments = sessions_reached_checkout - sessions_completed_checkout
+    # Checkout Abandonment Rate = Checkout Abandonments / sessions_reached_checkout
+    shopify_df["checkout_abandonments"] = (
+        shopify_df["sessions_reached_checkout"] - shopify_df["sessions_completed_checkout"]
+    ).clip(lower=0)
 
     shopify_by_brand_year = (
         shopify_df
@@ -66,6 +84,9 @@ def build_financial_report(
             cogs=("cogs", "sum"),
             gross_profit_1=("gross_profit_1", "sum"),
             transactions=("transactions", "sum"),
+            sessions_reached_checkout=("sessions_reached_checkout", "sum"),
+            sessions_completed_checkout=("sessions_completed_checkout", "sum"),
+            checkout_abandonments=("checkout_abandonments", "sum"),
         )
     )
 
@@ -77,6 +98,16 @@ def build_financial_report(
     shopify_by_brand_year["gross_margin_1"] = (
         shopify_by_brand_year["gross_profit_1"]
         / shopify_by_brand_year["net_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_brand_year["net_gross_ratio"] = (
+        shopify_by_brand_year["net_sales"]
+        / shopify_by_brand_year["gross_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_brand_year["checkout_abandonment_rate"] = (
+        shopify_by_brand_year["checkout_abandonments"]
+        / shopify_by_brand_year["sessions_reached_checkout"].replace(0, pd.NA)
     ).fillna(0)
 
     shopify_by_brand_month = (
@@ -94,6 +125,9 @@ def build_financial_report(
             cogs=("cogs", "sum"),
             gross_profit_1=("gross_profit_1", "sum"),
             transactions=("transactions", "sum"),
+            sessions_reached_checkout=("sessions_reached_checkout", "sum"),
+            sessions_completed_checkout=("sessions_completed_checkout", "sum"),
+            checkout_abandonments=("checkout_abandonments", "sum"),
         )
     )
 
@@ -105,6 +139,16 @@ def build_financial_report(
     shopify_by_brand_month["gross_margin_1"] = (
         shopify_by_brand_month["gross_profit_1"]
         / shopify_by_brand_month["net_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_brand_month["net_gross_ratio"] = (
+        shopify_by_brand_month["net_sales"]
+        / shopify_by_brand_month["gross_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    shopify_by_brand_month["checkout_abandonment_rate"] = (
+        shopify_by_brand_month["checkout_abandonments"]
+        / shopify_by_brand_month["sessions_reached_checkout"].replace(0, pd.NA)
     ).fillna(0)
 
     shopify_by_channel = (
