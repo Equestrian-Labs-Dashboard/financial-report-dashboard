@@ -1152,8 +1152,10 @@
         gross_profit_1: 0,
         transactions: 0,
         net_gross_ratio: 0,
-        abandoned_checkouts: 0,
-        abandoned_checkout_rate: 0
+        sessions_reached_checkout: 0,
+        sessions_completed_checkout: 0,
+        checkout_abandonments: 0,
+        checkout_abandonment_rate: 0
       };
 
       rows.forEach(row => {
@@ -1168,14 +1170,17 @@
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
         result.transactions += Number(row.transactions || 0);
-        result.abandoned_checkouts += Number(row.abandoned_checkouts || 0);
+        result.sessions_reached_checkout += Number(row.sessions_reached_checkout || 0);
+        result.sessions_completed_checkout += Number(row.sessions_completed_checkout || 0);
+        result.checkout_abandonments += Number(row.checkout_abandonments || 0);
       });
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
-      result.abandoned_checkout_rate = (result.abandoned_checkouts + result.transactions)
-        ? result.abandoned_checkouts / (result.abandoned_checkouts + result.transactions)
+      result.checkout_abandonments = Math.max(result.sessions_reached_checkout - result.sessions_completed_checkout, 0);
+      result.checkout_abandonment_rate = result.sessions_reached_checkout
+        ? result.checkout_abandonments / result.sessions_reached_checkout
         : 0;
 
       return result;
@@ -1325,10 +1330,10 @@
         </div>
 
         <div class="kpi-card purple">
-          <div class="kpi-label">Abandoned Checkout Rate</div>
-          <div class="kpi-value">${percent(totals.abandoned_checkout_rate)}</div>
+          <div class="kpi-label">Checkout Abandonment Rate</div>
+          <div class="kpi-value">${percent(totals.checkout_abandonment_rate)}</div>
           <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Abandoned checkouts / (abandoned checkouts + orders)</div>
+          <div class="kpi-note">(Reached checkout - completed checkout) / reached checkout</div>
         </div>
 
         <div class="kpi-card purple">
@@ -1360,7 +1365,9 @@
             cogs: 0,
             gross_profit_1: 0,
             transactions: 0,
-            abandoned_checkouts: 0
+            sessions_reached_checkout: 0,
+            sessions_completed_checkout: 0,
+            checkout_abandonments: 0
           };
         }
 
@@ -1375,7 +1382,9 @@
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
         grouped[month].transactions += Number(row.transactions || 0);
-        grouped[month].abandoned_checkouts += Number(row.abandoned_checkouts || 0);
+        grouped[month].sessions_reached_checkout += Number(row.sessions_reached_checkout || 0);
+        grouped[month].sessions_completed_checkout += Number(row.sessions_completed_checkout || 0);
+        grouped[month].checkout_abandonments += Number(row.checkout_abandonments || 0);
       });
 
       return Object.values(grouped)
@@ -1384,8 +1393,9 @@
           ...row,
           gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
           net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
-          abandoned_checkout_rate: (row.abandoned_checkouts + row.transactions)
-            ? row.abandoned_checkouts / (row.abandoned_checkouts + row.transactions)
+          checkout_abandonments: Math.max(row.sessions_reached_checkout - row.sessions_completed_checkout, 0),
+          checkout_abandonment_rate: row.sessions_reached_checkout
+            ? Math.max(row.sessions_reached_checkout - row.sessions_completed_checkout, 0) / row.sessions_reached_checkout
             : 0,
           discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
         }));
@@ -1703,7 +1713,7 @@
         { key: "taxes", label: "Taxes", formatter: money },
         { key: "net_sales", label: "Net Sales", formatter: money },
         { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
-        { key: "abandoned_checkout_rate", label: "Abandoned Checkout Rate", formatter: percent },
+        { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
         { key: "cogs", label: "COGS", formatter: money },
         { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
         { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent }
@@ -1724,8 +1734,8 @@
           return Number(totalRow.net_gross_ratio || 0);
         }
 
-        if (metricKey === "abandoned_checkout_rate") {
-          return Number(totalRow.abandoned_checkout_rate || 0);
+        if (metricKey === "checkout_abandonment_rate") {
+          return Number(totalRow.checkout_abandonment_rate || 0);
         }
 
         if (metricKey === "discounts_returns_pct") {
@@ -1746,8 +1756,8 @@
           return Number(monthRow.net_gross_ratio || 0);
         }
 
-        if (metricKey === "abandoned_checkout_rate") {
-          return Number(monthRow.abandoned_checkout_rate || 0);
+        if (metricKey === "checkout_abandonment_rate") {
+          return Number(monthRow.checkout_abandonment_rate || 0);
         }
 
         if (metricKey === "discounts_returns_pct") {
@@ -1817,7 +1827,7 @@
         </li>
         <li>
           <span class="note-dot"></span>
-          <span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Abandoned Checkout Rate is <strong>${percent(totals.abandoned_checkout_rate)}</strong>.</span>
+          <span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span>
         </li>
       `;
     }
