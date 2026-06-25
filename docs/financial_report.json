@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-25T03:49:04.009430+00:00",
+  "generated_at": "2026-06-25T04:05:04.260203+00:00",
   "brands_available": [
     "Cavali",
     "Corro"
@@ -98,19 +98,19 @@
     {
       "brand": "Corro",
       "year": 2026,
-      "total_sales": 503550.9,
-      "gross_sales": 565022.05,
-      "discounts": 61608.880000000005,
+      "total_sales": 503973.71,
+      "gross_sales": 565582.77,
+      "discounts": 61783.880000000005,
       "returns": 33647.26,
-      "discounts_returns": 95256.14,
-      "shipping_charges": 14742.4,
-      "taxes": 19042.59,
-      "net_sales": 469765.91000000003,
-      "cogs": 316519.14,
-      "gross_profit_1": 143343.47,
-      "transactions": 2599.0,
-      "discounts_returns_pct": 0.16858835863131358,
-      "gross_margin_1": 0.3051380846260215
+      "discounts_returns": 95431.14,
+      "shipping_charges": 14772.04,
+      "taxes": 19050.04,
+      "net_sales": 470151.63,
+      "cogs": 316909.24,
+      "gross_profit_1": 143339.09,
+      "transactions": 2601.0,
+      "discounts_returns_pct": 0.16873063512878936,
+      "gross_margin_1": 0.3048784282636646
     }
   ],
   "shopify_kpis_by_brand_month": [
@@ -1288,19 +1288,19 @@
       "brand": "Corro",
       "year": 2026,
       "month": "06",
-      "total_sales": 56054.98,
-      "gross_sales": 58740.32,
-      "discounts": 2814.42,
+      "total_sales": 56477.79,
+      "gross_sales": 59301.04,
+      "discounts": 2989.42,
       "returns": 3836.99,
-      "discounts_returns": 6651.41,
-      "shipping_charges": 2292.32,
-      "taxes": 1673.75,
-      "net_sales": 52088.91,
-      "cogs": 31297.23,
-      "gross_profit_1": 18493.56,
-      "transactions": 322.0,
-      "discounts_returns_pct": 0.11323414649426493,
-      "gross_margin_1": 0.35503833733514484
+      "discounts_returns": 6826.41,
+      "shipping_charges": 2321.96,
+      "taxes": 1681.2,
+      "net_sales": 52474.63,
+      "cogs": 31687.33,
+      "gross_profit_1": 18489.18,
+      "transactions": 324.0,
+      "discounts_returns_pct": 0.11511450726665165,
+      "gross_margin_1": 0.35234512372931454
     },
     {
       "brand": "Corro",
@@ -2067,10 +2067,10 @@
       "year": 2026,
       "month": "06",
       "channel": "Shopify",
-      "total_sales": 56054.98,
-      "gross_sales": 58740.32,
-      "net_sales": 52088.91,
-      "transactions": 322.0
+      "total_sales": 56477.79,
+      "gross_sales": 59301.04,
+      "net_sales": 52474.63,
+      "transactions": 324.0
     },
     {
       "brand": "Corro",
