@@ -333,6 +333,8 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": transactions,
+            "abandoned_checkouts": 0,
+            "abandoned_checkout_rate": 0,
         })
 
     return normalized
@@ -520,24 +522,119 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": 1,
+            "abandoned_checkouts": 0,
+            "abandoned_checkout_rate": 0,
         })
 
     return rows
 
 
+
+def get_abandoned_checkouts_monthly(brand: str, store: str, token: str, year: int) -> dict[str, int]:
+    """
+    Returns monthly abandoned checkout counts.
+
+    Shopify defines an abandoned checkout as a checkout where the customer added
+    contact information but didn't complete the purchase. This query requires:
+    - read_orders access scope
+    - staff/app permission to manage abandoned checkouts
+
+    If permissions are missing, this safely returns zeros and the dashboard still works.
+    """
+    query = """
+    query AbandonedCheckouts($first: Int!, $after: String, $query: String!) {
+      abandonedCheckouts(first: $first, after: $after, query: $query, sortKey: CREATED_AT) {
+        nodes {
+          id
+          createdAt
+          completedAt
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+    """
+
+    monthly = {str(month).zfill(2): 0 for month in range(1, 13)}
+    after = None
+    search_query = f"created_at:>={year}-01-01 created_at:<={year}-12-31"
+
+    try:
+        while True:
+            data = graphql_request(
+                store=store,
+                token=token,
+                query=query,
+                variables={
+                    "first": 250,
+                    "after": after,
+                    "query": search_query,
+                },
+            )
+
+            connection = data.get("data", {}).get("abandonedCheckouts", {})
+            nodes = connection.get("nodes", []) or []
+
+            for node in nodes:
+                created_at = node.get("createdAt") or ""
+                if len(created_at) >= 7:
+                    month = created_at[5:7]
+                    if month in monthly:
+                        monthly[month] += 1
+
+            page_info = connection.get("pageInfo") or {}
+            if not page_info.get("hasNextPage"):
+                break
+
+            after = page_info.get("endCursor")
+
+    except Exception as exc:
+        print(f"{brand} {year}: Abandoned checkouts unavailable: {exc}")
+        return monthly
+
+    print(f"{brand} {year}: Abandoned checkouts: {sum(monthly.values())}")
+    return monthly
+
+
+def attach_abandoned_checkout_metrics(rows: list[dict], abandoned_by_month: dict[str, int]) -> list[dict]:
+    for row in rows:
+        month = str(row.get("month", "")).zfill(2)
+        abandoned = int(abandoned_by_month.get(month, 0) or 0)
+        transactions = float(row.get("transactions") or 0)
+
+        row["abandoned_checkouts"] = abandoned
+        row["abandoned_checkout_rate"] = (
+            abandoned / (abandoned + transactions)
+            if (abandoned + transactions)
+            else 0
+        )
+
+    return rows
+
+
 def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict]:
+    rows = []
+
     try:
         print(f"Trying Shopify Analytics-style query for {brand} {year}...")
         rows = get_shopify_analytics_monthly(brand, store, token, year)
-
         print(f"{brand} {year}: Shopify Analytics rows: {len(rows)}")
-        return rows
 
     except Exception as exc:
         print(f"{brand} {year}: Shopify Analytics query unavailable: {exc}")
         print(f"{brand} {year}: Falling back to Orders API calculations.")
 
-    orders = get_orders(brand=brand, store=store, token=token, year=year)
-    print(f"{brand} Shopify orders: {len(orders)}")
+        orders = get_orders(brand=brand, store=store, token=token, year=year)
+        print(f"{brand} Shopify orders: {len(orders)}")
+        rows = normalize_shopify_orders(brand=brand, orders=orders, year=year)
 
-    return normalize_shopify_orders(brand=brand, orders=orders, year=year)
+    abandoned_by_month = get_abandoned_checkouts_monthly(
+        brand=brand,
+        store=store,
+        token=token,
+        year=year,
+    )
+
+    return attach_abandoned_checkout_metrics(rows, abandoned_by_month)
