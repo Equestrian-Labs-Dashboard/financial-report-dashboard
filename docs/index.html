@@ -992,6 +992,66 @@
       return Array.isArray(value) ? value : [];
     }
 
+
+    function firstNumber(row, keys) {
+      for (const key of keys) {
+        const value = Number(row && row[key]);
+
+        if (!Number.isNaN(value) && value !== 0) {
+          return value;
+        }
+      }
+
+      return 0;
+    }
+
+    function rowReachedCheckout(row) {
+      return firstNumber(row, [
+        "sessions_reached_checkout",
+        "reached_checkout",
+        "checkout_reached",
+        "sessions_that_reached_checkout"
+      ]);
+    }
+
+    function rowCompletedCheckout(row) {
+      return firstNumber(row, [
+        "sessions_completed_checkout",
+        "completed_checkout",
+        "checkout_completed",
+        "sessions_that_reached_and_completed_checkout"
+      ]);
+    }
+
+    function rowCheckoutAbandonments(row) {
+      const direct = firstNumber(row, [
+        "checkout_abandonments",
+        "checkout_abandonments",
+        "abandoned_checkout_count"
+      ]);
+
+      if (direct) return direct;
+
+      const reached = rowReachedCheckout(row);
+      const completed = rowCompletedCheckout(row);
+
+      return Math.max(reached - completed, 0);
+    }
+
+    function rowCheckoutAbandonmentRate(row) {
+      const direct = firstNumber(row, [
+        "checkout_abandonment_rate",
+        "checkout_abandonment_rate"
+      ]);
+
+      if (direct) return direct > 1 ? direct / 100 : direct;
+
+      const reached = rowReachedCheckout(row);
+      const abandoned = rowCheckoutAbandonments(row);
+
+      return reached ? abandoned / reached : 0;
+    }
+
     async function loadData() {
       try {
         const response = await fetch("financial_report.json?t=" + Date.now());
@@ -1170,15 +1230,24 @@
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
         result.transactions += Number(row.transactions || 0);
-        result.sessions_reached_checkout += Number(row.sessions_reached_checkout || 0);
-        result.sessions_completed_checkout += Number(row.sessions_completed_checkout || 0);
-        result.checkout_abandonments += Number(row.checkout_abandonments || 0);
+
+        result.sessions_reached_checkout += rowReachedCheckout(row);
+        result.sessions_completed_checkout += rowCompletedCheckout(row);
+        result.checkout_abandonments += rowCheckoutAbandonments(row);
       });
+
+      // If the JSON has reached/completed fields, use Shopify's session funnel formula.
+      // If it only has direct abandoned checkouts, the direct count still works.
+      if (result.sessions_reached_checkout) {
+        result.checkout_abandonments = Math.max(
+          result.sessions_reached_checkout - result.sessions_completed_checkout,
+          0
+        );
+      }
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
-      result.checkout_abandonments = Math.max(result.sessions_reached_checkout - result.sessions_completed_checkout, 0);
       result.checkout_abandonment_rate = result.sessions_reached_checkout
         ? result.checkout_abandonments / result.sessions_reached_checkout
         : 0;
@@ -1367,7 +1436,8 @@
             transactions: 0,
             sessions_reached_checkout: 0,
             sessions_completed_checkout: 0,
-            checkout_abandonments: 0
+            checkout_abandonments: 0,
+            checkout_abandonment_rate: 0
           };
         }
 
@@ -1382,23 +1452,32 @@
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
         grouped[month].transactions += Number(row.transactions || 0);
-        grouped[month].sessions_reached_checkout += Number(row.sessions_reached_checkout || 0);
-        grouped[month].sessions_completed_checkout += Number(row.sessions_completed_checkout || 0);
-        grouped[month].checkout_abandonments += Number(row.checkout_abandonments || 0);
+
+        grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
+        grouped[month].sessions_completed_checkout += rowCompletedCheckout(row);
+        grouped[month].checkout_abandonments += rowCheckoutAbandonments(row);
       });
 
       return Object.values(grouped)
         .sort((a, b) => a.month.localeCompare(b.month))
-        .map(row => ({
-          ...row,
-          gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
-          net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
-          checkout_abandonments: Math.max(row.sessions_reached_checkout - row.sessions_completed_checkout, 0),
-          checkout_abandonment_rate: row.sessions_reached_checkout
-            ? Math.max(row.sessions_reached_checkout - row.sessions_completed_checkout, 0) / row.sessions_reached_checkout
-            : 0,
-          discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
-        }));
+        .map(row => {
+          if (row.sessions_reached_checkout) {
+            row.checkout_abandonments = Math.max(
+              row.sessions_reached_checkout - row.sessions_completed_checkout,
+              0
+            );
+          }
+
+          return {
+            ...row,
+            gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+            net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
+            checkout_abandonment_rate: row.sessions_reached_checkout
+              ? row.checkout_abandonments / row.sessions_reached_checkout
+              : 0,
+            discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
+          };
+        });
     }
 
     function renderSalesTrend(rows) {
