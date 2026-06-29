@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29T05:20:08.469456+00:00",
+  "generated_at": "2026-06-29T12:00:05.715073+00:00",
   "brands_available": [
     "Cavali",
     "Corro"
@@ -134,13 +134,13 @@
       "cogs": 319522.32,
       "gross_profit_1": 144966.11,
       "transactions": 2632.0,
-      "sessions_reached_checkout": 3592.0,
+      "sessions_reached_checkout": 3593.0,
       "sessions_completed_checkout": 1710.0,
-      "checkout_abandonments": 1882.0,
+      "checkout_abandonments": 1883.0,
       "discounts_returns_pct": 0.16857752069756887,
       "gross_margin_1": 0.30561641789226063,
       "net_gross_ratio": 0.8314224793024311,
-      "checkout_abandonment_rate": 0.5239420935412027
+      "checkout_abandonment_rate": 0.5240745894795436
     }
   ],
   "shopify_kpis_by_brand_month": [
@@ -1654,13 +1654,13 @@
       "cogs": 34300.41,
       "gross_profit_1": 20116.2,
       "transactions": 355.0,
-      "sessions_reached_checkout": 459.0,
+      "sessions_reached_checkout": 460.0,
       "sessions_completed_checkout": 222.0,
-      "checkout_abandonments": 237.0,
+      "checkout_abandonments": 238.0,
       "discounts_returns_pct": 0.11787254678362345,
       "gross_margin_1": 0.35501436032575723,
       "net_gross_ratio": 0.8821274532163764,
-      "checkout_abandonment_rate": 0.5163398692810458
+      "checkout_abandonment_rate": 0.5173913043478261
     },
     {
       "brand": "Corro",
