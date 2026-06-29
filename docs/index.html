@@ -818,8 +818,8 @@
         <div class="panel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">Gross Margin 1 Trend</h2>
-              <p class="panel-subtitle">Gross Profit 1 divided by Net Sales.</p>
+              <h2 class="panel-title">Gross Margin Trend</h2>
+              <p class="panel-subtitle">Gross Profit divided by Net Sales.</p>
             </div>
             <div class="panel-tag">Margin</div>
           </div>
@@ -855,18 +855,8 @@
     let marginTrendChart = null;
 
     const MONTHS = {
-      "01": "Jan",
-      "02": "Feb",
-      "03": "Mar",
-      "04": "Apr",
-      "05": "May",
-      "06": "Jun",
-      "07": "Jul",
-      "08": "Aug",
-      "09": "Sep",
-      "10": "Oct",
-      "11": "Nov",
-      "12": "Dec"
+      "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
+      "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"
     };
 
     const MONTH_ORDER = [
@@ -875,17 +865,13 @@
     ];
 
     const QUARTERS = {
-      Q1: ["01", "02", "03"],
-      Q2: ["04", "05", "06"],
-      Q3: ["07", "08", "09"],
-      Q4: ["10", "11", "12"]
+      Q1: ["01", "02", "03"], Q2: ["04", "05", "06"],
+      Q3: ["07", "08", "09"], Q4: ["10", "11", "12"]
     };
 
     const QUARTER_LABELS = {
-      Q1: "Q1 · Jan–Mar",
-      Q2: "Q2 · Apr–Jun",
-      Q3: "Q3 · Jul–Sep",
-      Q4: "Q4 · Oct–Dec"
+      Q1: "Q1 · Jan–Mar", Q2: "Q2 · Apr–Jun",
+      Q3: "Q3 · Jul–Sep", Q4: "Q4 · Oct–Dec"
     };
 
     function setupTheme() {
@@ -929,150 +915,63 @@
     }
 
     function money(value) {
-      return "$" + Number(value || 0).toLocaleString("en-US", {
-        maximumFractionDigits: 0
-      });
+      return "$" + Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
     }
 
     function compactMoney(value) {
       const numberValue = Number(value || 0);
       const absValue = Math.abs(numberValue);
-
-      if (absValue >= 1000000) {
-        return "$" + (numberValue / 1000000).toLocaleString("en-US", {
-          maximumFractionDigits: 0
-        }) + "M";
-      }
-
-      if (absValue >= 1000) {
-        return "$" + (numberValue / 1000).toLocaleString("en-US", {
-          maximumFractionDigits: 0
-        }) + "K";
-      }
-
-      return "$" + numberValue.toLocaleString("en-US", {
-        maximumFractionDigits: 0
-      });
+      if (absValue >= 1000000) return "$" + (numberValue / 1000000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "M";
+      if (absValue >= 1000) return "$" + (numberValue / 1000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "K";
+      return "$" + numberValue.toLocaleString("en-US", { maximumFractionDigits: 0 });
     }
 
     function number(value) {
-      return Number(value || 0).toLocaleString("en-US", {
-        maximumFractionDigits: 0
-      });
-    }
-
-    function compactNumber(value) {
-      const numberValue = Number(value || 0);
-      const absValue = Math.abs(numberValue);
-
-      if (absValue >= 1000000) {
-        return (numberValue / 1000000).toLocaleString("en-US", {
-          maximumFractionDigits: 0
-        }) + "M";
-      }
-
-      if (absValue >= 1000) {
-        return (numberValue / 1000).toLocaleString("en-US", {
-          maximumFractionDigits: 0
-        }) + "K";
-      }
-
-      return numberValue.toLocaleString("en-US", {
-        maximumFractionDigits: 0
-      });
+      return Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
     }
 
     function percent(value) {
-      return Number((Number(value || 0) * 100)).toLocaleString("en-US", {
-        maximumFractionDigits: 0
-      }) + "%";
+      return Number((Number(value || 0) * 100)).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "%";
     }
 
     function safeArray(value) {
       return Array.isArray(value) ? value : [];
     }
 
-
     function firstNumber(row, keys) {
       for (const key of keys) {
         const value = Number(row && row[key]);
-
-        if (!Number.isNaN(value) && value !== 0) {
-          return value;
-        }
+        if (!Number.isNaN(value) && value !== 0) return value;
       }
-
       return 0;
     }
 
     function rowReachedCheckout(row) {
-      return firstNumber(row, [
-        "sessions_reached_checkout",
-        "reached_checkout",
-        "checkout_reached",
-        "sessions_that_reached_checkout"
-      ]);
+      return firstNumber(row, ["sessions_reached_checkout", "reached_checkout", "checkout_reached", "sessions_that_reached_checkout"]);
     }
 
     function rowCompletedCheckout(row) {
-      return firstNumber(row, [
-        "sessions_completed_checkout",
-        "completed_checkout",
-        "checkout_completed",
-        "sessions_that_reached_and_completed_checkout"
-      ]);
+      return firstNumber(row, ["sessions_completed_checkout", "completed_checkout", "checkout_completed", "sessions_that_reached_and_completed_checkout"]);
     }
 
     function rowCheckoutAbandonments(row) {
-      const direct = firstNumber(row, [
-        "checkout_abandonments",
-        "checkout_abandonments",
-        "abandoned_checkout_count"
-      ]);
-
+      const direct = firstNumber(row, ["checkout_abandonments", "abandoned_checkout_count"]);
       if (direct) return direct;
-
-      const reached = rowReachedCheckout(row);
-      const completed = rowCompletedCheckout(row);
-
-      return Math.max(reached - completed, 0);
-    }
-
-    function rowCheckoutAbandonmentRate(row) {
-      const direct = firstNumber(row, [
-        "checkout_abandonment_rate",
-        "checkout_abandonment_rate"
-      ]);
-
-      if (direct) return direct > 1 ? direct / 100 : direct;
-
-      const reached = rowReachedCheckout(row);
-      const abandoned = rowCheckoutAbandonments(row);
-
-      return reached ? abandoned / reached : 0;
+      return Math.max(rowReachedCheckout(row) - rowCompletedCheckout(row), 0);
     }
 
     async function loadData() {
       try {
         const response = await fetch("financial_report.json?t=" + Date.now());
-
-        if (!response.ok) {
-          throw new Error("Could not load financial_report.json");
-        }
-
+        if (!response.ok) throw new Error("Could not load financial_report.json");
         DATA = await response.json();
-
-        document.getElementById("updatedAt").textContent =
-          "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
-
+        document.getElementById("updatedAt").textContent = "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
         setupFilters();
         setupBrandNav();
         render();
       } catch (error) {
         document.getElementById("dateStrip").textContent = "Error loading report data.";
-        document.getElementById("shopifyKpis").innerHTML = `
-          <div class="empty">Could not load docs/financial_report.json. Check GitHub Actions and confirm the file exists.</div>
-        `;
+        document.getElementById("shopifyKpis").innerHTML = `<div class="empty">Could not load docs/financial_report.json. Check GitHub Actions.</div>`;
         console.error(error);
       }
     }
@@ -1084,77 +983,34 @@
       const quarterFilter = document.getElementById("quarterFilter");
       const quarterFilterGroup = document.getElementById("quarterFilterGroup");
 
-      const brands = safeArray(DATA.brands_available);
-      const years = safeArray(DATA.years_available);
+      brandFilter.innerHTML = `<option value="all">All Brands</option>` + safeArray(DATA.brands_available).map(b => `<option value="${b}">${b}</option>`).join("");
+      yearFilter.innerHTML = safeArray(DATA.years_available).map(y => `<option value="${y}">${y}</option>`).join("");
+      if (safeArray(DATA.years_available).length > 0) yearFilter.value = Math.max(...safeArray(DATA.years_available));
 
-      brandFilter.innerHTML =
-        `<option value="all">All Brands</option>` +
-        brands.map(brand => `<option value="${brand}">${brand}</option>`).join("");
-
-      yearFilter.innerHTML = years
-        .map(year => `<option value="${year}">${year}</option>`)
-        .join("");
-
-      if (years.length > 0) {
-        yearFilter.value = Math.max(...years);
-      }
-
-      monthFilter.innerHTML =
-        `<option value="all">All Months / YTD</option>` +
-        MONTH_ORDER
-          .map(value => `<option value="${value}">${MONTHS[value]}</option>`)
-          .join("");
-
+      monthFilter.innerHTML = `<option value="all">All Months / YTD</option>` + MONTH_ORDER.map(v => `<option value="${v}">${MONTHS[v]}</option>`).join("");
       monthFilter.value = "all";
       quarterFilter.value = "all";
 
       function syncQuarterVisibility() {
         const isCavali = brandFilter.value === "Cavali";
         quarterFilterGroup.style.display = isCavali ? "flex" : "none";
-
-        if (!isCavali) {
-          quarterFilter.value = "all";
-        }
+        if (!isCavali) quarterFilter.value = "all";
       }
 
-      brandFilter.addEventListener("change", () => {
-        syncQuarterVisibility();
-        render();
-      });
-
+      brandFilter.addEventListener("change", () => { syncQuarterVisibility(); render(); });
       yearFilter.addEventListener("change", render);
-
-      monthFilter.addEventListener("change", () => {
-        if (monthFilter.value !== "all") {
-          quarterFilter.value = "all";
-        }
-
-        render();
-      });
-
-      quarterFilter.addEventListener("change", () => {
-        if (quarterFilter.value !== "all") {
-          monthFilter.value = "all";
-        }
-
-        render();
-      });
-
+      monthFilter.addEventListener("change", () => { if (monthFilter.value !== "all") quarterFilter.value = "all"; render(); });
+      quarterFilter.addEventListener("change", () => { if (quarterFilter.value !== "all") monthFilter.value = "all"; render(); });
       syncQuarterVisibility();
     }
-
 
     function setupBrandNav() {
       document.querySelectorAll(".brand-nav, .dashboard-nav").forEach(item => {
         item.addEventListener("click", event => {
           event.preventDefault();
-
           const brand = item.dataset.brand;
           const brandFilter = document.getElementById("brandFilter");
-
-          if (!brandFilter) return;
-
-          if ([...brandFilter.options].some(option => option.value === brand)) {
+          if (brandFilter && [...brandFilter.options].some(o => o.value === brand)) {
             brandFilter.value = brand;
             brandFilter.dispatchEvent(new Event("change"));
           }
@@ -1163,17 +1019,10 @@
     }
 
     function updateBrandNavActive(selectedBrand) {
-      const dashboardNav = document.querySelector(".dashboard-nav");
-
-      if (dashboardNav) {
-        dashboardNav.classList.toggle("active-view", selectedBrand === "all");
-      }
-
+      const dbNav = document.querySelector(".dashboard-nav");
+      if (dbNav) dbNav.classList.toggle("active-view", selectedBrand === "all");
       document.querySelectorAll(".brand-nav").forEach(item => {
-        item.classList.toggle(
-          "active-brand",
-          selectedBrand !== "all" && item.dataset.brand === selectedBrand
-        );
+        item.classList.toggle("active-brand", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
       });
     }
 
@@ -1189,35 +1038,19 @@
     function filterRows(rows, filters) {
       return rows.filter(row => {
         const rowMonth = String(row.month).padStart(2, "0");
-        const brandMatch = filters.brand === "all" || row.brand === filters.brand;
-        const yearMatch = Number(row.year) === filters.year;
-        const monthMatch = filters.month === "all" || rowMonth === filters.month;
-        const quarterMatch = !filters.quarter || filters.quarter === "all" || QUARTERS[filters.quarter].includes(rowMonth);
-
-        return brandMatch && yearMatch && monthMatch && quarterMatch;
+        return (filters.brand === "all" || row.brand === filters.brand) &&
+               (Number(row.year) === filters.year) &&
+               (filters.month === "all" || rowMonth === filters.month) &&
+               (!filters.quarter || filters.quarter === "all" || QUARTERS[filters.quarter].includes(rowMonth));
       });
     }
 
     function sumRows(rows) {
       const result = {
-        total_sales: 0,
-        gross_sales: 0,
-        discounts: 0,
-        returns: 0,
-        discounts_returns: 0,
-        shipping_charges: 0,
-        taxes: 0,
-        net_sales: 0,
-        cogs: 0,
-        gross_profit_1: 0,
-        gross_profit_2: 0,
-        gross_profit_3: 0,
-        transactions: 0,
-        net_gross_ratio: 0,
-        sessions_reached_checkout: 0,
-        sessions_completed_checkout: 0,
-        checkout_abandonments: 0,
-        checkout_abandonment_rate: 0
+        total_sales: 0, gross_sales: 0, discounts: 0, returns: 0, discounts_returns: 0,
+        shipping_charges: 0, taxes: 0, net_sales: 0, cogs: 0, gross_profit_1: 0,
+        gross_profit_2: 0, gross_profit_3: 0, transactions: 0, net_gross_ratio: 0,
+        sessions_reached_checkout: 0, sessions_completed_checkout: 0, checkout_abandonments: 0
       };
 
       rows.forEach(row => {
@@ -1232,80 +1065,44 @@
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
         result.gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
-        result.gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_1 || 0);
+        result.gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_2 || 0);
         result.transactions += Number(row.transactions || 0);
-
         result.sessions_reached_checkout += rowReachedCheckout(row);
         result.sessions_completed_checkout += rowCompletedCheckout(row);
         result.checkout_abandonments += rowCheckoutAbandonments(row);
       });
-
-      if (result.sessions_reached_checkout) {
-        result.checkout_abandonments = Math.max(
-          result.sessions_reached_checkout - result.sessions_completed_checkout,
-          0
-        );
-      }
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
       result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
       result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
-      result.checkout_abandonment_rate = result.sessions_reached_checkout
-        ? result.checkout_abandonments / result.sessions_reached_checkout
-        : 0;
+      result.checkout_abandonment_rate = result.sessions_reached_checkout ? result.checkout_abandonments / result.sessions_reached_checkout : 0;
 
       return result;
     }
 
     function getSelectedRows() {
       const filters = selectedFilters();
-
       const monthlyRows = safeArray(DATA.shopify_kpis_by_brand_month);
       const yearRows = safeArray(DATA.shopify_kpis_by_brand_year);
+      const selectedRows = (filters.month !== "all" || filters.quarter !== "all") ? filterRows(monthlyRows, filters) : filterRows(yearRows, filters);
+      const yearlyMonthlyRows = filterRows(monthlyRows, { brand: filters.brand, year: filters.year, month: "all", quarter: "all" });
 
-      let selectedRows;
-
-      if (filters.month !== "all" || filters.quarter !== "all") {
-        selectedRows = filterRows(monthlyRows, filters);
-      } else {
-        selectedRows = filterRows(yearRows, filters);
-      }
-
-      const yearlyMonthlyRows = filterRows(monthlyRows, {
-        brand: filters.brand,
-        year: filters.year,
-        month: "all",
-        quarter: "all"
-      });
-
-      return {
-        filters,
-        selectedRows,
-        trendRows: yearlyMonthlyRows,
-        totals: sumRows(selectedRows)
-      };
+      return { filters, selectedRows, trendRows: yearlyMonthlyRows, totals: sumRows(selectedRows) };
     }
 
     function render() {
       const selected = getSelectedRows();
-
       const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
       updateBrandNavActive(selected.filters.brand);
 
       let periodText = "YTD / All Months";
-      if (selected.filters.quarter !== "all") {
-        periodText = QUARTER_LABELS[selected.filters.quarter];
-      } else if (selected.filters.month !== "all") {
-        periodText = MONTHS[selected.filters.month];
-      }
+      if (selected.filters.quarter !== "all") periodText = QUARTER_LABELS[selected.filters.quarter];
+      else if (selected.filters.month !== "all") periodText = MONTHS[selected.filters.month];
 
-      document.getElementById("dateStrip").textContent =
-        `${brandText} · ${selected.filters.year} · ${periodText} · Shopify KPIs confirmed ✓`;
-
-      document.getElementById("matrixMeta").textContent =
-        `${brandText} · ${selected.filters.year}`;
+      document.getElementById("dateStrip").textContent = `${brandText} · ${selected.filters.year} · ${periodText} · Shopify KPIs ✓`;
+      document.getElementById("matrixMeta").textContent = `${brandText} · ${selected.filters.year}`;
 
       renderMonthlyMatrix(selected.trendRows, selected.filters);
       highlightSelectedPeriod(selected.filters);
@@ -1319,162 +1116,43 @@
     function highlightSelectedPeriod(filters) {
       document.querySelectorAll(".month-head").forEach(cell => {
         cell.classList.remove("selected-month");
-
-        if (filters.month !== "all" && cell.dataset.month === filters.month) {
-          cell.classList.add("selected-month");
-        }
-
-        if (filters.quarter !== "all" && QUARTERS[filters.quarter].includes(cell.dataset.month)) {
-          cell.classList.add("selected-month");
-        }
+        if (filters.month !== "all" && cell.dataset.month === filters.month) cell.classList.add("selected-month");
+        if (filters.quarter !== "all" && QUARTERS[filters.quarter].includes(cell.dataset.month)) cell.classList.add("selected-month");
       });
     }
 
     function renderKpis(totals) {
       document.getElementById("shopifyKpis").innerHTML = `
-        <div class="kpi-card positive">
-          <div class="kpi-label">Total Sales</div>
-          <div class="kpi-value">${compactMoney(totals.total_sales)}</div>
-          <div class="kpi-chip green">Shopify</div>
-          <div class="kpi-note">Net Sales + Shipping + Taxes</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Gross Sales</div>
-          <div class="kpi-value">${compactMoney(totals.gross_sales)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Line item price × quantity</div>
-        </div>
-
-        <div class="kpi-card warning">
-          <div class="kpi-label">Discounts + Returns</div>
-          <div class="kpi-value">${compactMoney(totals.discounts_returns)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Discounts + product returns</div>
-        </div>
-
-        <div class="kpi-card warning">
-          <div class="kpi-label">% Discount + Returns</div>
-          <div class="kpi-value">${percent(totals.discounts_returns_pct)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">(Discounts + Returns) / Gross Sales</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Shipping Charges</div>
-          <div class="kpi-value">${compactMoney(totals.shipping_charges)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Shipping charges</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-label">Taxes</div>
-          <div class="kpi-value">${compactMoney(totals.taxes)}</div>
-          <div class="kpi-chip">Shopify</div>
-          <div class="kpi-note">Taxes</div>
-        </div>
-
-        <div class="kpi-card positive">
-          <div class="kpi-label">Net Sales</div>
-          <div class="kpi-value">${compactMoney(totals.net_sales)}</div>
-          <div class="kpi-chip green">Shopify</div>
-          <div class="kpi-note">Gross Sales - Discounts - Returns</div>
-        </div>
-
-        <div class="kpi-card negative">
-          <div class="kpi-label">COGS</div>
-          <div class="kpi-value">${compactMoney(totals.cogs)}</div>
-          <div class="kpi-chip red">Cost</div>
-          <div class="kpi-note">Product cost if available</div>
-        </div>
-
-        <div class="kpi-card positive">
-          <div class="kpi-label">Gross Profit 1</div>
-          <div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div>
-          <div class="kpi-chip green">Calculated</div>
-          <div class="kpi-note">Net Sales - COGS</div>
-        </div>
-
-        <div class="kpi-card positive">
-          <div class="kpi-label">Gross Profit 2</div>
-          <div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div>
-          <div class="kpi-chip green">Calculated</div>
-          <div class="kpi-note">Gross Profit 1 - Marketing</div>
-        </div>
-
-        <div class="kpi-card positive">
-          <div class="kpi-label">Gross Profit 3</div>
-          <div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div>
-          <div class="kpi-chip green">Calculated</div>
-          <div class="kpi-note">Gross Profit 2 - OpEx</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">Net / Gross Ratio</div>
-          <div class="kpi-value">${percent(totals.net_gross_ratio)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Net Sales / Gross Sales</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">Checkout Abandonment Rate</div>
-          <div class="kpi-value">${percent(totals.checkout_abandonment_rate)}</div>
-          <div class="kpi-chip">ShopifyQL</div>
-          <div class="kpi-note">(Reached Checkout - Completed Checkout) / Reached Checkout</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">Gross Margin 1</div>
-          <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Gross Profit 1 / Net Sales</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">Gross Margin 2 (GM2)</div>
-          <div class="kpi-value">${percent(totals.gross_margin_2)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Gross Profit 2 / Net Sales</div>
-        </div>
-
-        <div class="kpi-card purple">
-          <div class="kpi-label">Gross Margin 3 (GM3)</div>
-          <div class="kpi-value">${percent(totals.gross_margin_3)}</div>
-          <div class="kpi-chip">Calculated</div>
-          <div class="kpi-note">Gross Profit 3 / Net Sales</div>
-        </div>
+        <div class="kpi-card positive"><div class="kpi-label">Total Sales</div><div class="kpi-value">${compactMoney(totals.total_sales)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Net + Shipping + Taxes</div></div>
+        <div class="kpi-card"><div class="kpi-label">Gross Sales</div><div class="kpi-value">${compactMoney(totals.gross_sales)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Price × Qty</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Discounts + Returns</div><div class="kpi-value">${compactMoney(totals.discounts_returns)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Total deductions</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">% Discount + Returns</div><div class="kpi-value">${percent(totals.discounts_returns_pct)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Of Gross Sales</div></div>
+        <div class="kpi-card"><div class="kpi-label">Shipping Charges</div><div class="kpi-value">${compactMoney(totals.shipping_charges)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Collected shipping</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taxes</div><div class="kpi-value">${compactMoney(totals.taxes)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Total taxes</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Net Sales</div><div class="kpi-value">${compactMoney(totals.net_sales)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Gross - Deductions</div></div>
+        <div class="kpi-card negative"><div class="kpi-label">COGS</div><div class="kpi-value">${compactMoney(totals.cogs)}</div><div class="kpi-chip red">Cost</div><div class="kpi-note">Product cost</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 1</div><div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">Net Sales - COGS</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping (QB)</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - OpEx</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Net / Gross Ratio</div><div class="kpi-value">${percent(totals.net_gross_ratio)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net / Gross Sales</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Checkout Abandonment</div><div class="kpi-value">${percent(totals.checkout_abandonment_rate)}</div><div class="kpi-chip">ShopifyQL</div><div class="kpi-note">Abandonment rate</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 1</div><div class="kpi-value">${percent(totals.gross_margin_1)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP1 / Net Sales</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 2 (GM2)</div><div class="kpi-value">${percent(totals.gross_margin_2)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP2 / Net Sales</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 3 (GM3)</div><div class="kpi-value">${percent(totals.gross_margin_3)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP3 / Net Sales</div></div>
       `;
     }
 
     function groupByMonth(rows) {
       const grouped = {};
-
       rows.forEach(row => {
         const month = String(row.month).padStart(2, "0");
-
         if (!grouped[month]) {
           grouped[month] = {
-            month,
-            total_sales: 0,
-            gross_sales: 0,
-            discounts: 0,
-            returns: 0,
-            discounts_returns: 0,
-            shipping_charges: 0,
-            taxes: 0,
-            net_sales: 0,
-            cogs: 0,
-            gross_profit_1: 0,
-            gross_profit_2: 0,
-            gross_profit_3: 0,
-            transactions: 0,
-            sessions_reached_checkout: 0,
-            sessions_completed_checkout: 0,
-            checkout_abandonments: 0,
-            checkout_abandonment_rate: 0
+            month, total_sales: 0, gross_sales: 0, discounts: 0, returns: 0, discounts_returns: 0,
+            shipping_charges: 0, taxes: 0, net_sales: 0, cogs: 0, gross_profit_1: 0,
+            gross_profit_2: 0, gross_profit_3: 0, transactions: 0, sessions_reached_checkout: 0, sessions_completed_checkout: 0
           };
         }
-
         grouped[month].total_sales += Number(row.total_sales || 0);
         grouped[month].gross_sales += Number(row.gross_sales || 0);
         grouped[month].discounts += Number(row.discounts || 0);
@@ -1486,76 +1164,37 @@
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
         grouped[month].gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
-        grouped[month].gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_1 || 0);
+        grouped[month].gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_2 || 0);
         grouped[month].transactions += Number(row.transactions || 0);
-
         grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
         grouped[month].sessions_completed_checkout += rowCompletedCheckout(row);
-        grouped[month].checkout_abandonments += rowCheckoutAbandonments(row);
       });
 
-      return Object.values(grouped)
-        .sort((a, b) => a.month.localeCompare(b.month))
-        .map(row => {
-          if (row.sessions_reached_checkout) {
-            row.checkout_abandonments = Math.max(
-              row.sessions_reached_checkout - row.sessions_completed_checkout,
-              0
-            );
-          }
-
-          return {
-            ...row,
-            gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
-            gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
-            gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
-            net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
-            checkout_abandonment_rate: row.sessions_reached_checkout
-              ? row.checkout_abandonments / row.sessions_reached_checkout
-              : 0,
-            discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
-          };
-        });
+      return Object.values(grouped).sort((a, b) => a.month.localeCompare(b.month)).map(row => {
+        const abandoned = Math.max(row.sessions_reached_checkout - row.sessions_completed_checkout, 0);
+        return {
+          ...row,
+          gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+          gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
+          gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
+          net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
+          checkout_abandonment_rate: row.sessions_reached_checkout ? abandoned / row.sessions_reached_checkout : 0,
+          discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
+        };
+      });
     }
 
     function renderSalesTrend(rows) {
       if (salesTrendChart) salesTrendChart.destroy();
-
       const monthly = groupByMonth(rows);
-
       salesTrendChart = new Chart(document.getElementById("salesTrendChart"), {
         type: "bar",
         data: {
           labels: monthly.map(row => MONTHS[row.month] || row.month),
           datasets: [
-            {
-              label: "Gross Sales",
-              data: monthly.map(row => row.gross_sales),
-              backgroundColor: "#3b82f6",
-              borderRadius: 5,
-              maxBarThickness: 36,
-              yAxisID: "y"
-            },
-            {
-              label: "Net Sales",
-              data: monthly.map(row => row.net_sales),
-              backgroundColor: "#22c55e",
-              borderRadius: 5,
-              maxBarThickness: 36,
-              yAxisID: "y"
-            },
-            {
-              type: "line",
-              label: "Net / Gross Ratio",
-              data: monthly.map(row => row.net_gross_ratio * 100),
-              borderColor: "#a78bfa",
-              backgroundColor: "#a78bfa",
-              tension: 0.35,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              borderWidth: 2,
-              yAxisID: "y1"
-            }
+            { label: "Gross Sales", data: monthly.map(row => row.gross_sales), backgroundColor: "#3b82f6", borderRadius: 5, maxBarThickness: 36, yAxisID: "y" },
+            { label: "Net Sales", data: monthly.map(row => row.net_sales), backgroundColor: "#22c55e", borderRadius: 5, maxBarThickness: 36, yAxisID: "y" },
+            { type: "line", label: "Net / Gross Ratio", data: monthly.map(row => row.net_gross_ratio * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" }
           ]
         },
         options: chartOptionsMoneyWithRatio()
@@ -1564,36 +1203,14 @@
 
     function renderDiscountReturns(rows) {
       if (discountReturnsChart) discountReturnsChart.destroy();
-
       const monthly = groupByMonth(rows);
-
       discountReturnsChart = new Chart(document.getElementById("discountReturnsChart"), {
         type: "line",
         data: {
           labels: monthly.map(row => MONTHS[row.month] || row.month),
           datasets: [
-            {
-              label: "Discounts + Returns",
-              data: monthly.map(row => row.discounts_returns),
-              borderColor: "#f59e0b",
-              backgroundColor: "#f59e0b",
-              tension: 0.35,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              borderWidth: 2,
-              yAxisID: "y"
-            },
-            {
-              label: "% Discount + Returns",
-              data: monthly.map(row => row.discounts_returns_pct * 100),
-              borderColor: "#a78bfa",
-              backgroundColor: "#a78bfa",
-              tension: 0.35,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              borderWidth: 2,
-              yAxisID: "y1"
-            }
+            { label: "Discounts + Returns", data: monthly.map(row => row.discounts_returns), borderColor: "#f59e0b", backgroundColor: "#f59e0b", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y" },
+            { label: "% Discount + Returns", data: monthly.map(row => row.discounts_returns_pct * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" }
           ]
         },
         options: chartOptionsMoneyWithRatio(true)
@@ -1602,243 +1219,66 @@
 
     function renderMarginTrend(rows) {
       if (marginTrendChart) marginTrendChart.destroy();
-
       const monthly = groupByMonth(rows);
-
       marginTrendChart = new Chart(document.getElementById("marginTrendChart"), {
         type: "line",
         data: {
           labels: monthly.map(row => MONTHS[row.month] || row.month),
           datasets: [
-            {
-              label: "Gross Margin 1",
-              data: monthly.map(row => row.gross_margin_1 * 100),
-              borderColor: "#3b82f6",
-              backgroundColor: "#3b82f6",
-              tension: 0.35,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              borderWidth: 2
-            },
-            {
-              label: "Gross Margin 2 (GM2)",
-              data: monthly.map(row => row.gross_margin_2 * 100),
-              borderColor: "#22c55e",
-              backgroundColor: "#22c55e",
-              tension: 0.35,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              borderWidth: 2
-            },
-            {
-              label: "Gross Margin 3 (GM3)",
-              data: monthly.map(row => row.gross_margin_3 * 100),
-              borderColor: "#a78bfa",
-              backgroundColor: "#a78bfa",
-              tension: 0.35,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              borderWidth: 2
-            }
+            { label: "Gross Margin 1", data: monthly.map(row => row.gross_margin_1 * 100), borderColor: "#3b82f6", backgroundColor: "#3b82f6", tension: 0.35, pointRadius: 2, borderWidth: 2 },
+            { label: "Gross Margin 2 (GM2)", data: monthly.map(row => row.gross_margin_2 * 100), borderColor: "#22c55e", backgroundColor: "#22c55e", tension: 0.35, pointRadius: 2, borderWidth: 2 },
+            { label: "Gross Margin 3 (GM3)", data: monthly.map(row => row.gross_margin_3 * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2 }
           ]
         },
         options: chartOptionsPercent()
       });
     }
 
-    function cssVar(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-
-    function chartOptionsMoney(showLegend = true) {
-      return {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: showLegend,
-            position: "bottom",
-            labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 }
-          },
-          tooltip: {
-            callbacks: {
-              label: context => `${context.dataset.label}: ${money(context.raw)}`
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: "rgba(127,154,183,0.10)" },
-            ticks: { color: cssVar("--muted"), font: { size: 10 } }
-          },
-          y: {
-            beginAtZero: true,
-            grid: { color: "rgba(127,154,183,0.14)" },
-            ticks: {
-              color: cssVar("--muted"),
-              font: { size: 10 },
-              callback: value => compactMoney(value)
-            }
-          }
-        }
-      };
-    }
+    function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
     function chartOptionsMoneyWithRatio(showLegend = true) {
       return {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: "index",
-          intersect: false
-        },
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
         plugins: {
-          legend: {
-            display: showLegend,
-            position: "bottom",
-            labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 }
-          },
-          tooltip: {
-            callbacks: {
-              label: context => {
-                if (context.dataset.yAxisID === "y1") {
-                  return `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
-                    maximumFractionDigits: 0
-                  })}%`;
-                }
-
-                return `${context.dataset.label}: ${money(context.raw)}`;
-              }
-            }
-          }
+          legend: { display: showLegend, position: "bottom", labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 } },
+          tooltip: { callbacks: { label: c => c.dataset.yAxisID === "y1" ? `${c.dataset.label}: ${Number(c.raw || 0).toFixed(0)}%` : `${c.dataset.label}: ${money(c.raw)}` } }
         },
         scales: {
-          x: {
-            grid: { color: "rgba(127,154,183,0.10)" },
-            ticks: { color: cssVar("--muted"), font: { size: 10 } }
-          },
-          y: {
-            beginAtZero: true,
-            position: "left",
-            grid: { color: "rgba(127,154,183,0.14)" },
-            ticks: {
-              color: cssVar("--muted"),
-              font: { size: 10 },
-              callback: value => compactMoney(value)
-            }
-          },
-          y1: {
-            beginAtZero: true,
-            position: "right",
-            grid: { drawOnChartArea: false },
-            ticks: {
-              color: cssVar("--muted"),
-              font: { size: 10 },
-              callback: value => Number(value).toLocaleString("en-US", {
-                maximumFractionDigits: 0
-              }) + "%"
-            }
-          }
+          x: { grid: { color: "rgba(127,154,183,0.10)" }, ticks: { color: cssVar("--muted"), font: { size: 10 } } },
+          y: { beginAtZero: true, position: "left", grid: { color: "rgba(127,154,183,0.14)" }, ticks: { color: cssVar("--muted"), font: { size: 10 }, callback: v => compactMoney(v) } },
+          y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, ticks: { color: cssVar("--muted"), font: { size: 10 }, callback: v => v + "%" } }
         }
       };
     }
 
     function chartOptionsPercent() {
       return {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: "bottom",
-            labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 }
-          },
-          tooltip: {
-            callbacks: {
-              label: context => `${context.dataset.label}: ${Number(context.raw || 0).toLocaleString("en-US", {
-                maximumFractionDigits: 0
-              })}%`
-            }
-          }
-        },
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: "bottom", labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 } } },
         scales: {
-          x: {
-            grid: { color: "rgba(127,154,183,0.10)" },
-            ticks: { color: cssVar("--muted"), font: { size: 10 } }
-          },
-          y: {
-            beginAtZero: true,
-            grid: { color: "rgba(127,154,183,0.14)" },
-            ticks: {
-              color: cssVar("--muted"),
-              font: { size: 10 },
-              callback: value => Number(value).toLocaleString("en-US", {
-                maximumFractionDigits: 0
-              }) + "%"
-            }
-          }
+          x: { grid: { color: "rgba(127,154,183,0.10)" }, ticks: { color: cssVar("--muted"), font: { size: 10 } } },
+          y: { beginAtZero: true, grid: { color: "rgba(127,154,183,0.14)" }, ticks: { color: cssVar("--muted"), font: { size: 10 }, callback: v => v + "%" } }
         }
       };
     }
 
-    function getMonthLookup(rows) {
-      const groupedRows = groupByMonth(rows);
-      const lookup = {};
-
-      groupedRows.forEach(row => {
-        lookup[row.month] = row;
-      });
-
-      return lookup;
-    }
-
-    function getMetricValue(row, metric) {
-      if (!row) return 0;
-      return Number(row[metric] || 0);
-    }
-
     function renderMonthlyMatrix(rows, filters) {
-      const lookup = getMonthLookup(rows);
+      const lookup = {};
+      groupByMonth(rows).forEach(r => { lookup[r.month] = r; });
       const isQuarterSelected = filters && filters.quarter !== "all";
-      const selectedQuarter = isQuarterSelected ? filters.quarter : null;
-
-      const monthKeys = isQuarterSelected ? QUARTERS[selectedQuarter] : MONTH_ORDER;
-      const quarterKeys = isQuarterSelected ? [selectedQuarter] : ["Q1", "Q2", "Q3", "Q4"];
+      const monthKeys = isQuarterSelected ? QUARTERS[filters.quarter] : MONTH_ORDER;
+      const quarterKeys = isQuarterSelected ? [filters.quarter] : ["Q1", "Q2", "Q3", "Q4"];
 
       const table = document.getElementById("monthlyTable");
       const toggle = document.getElementById("matrixToggle");
+      if (isQuarterSelected) { table.classList.remove("is-collapsed"); toggle.style.display = "none"; }
+      else { toggle.style.display = "inline-flex"; }
 
-      if (isQuarterSelected) {
-        table.classList.remove("is-collapsed");
-        toggle.style.display = "none";
-      } else {
-        toggle.style.display = "inline-flex";
-      }
+      const monthHeaders = monthKeys.map(k => `<th class="right month-head monthly-detail${(isQuarterSelected || filters.month === k) ? ' selected-month' : ''}" data-month="${k}">${MONTHS[k]}</th>`).join("");
+      const quarterHeaders = quarterKeys.map(k => `<th class="right quarter-col${(isQuarterSelected && k === filters.quarter) ? ' selected-month' : ''}">${k}</th>`).join("");
 
-      const monthHeaders = monthKeys
-        .map(monthKey => {
-          const selectedClass = isQuarterSelected || (filters.month !== "all" && filters.month === monthKey)
-            ? " selected-month"
-            : "";
-
-          return `<th class="right month-head monthly-detail${selectedClass}" data-month="${monthKey}">${MONTHS[monthKey]}</th>`;
-        })
-        .join("");
-
-      const quarterHeaders = quarterKeys
-        .map(quarterKey => {
-          const selectedClass = isQuarterSelected && quarterKey === selectedQuarter ? " selected-month" : "";
-          return `<th class="right quarter-col${selectedClass}">${quarterKey}</th>`;
-        })
-        .join("");
-
-      document.getElementById("monthlyMatrixHead").innerHTML = `
-        <tr>
-          <th class="sticky-kpi">KPI</th>
-          ${monthHeaders}
-          <th class="right total-col">YTD</th>
-          ${quarterHeaders}
-        </tr>
-      `;
+      document.getElementById("monthlyMatrixHead").innerHTML = `<tr><th class="sticky-kpi">KPI</th>${monthHeaders}<th class="right total-col">YTD</th>${quarterHeaders}</tr>`;
 
       const metrics = [
         { key: "total_sales", label: "Total Sales", formatter: money },
@@ -1861,64 +1301,21 @@
       ];
 
       const ytyTotals = sumRows(rows);
-
-      function quarterRows(quarterKey) {
-        return rows.filter(row => QUARTERS[quarterKey].includes(String(row.month).padStart(2, "0")));
-      }
-
-      function getTotalValue(metricKey, totalRow) {
-        if (metricKey === "gross_margin_1") return Number(totalRow.gross_margin_1 || 0);
-        if (metricKey === "gross_margin_2") return Number(totalRow.gross_margin_2 || 0);
-        if (metricKey === "gross_margin_3") return Number(totalRow.gross_margin_3 || 0);
-        if (metricKey === "net_gross_ratio") return Number(totalRow.net_gross_ratio || 0);
-        if (metricKey === "checkout_abandonment_rate") return Number(totalRow.checkout_abandonment_rate || 0);
-        if (metricKey === "discounts_returns_pct") return Number(totalRow.discounts_returns_pct || 0);
-
-        return Number(totalRow[metricKey] || 0);
-      }
-
-      function getMonthlyValue(metricKey, monthRow) {
-        if (!monthRow) return 0;
-
-        if (metricKey === "gross_margin_1") return Number(monthRow.gross_margin_1 || 0);
-        if (metricKey === "gross_margin_2") return Number(monthRow.gross_margin_2 || 0);
-        if (metricKey === "gross_margin_3") return Number(monthRow.gross_margin_3 || 0);
-        if (metricKey === "net_gross_ratio") return Number(monthRow.net_gross_ratio || 0);
-        if (metricKey === "checkout_abandonment_rate") return Number(monthRow.checkout_abandonment_rate || 0);
-        if (metricKey === "discounts_returns_pct") return Number(monthRow.discounts_returns_pct || 0);
-
-        return Number(monthRow[metricKey] || 0);
-      }
-
-      const html = metrics.map(metric => {
-        const monthCells = monthKeys.map(monthKey => {
-          const row = lookup[monthKey];
-          const value = getMonthlyValue(metric.key, row);
-          const selectedClass = isQuarterSelected || (filters && filters.month !== "all" && filters.month === monthKey)
-            ? " selected-month"
-            : "";
-
-          return `<td class="right monthly-detail${selectedClass}">${metric.formatter(value)}</td>`;
+      const html = metrics.map(m => {
+        const monthCells = monthKeys.map(k => {
+          const r = lookup[k];
+          const v = r ? r[m.key] : 0;
+          return `<td class="right monthly-detail${(isQuarterSelected || filters.month === k) ? ' selected-month' : ''}">${m.formatter(v)}</td>`;
         }).join("");
 
-        const ytyValue = getTotalValue(metric.key, ytyTotals);
-
-        const quarterCells = quarterKeys.map(quarterKey => {
-          const qTotals = sumRows(quarterRows(quarterKey));
-          const qValue = getTotalValue(metric.key, qTotals);
-          const selectedClass = isQuarterSelected && quarterKey === selectedQuarter ? " selected-month" : "";
-
-          return `<td class="right quarter-col${selectedClass}">${metric.formatter(qValue)}</td>`;
+        const ytyValue = ytyTotals[m.key];
+        const quarterCells = quarterKeys.map(qk => {
+          const qRows = rows.filter(row => QUARTERS[qk].includes(String(row.month).padStart(2, "0")));
+          const qTotals = sumRows(qRows);
+          return `<td class="right quarter-col${(isQuarterSelected && qk === filters.quarter) ? ' selected-month' : ''}">${m.formatter(qTotals[m.key])}</td>`;
         }).join("");
 
-        return `
-          <tr>
-            <td class="sticky-kpi">${metric.label}</td>
-            ${monthCells}
-            <td class="right total-col">${metric.formatter(ytyValue)}</td>
-            ${quarterCells}
-          </tr>
-        `;
+        return `<tr><td class="sticky-kpi">${m.label}</td>${monthCells}<td class="right total-col">${m.formatter(ytyValue)}</td>${quarterCells}</tr>`;
       }).join("");
 
       document.getElementById("monthlyMatrix").innerHTML = html;
@@ -1927,31 +1324,15 @@
     function renderNotes(selected) {
       const totals = selected.totals;
       const brandText = selected.filters.brand === "all" ? "all brands" : selected.filters.brand;
-
       let periodText = "all months";
-      if (selected.filters.quarter !== "all") {
-        periodText = QUARTER_LABELS[selected.filters.quarter];
-      } else if (selected.filters.month !== "all") {
-        periodText = MONTHS[selected.filters.month];
-      }
+      if (selected.filters.quarter !== "all") periodText = QUARTER_LABELS[selected.filters.quarter];
+      else if (selected.filters.month !== "all") periodText = MONTHS[selected.filters.month];
 
       document.getElementById("executiveNotes").innerHTML = `
-        <li>
-          <span class="note-dot"></span>
-          <span>Selected Shopify view: <strong>${brandText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span>
-        </li>
-        <li>
-          <span class="note-dot"></span>
-          <span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span>
-        </li>
-        <li>
-          <span class="note-dot"></span>
-          <span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span>
-        </li>
-        <li>
-          <span class="note-dot"></span>
-          <span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span>
-        </li>
+        <li><span class="note-dot"></span><span>Selected Shopify view: <strong>${brandText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span></li>
+        <li><span class="note-dot"></span><span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span></li>
       `;
     }
 
