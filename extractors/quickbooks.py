@@ -12,25 +12,21 @@ auth_client = AuthClient(
         redirect_uri="https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl", # Ojo aquí
         environment="sandbox", # Debe decir sandbox obligatoriamente
     )
-    
     try:
         auth_client.refresh(refresh_token=refresh_token)
         access_token = auth_client.access_token
     except Exception as e:
         print(f"Error renovando el token de QuickBooks: {e}")
-        return {}
-
+      return {}
     url = f"https://sandbox-quickbooks.api.intuit.com/v3/company/{realm_id}/query"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Accept": "application/json",
         "Content-Type": "text/plain"
     }
-
     # Consulta a la base de datos de QuickBooks Sandbox para traer los gastos
     query = f"SELECT * FROM Purchase WHERE TxnDate >= '{year}-01-01' AND TxnDate <= '{year}-12-31'"
     qb_monthly_shipping = {f"{m:02d}": 0.0 for m in range(1, 13)}
-
     try:
         response = requests.post(url, headers=headers, data=query)
         if response.status_code == 200:
@@ -46,5 +42,4 @@ auth_client = AuthClient(
             print(f"Error API QB ({response.status_code}): {response.text}")
     except Exception as e:
         print(f"Error al extraer datos de QuickBooks: {e}")
-
     return qb_monthly_shipping
