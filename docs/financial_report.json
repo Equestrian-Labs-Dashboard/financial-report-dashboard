@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29T04:12:05.036070+00:00",
+  "generated_at": "2026-06-29T04:55:06.111851+00:00",
   "brands_available": [
     "Cavali",
     "Corro"
@@ -123,24 +123,24 @@
     {
       "brand": "Corro",
       "year": 2026,
-      "total_sales": 508644.74,
-      "gross_sales": 570479.29,
-      "discounts": 62238.61,
+      "total_sales": 508688.95,
+      "gross_sales": 570516.28,
+      "discounts": 62242.3,
       "returns": 33933.92,
-      "discounts_returns": 96172.53,
-      "shipping_charges": 15062.31,
-      "taxes": 19275.67,
-      "net_sales": 474306.76,
-      "cogs": 319501.98,
-      "gross_profit_1": 144953.15,
-      "transactions": 2631.0,
-      "sessions_reached_checkout": 3591.0,
-      "sessions_completed_checkout": 1709.0,
+      "discounts_returns": 96176.22,
+      "shipping_charges": 15070.31,
+      "taxes": 19278.579999999998,
+      "net_sales": 474340.06,
+      "cogs": 319522.32,
+      "gross_profit_1": 144966.11,
+      "transactions": 2632.0,
+      "sessions_reached_checkout": 3592.0,
+      "sessions_completed_checkout": 1710.0,
       "checkout_abandonments": 1882.0,
-      "discounts_returns_pct": 0.1685819830549852,
-      "gross_margin_1": 0.3056105504378643,
-      "net_gross_ratio": 0.8314180169450147,
-      "checkout_abandonment_rate": 0.5240879977722083
+      "discounts_returns_pct": 0.16857752069756887,
+      "gross_margin_1": 0.30561641789226063,
+      "net_gross_ratio": 0.8314224793024311,
+      "checkout_abandonment_rate": 0.5239420935412027
     }
   ],
   "shopify_kpis_by_brand_month": [
@@ -1643,24 +1643,24 @@
       "brand": "Corro",
       "year": 2026,
       "month": "06",
-      "total_sales": 61148.82,
-      "gross_sales": 64197.56,
-      "discounts": 3444.15,
+      "total_sales": 61193.03,
+      "gross_sales": 64234.55,
+      "discounts": 3447.84,
       "returns": 4123.65,
-      "discounts_returns": 7567.799999999999,
-      "shipping_charges": 2612.23,
-      "taxes": 1906.83,
-      "net_sales": 56629.76,
-      "cogs": 34280.07,
-      "gross_profit_1": 20103.24,
-      "transactions": 354.0,
-      "sessions_reached_checkout": 458.0,
-      "sessions_completed_checkout": 221.0,
+      "discounts_returns": 7571.49,
+      "shipping_charges": 2620.23,
+      "taxes": 1909.74,
+      "net_sales": 56663.06,
+      "cogs": 34300.41,
+      "gross_profit_1": 20116.2,
+      "transactions": 355.0,
+      "sessions_reached_checkout": 459.0,
+      "sessions_completed_checkout": 222.0,
       "checkout_abandonments": 237.0,
-      "discounts_returns_pct": 0.11788298496079913,
-      "gross_margin_1": 0.3549942644997966,
-      "net_gross_ratio": 0.8821170150392009,
-      "checkout_abandonment_rate": 0.517467248908297
+      "discounts_returns_pct": 0.11787254678362345,
+      "gross_margin_1": 0.35501436032575723,
+      "net_gross_ratio": 0.8821274532163764,
+      "checkout_abandonment_rate": 0.5163398692810458
     },
     {
       "brand": "Corro",
@@ -2457,10 +2457,10 @@
       "year": 2026,
       "month": "06",
       "channel": "Shopify",
-      "total_sales": 61148.82,
-      "gross_sales": 64197.56,
-      "net_sales": 56629.76,
-      "transactions": 354.0
+      "total_sales": 61193.03,
+      "gross_sales": 64234.55,
+      "net_sales": 56663.06,
+      "transactions": 355.0
     },
     {
       "brand": "Corro",
@@ -2524,9 +2524,48 @@
     }
   ],
   "qb_summary": {
-    "2024": {},
-    "2025": {},
-    "2026": {}
+    "2024": {
+      "01": 0.0,
+      "02": 0.0,
+      "03": 0.0,
+      "04": 0.0,
+      "05": 0.0,
+      "06": 0.0,
+      "07": 0.0,
+      "08": 0.0,
+      "09": 0.0,
+      "10": 0.0,
+      "11": 0.0,
+      "12": 0.0
+    },
+    "2025": {
+      "01": 0.0,
+      "02": 0.0,
+      "03": 0.0,
+      "04": 0.0,
+      "05": 0.0,
+      "06": 0.0,
+      "07": 0.0,
+      "08": 0.0,
+      "09": 0.0,
+      "10": 0.0,
+      "11": 0.0,
+      "12": 0.0
+    },
+    "2026": {
+      "01": 0.0,
+      "02": 0.0,
+      "03": 0.0,
+      "04": 0.0,
+      "05": 0.0,
+      "06": 0.0,
+      "07": 0.0,
+      "08": 0.0,
+      "09": 0.0,
+      "10": 0.0,
+      "11": 0.0,
+      "12": 0.0
+    }
   },
   "bill_rows": []
 }
