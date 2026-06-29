@@ -3,14 +3,14 @@ from intuitlib.client import AuthClient
 
 def get_qb_shipping_costs(client_id, client_secret, refresh_token, realm_id, year):
     """
-    Se conecta a la API de QuickBooks en producción, renueva el token
-    y extrae el costo acumulado mensual de envíos para el año consultado.
+    Se conecta a la API de QuickBooks en el entorno de pruebas (Sandbox), 
+    renueva el token y extrae el costo acumulado mensual de envíos.
     """
-auth_client = AuthClient(
+    auth_client = AuthClient(
         client_id=client_id,
         client_secret=client_secret,
         redirect_uri="https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl",
-        environment="sandbox",  # <--- Cambiar de 'production' a 'sandbox'
+        environment="sandbox",
     )
     
     try:
@@ -20,7 +20,6 @@ auth_client = AuthClient(
         print(f"Error renovando el token de QuickBooks: {e}")
         return {}
 
-# Cambiar 'quickbooks.api.intuit.com' por 'sandbox-quickbooks.api.intuit.com'
     url = f"https://sandbox-quickbooks.api.intuit.com/v3/company/{realm_id}/query"
     headers = {
         "Authorization": f"Bearer {access_token}",
@@ -28,7 +27,7 @@ auth_client = AuthClient(
         "Content-Type": "text/plain"
     }
 
-    # Consulta SQL a la API de QuickBooks para traer los registros de gastos de envío
+    # Consulta a la base de datos de QuickBooks Sandbox para traer los gastos
     query = f"SELECT * FROM Purchase WHERE TxnDate >= '{year}-01-01' AND TxnDate <= '{year}-12-31'"
     qb_monthly_shipping = {f"{m:02d}": 0.0 for m in range(1, 13)}
 
