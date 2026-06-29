@@ -6,11 +6,11 @@ def get_qb_shipping_costs(client_id, client_secret, refresh_token, realm_id, yea
     Se conecta a la API de QuickBooks en producción, renueva el token
     y extrae el costo acumulado mensual de envíos para el año consultado.
     """
-    auth_client = AuthClient(
+auth_client = AuthClient(
         client_id=client_id,
         client_secret=client_secret,
         redirect_uri="https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl",
-        environment="production",
+        environment="sandbox",  # <--- Cambiar de 'production' a 'sandbox'
     )
     
     try:
@@ -20,7 +20,8 @@ def get_qb_shipping_costs(client_id, client_secret, refresh_token, realm_id, yea
         print(f"Error renovando el token de QuickBooks: {e}")
         return {}
 
-    url = f"https://quickbooks.api.intuit.com/v3/company/{realm_id}/query"
+# Cambiar 'quickbooks.api.intuit.com' por 'sandbox-quickbooks.api.intuit.com'
+    url = f"https://sandbox-quickbooks.api.intuit.com/v3/company/{realm_id}/query"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Accept": "application/json",
