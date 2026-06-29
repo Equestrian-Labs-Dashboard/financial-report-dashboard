@@ -5,7 +5,7 @@ CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE"
 CLIENT_SECRET = "PASTE_YOUR_CLIENT_SECRET_HERE"
 
 REDIRECT_URI = "https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl"
-ENVIRONMENT = "production"
+ENVIRONMENT = "sandbox"  # <--- Cambiar de 'production' a 'sandbox'
 
 auth_client = AuthClient(
     client_id=CLIENT_ID,
