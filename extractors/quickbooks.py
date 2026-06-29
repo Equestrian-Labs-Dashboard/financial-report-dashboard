@@ -1,26 +1,29 @@
 import os
 import logging
+import requests
 from intuitlib.client import AuthClient
 from intuitlib.exceptions import AuthClientError
-import requests
 
 logger = logging.getLogger(__name__)
 
-def get_qb_shipping_costs(year):
+def get_qb_shipping_costs(year, *args, **kwargs):
     """
-    Extrae los costos de envío desde QuickBooks Online Sandbox utilizando
-    OAuth 2.0 y las credenciales almacenadas en GitHub Secrets.
+    Extrae los costos de envío acumulados mensualmente desde QuickBooks Online Sandbox.
+    Acepta cualquier argumento adicional (*args, **kwargs) enviado por main.py para evitar errores.
     """
     client_id = os.getenv("QB_CLIENT_ID")
     client_secret = os.getenv("QB_CLIENT_SECRET")
     refresh_token = os.getenv("QB_REFRESH_TOKEN")
     realm_id = os.getenv("QB_REALM_ID")
 
-    if not all([client_id, client_secret, refresh_token, realm_id]):
-        logger.error("Faltan credenciales de QuickBooks en las variables de entorno.")
-        return 0
+    # Inicializar el diccionario de meses vacío de '01' a '12'
+    qb_monthly_shipping = {f"{m:02d}": 0.0 for m in range(1, 13)}
 
-    # Inicializar el cliente de autenticación oficial apuntando a Sandbox
+    if not all([client_id, client_secret, refresh_token, realm_id]):
+        logger.error("Faltan credenciales de QuickBooks en las variables de entorno de GitHub.")
+        return qb_monthly_shipping
+
+    # AuthClient configurado correctamente para Sandbox
     auth_client = AuthClient(
         client_id=client_id,
         client_secret=client_secret,
@@ -29,46 +32,47 @@ def get_qb_shipping_costs(year):
     )
 
     try:
-        # Refrescar el token de acceso usando el Refresh Token de tus Secrets
+        # Renovar el token usando el secreto guardado
         auth_client.refresh(refresh_token=refresh_token)
         access_token = auth_client.access_token
     except AuthClientError as e:
-        logger.error(f"Error al refrescar el token de QuickBooks: {e.intuit_error_display_check_and_try_again}")
-        return 0
+        logger.error(f"Error de autenticación en QB (Oauth): {e}")
+        return qb_monthly_shipping
     except Exception as e:
-        logger.error(f"Error inesperado en la autenticación de QuickBooks: {e}")
-        return 0
+        logger.error(f"Error inesperado al renovar token de QB: {e}")
+        return qb_monthly_shipping
 
-    # Configurar los headers para la consulta a la API
+    url = f"https://sandbox-quickbooks.api.intuit.com/v3/company/{realm_id}/query"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "text/plain"
     }
 
-    # Query para extraer los gastos de envío (Shipping) del año correspondiente
-    start_date = f"{year}-01-01"
-    end_date = f"{year}-12-31"
-    
-    # Query estándar de QuickBooks para agrupar cuentas de gastos de envío
-    query = f"SELECT TotalAmt FROM Purchase WHERE TxnDate >= '{start_date}' AND TxnDate <= '{end_date}'"
-    url = f"https://sandbox-quickbooks.api.intuit.com/v3/company/{realm_id}/query?query={query}"
+    # Query SQL exacto para extraer transacciones del año correspondiente
+    query = f"SELECT * FROM Purchase WHERE TxnDate >= '{year}-01-01' AND TxnDate <= '{year}-12-31'"
 
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.post(url, headers=headers, data=query)
         if response.status_code == 200:
             data = response.json()
-            # Sumar los montos encontrados si existen registros
             purchases = data.get("QueryResponse", {}).get("Purchase", [])
-            total_shipping = sum(float(p.get("TotalAmt", 0)) for p in purchases)
-            logger.info(f"Datos de envío de QuickBooks para {year} extraídos con éxito.")
-            return total_shipping
+            
+            for item in purchases:
+                txn_date = item.get("TxnDate", "")
+                if txn_date:
+                    # Extraer el mes en formato '02', '03', etc.
+                    month = txn_date.split("-")[1]
+                    total_amt = float(item.get("TotalAmt", 0.0))
+                    if month in qb_monthly_shipping:
+                        qb_monthly_shipping[month] += total_amt
+                        
+            logger.info(f"Datos de envío de QuickBooks para {year} procesados exitosamente por mes.")
         elif response.status_code == 401:
-            logger.error(f"Error API QB (401): Authorization Failure para el año {year}.")
-            return 0
+            logger.error(f"Error API QB (401): Falla de autorización para el año {year}. Verifica el Refresh Token.")
         else:
-            logger.error(f"Error en la API de QuickBooks ({response.status_code}): {response.text}")
-            return 0
+            logger.error(f"Error API QB ({response.status_code}): {response.text}")
     except Exception as e:
-        logger.error(f"Error de conexión con la API de QuickBooks: {e}")
-        return 0
+        logger.error(f"Error de conexión al extraer datos de QuickBooks: {e}")
+
+    return qb_monthly_shipping
