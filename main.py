@@ -4,15 +4,14 @@ from datetime import datetime, timezone
 
 import config
 from extractors.shopify import get_shopify_rows
+from extractors.quickbooks import get_qb_shipping_costs
 from transforms.financial_report import build_financial_report
 
 
 def save_json(data: dict, path: str):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-
     with open(path, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=2, ensure_ascii=False)
-
     print(f"Saved: {path}")
 
 
@@ -27,6 +26,7 @@ def run():
     for year in years:
         print(f"Processing financial year: {year}")
 
+        # Extracción de Shopify (Corro y Cavali) intacta
         for brand, credentials in config.SHOPIFY_STORES.items():
             try:
                 print(f"Extracting Shopify data for {brand}...")
@@ -36,17 +36,34 @@ def run():
                     token=credentials["token"],
                     year=year,
                 )
-
                 all_shopify_rows.extend(rows)
-
                 print(f"{brand} Shopify rows: {len(rows)}")
-
             except Exception as exc:
                 print(f"Shopify error for {brand} {year}: {exc}")
 
-        print("QuickBooks skipped for now.")
+        # Extracción activa conectada de QuickBooks
+        if config.QB_CLIENT_ID and config.QB_CLIENT_SECRET and config.QB_REFRESH_TOKEN:
+            try:
+                print(f"Extracting QuickBooks shipping data for year {year}...")
+                shipping_data = get_qb_shipping_costs(
+                    client_id=config.QB_CLIENT_ID,
+                    client_secret=config.QB_CLIENT_SECRET,
+                    refresh_token=config.QB_REFRESH_TOKEN,
+                    realm_id=config.QB_REALM_ID,
+                    year=year
+                )
+                qb_summaries[year] = shipping_data
+                print(f"QuickBooks data extracted successfully for {year}.")
+            except Exception as exc:
+                print(f"QuickBooks error for year {year}: {exc}")
+                qb_summaries[year] = {f"{m:02d}": 0.0 for m in range(1, 13)}
+        else:
+            print("QuickBooks credentials missing in config. Skipping API extraction.")
+            qb_summaries[year] = {f"{m:02d}": 0.0 for m in range(1, 13)}
+
         print("BILL skipped for now.")
 
+    # Generación del reporte con la integración de ambas fuentes
     report = build_financial_report(
         shopify_rows=all_shopify_rows,
         bill_rows=all_bill_rows,
