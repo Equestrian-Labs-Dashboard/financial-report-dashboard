@@ -1210,6 +1210,8 @@
         net_sales: 0,
         cogs: 0,
         gross_profit_1: 0,
+        gross_profit_2: 0,
+        gross_profit_3: 0,
         transactions: 0,
         net_gross_ratio: 0,
         sessions_reached_checkout: 0,
@@ -1229,6 +1231,8 @@
         result.net_sales += Number(row.net_sales || 0);
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
+        result.gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
+        result.gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_1 || 0);
         result.transactions += Number(row.transactions || 0);
 
         result.sessions_reached_checkout += rowReachedCheckout(row);
@@ -1236,8 +1240,6 @@
         result.checkout_abandonments += rowCheckoutAbandonments(row);
       });
 
-      // If the JSON has reached/completed fields, use Shopify's session funnel formula.
-      // If it only has direct abandoned checkouts, the direct count still works.
       if (result.sessions_reached_checkout) {
         result.checkout_abandonments = Math.max(
           result.sessions_reached_checkout - result.sessions_completed_checkout,
@@ -1247,6 +1249,8 @@
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
+      result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
+      result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
       result.checkout_abandonment_rate = result.sessions_reached_checkout
         ? result.checkout_abandonments / result.sessions_reached_checkout
@@ -1391,6 +1395,20 @@
           <div class="kpi-note">Net Sales - COGS</div>
         </div>
 
+        <div class="kpi-card positive">
+          <div class="kpi-label">Gross Profit 2</div>
+          <div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div>
+          <div class="kpi-chip green">Calculated</div>
+          <div class="kpi-note">Gross Profit 1 - Marketing</div>
+        </div>
+
+        <div class="kpi-card positive">
+          <div class="kpi-label">Gross Profit 3</div>
+          <div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div>
+          <div class="kpi-chip green">Calculated</div>
+          <div class="kpi-note">Gross Profit 2 - OpEx</div>
+        </div>
+
         <div class="kpi-card purple">
           <div class="kpi-label">Net / Gross Ratio</div>
           <div class="kpi-value">${percent(totals.net_gross_ratio)}</div>
@@ -1410,6 +1428,20 @@
           <div class="kpi-value">${percent(totals.gross_margin_1)}</div>
           <div class="kpi-chip">Calculated</div>
           <div class="kpi-note">Gross Profit 1 / Net Sales</div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-label">Gross Margin 2 (GM2)</div>
+          <div class="kpi-value">${percent(totals.gross_margin_2)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">Gross Profit 2 / Net Sales</div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-label">Gross Margin 3 (GM3)</div>
+          <div class="kpi-value">${percent(totals.gross_margin_3)}</div>
+          <div class="kpi-chip">Calculated</div>
+          <div class="kpi-note">Gross Profit 3 / Net Sales</div>
         </div>
       `;
     }
@@ -1433,6 +1465,8 @@
             net_sales: 0,
             cogs: 0,
             gross_profit_1: 0,
+            gross_profit_2: 0,
+            gross_profit_3: 0,
             transactions: 0,
             sessions_reached_checkout: 0,
             sessions_completed_checkout: 0,
@@ -1451,6 +1485,8 @@
         grouped[month].net_sales += Number(row.net_sales || 0);
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
+        grouped[month].gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
+        grouped[month].gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_1 || 0);
         grouped[month].transactions += Number(row.transactions || 0);
 
         grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
@@ -1471,6 +1507,8 @@
           return {
             ...row,
             gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+            gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
+            gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
             net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
             checkout_abandonment_rate: row.sessions_reached_checkout
               ? row.checkout_abandonments / row.sessions_reached_checkout
@@ -1575,6 +1613,26 @@
             {
               label: "Gross Margin 1",
               data: monthly.map(row => row.gross_margin_1 * 100),
+              borderColor: "#3b82f6",
+              backgroundColor: "#3b82f6",
+              tension: 0.35,
+              pointRadius: 2,
+              pointHoverRadius: 4,
+              borderWidth: 2
+            },
+            {
+              label: "Gross Margin 2 (GM2)",
+              data: monthly.map(row => row.gross_margin_2 * 100),
+              borderColor: "#22c55e",
+              backgroundColor: "#22c55e",
+              tension: 0.35,
+              pointRadius: 2,
+              pointHoverRadius: 4,
+              borderWidth: 2
+            },
+            {
+              label: "Gross Margin 3 (GM3)",
+              data: monthly.map(row => row.gross_margin_3 * 100),
               borderColor: "#a78bfa",
               backgroundColor: "#a78bfa",
               tension: 0.35,
@@ -1795,7 +1853,11 @@
         { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
         { key: "cogs", label: "COGS", formatter: money },
         { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
-        { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent }
+        { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent },
+        { key: "gross_profit_2", label: "Gross Profit 2", formatter: money },
+        { key: "gross_margin_2", label: "Gross Margin 2 (GM2)", formatter: percent },
+        { key: "gross_profit_3", label: "Gross Profit 3", formatter: money },
+        { key: "gross_margin_3", label: "Gross Margin 3 (GM3)", formatter: percent }
       ];
 
       const ytyTotals = sumRows(rows);
@@ -1805,21 +1867,12 @@
       }
 
       function getTotalValue(metricKey, totalRow) {
-        if (metricKey === "gross_margin_1") {
-          return Number(totalRow.gross_margin_1 || 0);
-        }
-
-        if (metricKey === "net_gross_ratio") {
-          return Number(totalRow.net_gross_ratio || 0);
-        }
-
-        if (metricKey === "checkout_abandonment_rate") {
-          return Number(totalRow.checkout_abandonment_rate || 0);
-        }
-
-        if (metricKey === "discounts_returns_pct") {
-          return Number(totalRow.discounts_returns_pct || 0);
-        }
+        if (metricKey === "gross_margin_1") return Number(totalRow.gross_margin_1 || 0);
+        if (metricKey === "gross_margin_2") return Number(totalRow.gross_margin_2 || 0);
+        if (metricKey === "gross_margin_3") return Number(totalRow.gross_margin_3 || 0);
+        if (metricKey === "net_gross_ratio") return Number(totalRow.net_gross_ratio || 0);
+        if (metricKey === "checkout_abandonment_rate") return Number(totalRow.checkout_abandonment_rate || 0);
+        if (metricKey === "discounts_returns_pct") return Number(totalRow.discounts_returns_pct || 0);
 
         return Number(totalRow[metricKey] || 0);
       }
@@ -1827,21 +1880,12 @@
       function getMonthlyValue(metricKey, monthRow) {
         if (!monthRow) return 0;
 
-        if (metricKey === "gross_margin_1") {
-          return Number(monthRow.gross_margin_1 || 0);
-        }
-
-        if (metricKey === "net_gross_ratio") {
-          return Number(monthRow.net_gross_ratio || 0);
-        }
-
-        if (metricKey === "checkout_abandonment_rate") {
-          return Number(monthRow.checkout_abandonment_rate || 0);
-        }
-
-        if (metricKey === "discounts_returns_pct") {
-          return Number(monthRow.discounts_returns_pct || 0);
-        }
+        if (metricKey === "gross_margin_1") return Number(monthRow.gross_margin_1 || 0);
+        if (metricKey === "gross_margin_2") return Number(monthRow.gross_margin_2 || 0);
+        if (metricKey === "gross_margin_3") return Number(monthRow.gross_margin_3 || 0);
+        if (metricKey === "net_gross_ratio") return Number(monthRow.net_gross_ratio || 0);
+        if (metricKey === "checkout_abandonment_rate") return Number(monthRow.checkout_abandonment_rate || 0);
+        if (metricKey === "discounts_returns_pct") return Number(monthRow.discounts_returns_pct || 0);
 
         return Number(monthRow[metricKey] || 0);
       }
