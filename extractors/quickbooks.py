@@ -6,11 +6,11 @@ def get_qb_shipping_costs(client_id, client_secret, refresh_token, realm_id, yea
     Se conecta a la API de QuickBooks en el entorno de pruebas (Sandbox), 
     renueva el token y extrae el costo acumulado mensual de envíos.
     """
-    auth_client = AuthClient(
+auth_client = AuthClient(
         client_id=client_id,
         client_secret=client_secret,
-        redirect_uri="https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl",
-        environment="sandbox",
+        redirect_uri="https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl", # Ojo aquí
+        environment="sandbox", # Debe decir sandbox obligatoriamente
     )
     
     try:
