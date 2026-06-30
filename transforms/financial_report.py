@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 import pandas as pd
 
-
 def build_financial_report(
     shopify_rows: list[dict],
     bill_rows: list[dict],
@@ -61,14 +60,14 @@ def build_financial_report(
     shopify_df["year"] = pd.to_numeric(shopify_df["year"], errors="coerce").fillna(0).astype(int)
     shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
 
-    # Recalculate abandonment count from Shopify session funnel when reached/completed are present.
-    # Formula requested:
-    # Checkout Abandonments = sessions_reached_checkout - sessions_completed_checkout
-    # Checkout Abandonment Rate = Checkout Abandonments / sessions_reached_checkout
+    # Recalculate abandonment count
     shopify_df["checkout_abandonments"] = (
         shopify_df["sessions_reached_checkout"] - shopify_df["sessions_completed_checkout"]
     ).clip(lower=0)
 
+    # ---------------------------------------------------------
+    # 1. AGRUPACIÓN ANUAL (YEAR)
+    # ---------------------------------------------------------
     shopify_by_brand_year = (
         shopify_df
         .groupby(["brand", "year"], as_index=False)
@@ -110,6 +109,35 @@ def build_financial_report(
         / shopify_by_brand_year["sessions_reached_checkout"].replace(0, pd.NA)
     ).fillna(0)
 
+    # --- LÓGICA DE GROSS MARGIN 2 y 3 (ANUAL) ---
+    def get_qb_shipping_year(row):
+        y = str(int(row['year']))
+        y_data = qb_summaries.get(y, qb_summaries.get(int(y), {}))
+        return sum(float(v) for v in y_data.values())
+
+    shopify_by_brand_year['qb_shipping_total'] = shopify_by_brand_year.apply(get_qb_shipping_year, axis=1)
+    yearly_totals = shopify_by_brand_year.groupby(['year'])['net_sales'].transform('sum')
+    shopify_by_brand_year['sales_proportion'] = (shopify_by_brand_year['net_sales'] / yearly_totals.replace(0, pd.NA)).fillna(0)
+    shopify_by_brand_year['qb_shipping_allocated'] = shopify_by_brand_year['qb_shipping_total'] * shopify_by_brand_year['sales_proportion']
+
+    # Usa QB si es mayor a 0, de lo contrario usa los datos de Shopify
+    shopify_by_brand_year['applied_shipping'] = shopify_by_brand_year.apply(
+        lambda x: x['qb_shipping_allocated'] if x['qb_shipping_total'] > 0 else x['shipping_charges'], axis=1
+    )
+
+    shopify_by_brand_year['gross_profit_2'] = shopify_by_brand_year['gross_profit_1'] - shopify_by_brand_year['applied_shipping']
+    shopify_by_brand_year['gross_margin_2'] = (shopify_by_brand_year['gross_profit_2'] / shopify_by_brand_year['net_sales'].replace(0, pd.NA)).fillna(0)
+
+    shopify_by_brand_year['gross_profit_3'] = shopify_by_brand_year['gross_profit_2']
+    shopify_by_brand_year['gross_margin_3'] = shopify_by_brand_year['gross_margin_2']
+
+    # Limpieza de columnas temporales
+    shopify_by_brand_year.drop(columns=['qb_shipping_total', 'sales_proportion', 'qb_shipping_allocated', 'applied_shipping'], inplace=True, errors='ignore')
+
+
+    # ---------------------------------------------------------
+    # 2. AGRUPACIÓN MENSUAL (MONTH)
+    # ---------------------------------------------------------
     shopify_by_brand_month = (
         shopify_df
         .groupby(["brand", "year", "month"], as_index=False)
@@ -151,6 +179,35 @@ def build_financial_report(
         / shopify_by_brand_month["sessions_reached_checkout"].replace(0, pd.NA)
     ).fillna(0)
 
+    # --- LÓGICA DE GROSS MARGIN 2 y 3 (MENSUAL) ---
+    def get_qb_shipping_month(row):
+        y = str(int(row['year']))
+        m = str(row['month']).zfill(2)
+        y_data = qb_summaries.get(y, qb_summaries.get(int(y), {}))
+        return float(y_data.get(m, 0.0))
+
+    shopify_by_brand_month['qb_shipping_total'] = shopify_by_brand_month.apply(get_qb_shipping_month, axis=1)
+    monthly_totals = shopify_by_brand_month.groupby(['year', 'month'])['net_sales'].transform('sum')
+    shopify_by_brand_month['sales_proportion'] = (shopify_by_brand_month['net_sales'] / monthly_totals.replace(0, pd.NA)).fillna(0)
+    shopify_by_brand_month['qb_shipping_allocated'] = shopify_by_brand_month['qb_shipping_total'] * shopify_by_brand_month['sales_proportion']
+
+    shopify_by_brand_month['applied_shipping'] = shopify_by_brand_month.apply(
+        lambda x: x['qb_shipping_allocated'] if x['qb_shipping_total'] > 0 else x['shipping_charges'], axis=1
+    )
+
+    shopify_by_brand_month['gross_profit_2'] = shopify_by_brand_month['gross_profit_1'] - shopify_by_brand_month['applied_shipping']
+    shopify_by_brand_month['gross_margin_2'] = (shopify_by_brand_month['gross_profit_2'] / shopify_by_brand_month['net_sales'].replace(0, pd.NA)).fillna(0)
+
+    shopify_by_brand_month['gross_profit_3'] = shopify_by_brand_month['gross_profit_2']
+    shopify_by_brand_month['gross_margin_3'] = shopify_by_brand_month['gross_margin_2']
+
+    # Limpieza de columnas temporales
+    shopify_by_brand_month.drop(columns=['qb_shipping_total', 'sales_proportion', 'qb_shipping_allocated', 'applied_shipping'], inplace=True, errors='ignore')
+
+
+    # ---------------------------------------------------------
+    # 3. AGRUPACIÓN POR CANAL
+    # ---------------------------------------------------------
     shopify_by_channel = (
         shopify_df
         .groupby(["brand", "year", "month", "channel"], as_index=False)
