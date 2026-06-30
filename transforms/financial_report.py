@@ -255,4 +255,4 @@ def build_financial_report(
         "marketing_summary": marketing_summaries,
         "bill_rows": bill_rows,
     }
-Listo
+
