@@ -16,15 +16,18 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run financial report pipeline
         env:
-          QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
-          QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
-          QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
-          QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          # Secretos de Shopify (Para que config.py no falle)
           CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
           CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
           CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
           CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
+          # Secretos de QuickBooks
+          QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
+          QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
+          QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
+          QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
+          # Secreto de Google Sheets
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: python -u main.py
       - name: Commit and push changes
         run: |
