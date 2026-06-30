@@ -8,7 +8,7 @@ import pandas as pd
 def build_financial_report(shopify_rows, bill_rows, qb_summaries):
     shopify_df = pd.DataFrame(shopify_rows)
     
-    # Mantenemos tu lógica de limpieza de Shopify intacta
+    # Limpieza de datos (Mantiene tu lógica original)
     numeric_cols = ["total_sales", "gross_sales", "discounts", "returns", "net_sales", "cogs", "gross_profit_1", "shipping_charges", "transactions", "sessions_reached_checkout", "sessions_completed_checkout"]
     for col in numeric_cols:
         if col in shopify_df.columns:
@@ -17,7 +17,7 @@ def build_financial_report(shopify_rows, bill_rows, qb_summaries):
     shopify_df["year"] = pd.to_numeric(shopify_df["year"], errors="coerce").fillna(0).astype(int)
     shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
 
-    # --- EXTRAER MARKETING DESDE GOOGLE SHEETS (NUEVO) ---
+    # --- NUEVA LÓGICA: GASTOS DE MARKETING (GOOGLE SHEETS) ---
     marketing_dict = {}
     creds_json = os.environ.get("GOOGLE_CREDENTIALS")
     if creds_json:
@@ -40,23 +40,19 @@ def build_financial_report(shopify_rows, bill_rows, qb_summaries):
                 if row['year'] not in marketing_dict: marketing_dict[row['year']] = {}
                 marketing_dict[row['year']][row['month']] = float(row['Spend'])
         except Exception as e:
-            print(f"Error Marketing: {e}")
+            print(f"Error cargando marketing: {e}")
 
-    # --- CÁLCULO DE MÉTRICAS (Mantiene tu lógica original) ---
+    # --- CÁLCULO DE MÉTRICAS (Lógica original Shopify + QB + Marketing) ---
     df = shopify_df.groupby(["brand", "year", "month"], as_index=False).sum()
     
-    # 1. GP2 y GM2 (Shipping desde QB)
-    def get_qb(row): 
-        return float(qb_summaries.get(str(row['year']), {}).get(row['month'], 0.0))
-    
+    # 1. GP2 y GM2 (Shipping desde QuickBooks)
+    def get_qb(row): return float(qb_summaries.get(str(row['year']), {}).get(row['month'], 0.0))
     df['shipping_cost'] = df.apply(get_qb, axis=1)
     df['gross_profit_2'] = df['gross_profit_1'] - df['shipping_cost']
     df['gross_margin_2'] = (df['gross_profit_2'] / df['net_sales'].replace(0, pd.NA)).fillna(0)
     
     # 2. GP3 y GM3 (Marketing desde Google Sheets)
-    def get_mkt(row):
-        return float(marketing_dict.get(str(row['year']), {}).get(row['month'], 0.0))
-        
+    def get_mkt(row): return float(marketing_dict.get(str(row['year']), {}).get(row['month'], 0.0))
     df['marketing_cost'] = df.apply(get_mkt, axis=1)
     df['gross_profit_3'] = df['gross_profit_2'] - df['marketing_cost']
     df['gross_margin_3'] = (df['gross_profit_3'] / df['net_sales'].replace(0, pd.NA)).fillna(0)
