@@ -40,7 +40,7 @@ def build_financial_report(shopify_rows, bill_rows, qb_summaries):
                 if row['year'] not in marketing_dict: marketing_dict[row['year']] = {}
                 marketing_dict[row['year']][row['month']] = float(row['Spend'])
         except Exception as e:
-            print(f"Error cargando marketing: {e}")
+           print(f"Error detallado cargando marketing: {str(e)}")
 
     # --- CÁLCULO DE MÉTRICAS (Lógica original Shopify + QB + Marketing) ---
     df = shopify_df.groupby(["brand", "year", "month"], as_index=False).sum()
