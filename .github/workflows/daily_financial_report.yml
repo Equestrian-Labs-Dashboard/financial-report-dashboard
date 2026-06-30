@@ -26,6 +26,8 @@ jobs:
           QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
           QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
           QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
+          # Secretos de Marketing (Google Sheets público, solo lectura)
+          MARKETING_SHEET_GID: ${{ secrets.MARKETING_SHEET_GID }}
           # Secreto de Google Sheets
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: python -u main.py
