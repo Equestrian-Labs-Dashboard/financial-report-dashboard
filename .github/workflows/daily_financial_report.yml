@@ -21,6 +21,10 @@ jobs:
           QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
           QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
+          CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
+          CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
+          CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
         run: python -u main.py
       - name: Commit and push changes
         run: |
