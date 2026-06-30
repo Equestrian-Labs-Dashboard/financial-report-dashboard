@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 
 def get_qb_shipping_costs(year, *args, **kwargs):
     """
-    Extrae los costos de envío acumulados mensualmente desde QuickBooks Online Sandbox
-    usando el método GET oficial con query param codificado.
+    Extrae los costos acumulados desde QuickBooks Online SANDBOX.
+    SIN FILTRO: Suma todas las compras de prueba existentes para demostrar la funcionalidad del Dashboard.
     """
     qb_monthly_shipping = {f"{m:02d}": 0.0 for m in range(1, 13)}
 
@@ -22,11 +22,12 @@ def get_qb_shipping_costs(year, *args, **kwargs):
         logger.error("Faltan credenciales de QuickBooks en las variables de entorno.")
         return qb_monthly_shipping
 
+    # Apuntamos nuevamente al Sandbox
     auth_client = AuthClient(
         client_id=client_id,
         client_secret=client_secret,
         redirect_uri="https://developer.intuit.com/v2/OAuth2Playground/RedirectUrl",
-        environment="sandbox"
+        environment="sandbox" 
     )
 
     try:
@@ -36,13 +37,10 @@ def get_qb_shipping_costs(year, *args, **kwargs):
         logger.error(f"Error de autenticación en QB al renovar token: {e}")
         return qb_monthly_shipping
 
-    # 1. Definir la consulta SQL limpia
     query = f"SELECT * FROM Purchase WHERE TxnDate >= '{year}-01-01' AND TxnDate <= '{year}-12-31'"
-    
-    # 2. Codificar la consulta para que QuickBooks la entienda sin errores (Solución al 400)
     safe_query = urllib.parse.quote(query)
     
-    # 3. Armar la URL oficial con el método GET
+    # URL oficial de Sandbox
     url = f"https://sandbox-quickbooks.api.intuit.com/v3/company/{realm_id}/query?query={safe_query}"
     
     headers = {
@@ -60,11 +58,12 @@ def get_qb_shipping_costs(year, *args, **kwargs):
                 txn_date = item.get("TxnDate", "")
                 if txn_date:
                     month = txn_date.split("-")[1]
+                    # SUMA DIRECTA: Tomamos todos los montos de prueba sin filtrar categoría
                     total_amt = float(item.get("TotalAmt", 0.0))
                     if month in qb_monthly_shipping:
                         qb_monthly_shipping[month] += total_amt
                         
-            logger.info(f"Datos de envío de QuickBooks para {year} procesados exitosamente.")
+            logger.info(f"Datos de prueba de QuickBooks para {year} sumados exitosamente.")
         else:
             logger.error(f"Error API QB ({response.status_code}): {response.text}")
     except Exception as e:
