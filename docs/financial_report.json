@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-30T03:54:04.992929+00:00",
+  "generated_at": "2026-06-30T04:09:05.893624+00:00",
   "brands_available": [
     "Cavali",
     "Corro"
@@ -30,7 +30,11 @@
       "discounts_returns_pct": 0.05574189547040142,
       "gross_margin_1": 0.3903924861199628,
       "net_gross_ratio": 0.9442645347366291,
-      "checkout_abandonment_rate": 0.5406360424028268
+      "checkout_abandonment_rate": 0.5406360424028268,
+      "gross_profit_2": 92609.64000000001,
+      "gross_margin_2": 0.375386103801775,
+      "gross_profit_3": 92609.64000000001,
+      "gross_margin_3": 0.375386103801775
     },
     {
       "brand": "Cavali",
@@ -52,7 +56,11 @@
       "discounts_returns_pct": 0.04554141492612138,
       "gross_margin_1": 0.3799983090603031,
       "net_gross_ratio": 0.9544585850738787,
-      "checkout_abandonment_rate": 0.48514851485148514
+      "checkout_abandonment_rate": 0.48514851485148514,
+      "gross_profit_2": 53443.84,
+      "gross_margin_2": 0.36646516873363355,
+      "gross_profit_3": 53443.84,
+      "gross_margin_3": 0.36646516873363355
     },
     {
       "brand": "Cavali",
@@ -74,7 +82,11 @@
       "discounts_returns_pct": 0.10608306819947409,
       "gross_margin_1": 0.3437302082390869,
       "net_gross_ratio": 0.8939169318005259,
-      "checkout_abandonment_rate": 0.45901639344262296
+      "checkout_abandonment_rate": 0.45901639344262296,
+      "gross_profit_2": 18414.541481700682,
+      "gross_margin_2": 0.3372642705203483,
+      "gross_profit_3": 18414.541481700682,
+      "gross_margin_3": 0.3372642705203483
     },
     {
       "brand": "Corro",
@@ -96,7 +108,11 @@
       "discounts_returns_pct": 0.21895159545059553,
       "gross_margin_1": 0.28267663785623437,
       "net_gross_ratio": 0.7810484045494044,
-      "checkout_abandonment_rate": 0.5233424029786624
+      "checkout_abandonment_rate": 0.5233424029786624,
+      "gross_profit_2": 291456.79,
+      "gross_margin_2": 0.2436100878388448,
+      "gross_profit_3": 291456.79,
+      "gross_margin_3": 0.2436100878388448
     },
     {
       "brand": "Corro",
@@ -118,7 +134,11 @@
       "discounts_returns_pct": 0.17620746325140269,
       "gross_margin_1": 0.23289978334394157,
       "net_gross_ratio": 0.8237925367485973,
-      "checkout_abandonment_rate": 0.560344238781504
+      "checkout_abandonment_rate": 0.560344238781504,
+      "gross_profit_2": 308422.04,
+      "gross_margin_2": 0.20398093792820163,
+      "gross_profit_3": 308422.04,
+      "gross_margin_3": 0.20398093792820163
     },
     {
       "brand": "Corro",
@@ -140,7 +160,11 @@
       "discounts_returns_pct": 0.17028893347322016,
       "gross_margin_1": 0.30334226033862544,
       "net_gross_ratio": 0.82971106652678,
-      "checkout_abandonment_rate": 0.5237302248126561
+      "checkout_abandonment_rate": 0.5237302248126561,
+      "gross_profit_2": 141007.5785182993,
+      "gross_margin_2": 0.29687632261988683,
+      "gross_profit_3": 141007.5785182993,
+      "gross_margin_3": 0.29687632261988683
     }
   ],
   "shopify_kpis_by_brand_month": [
@@ -165,7 +189,11 @@
       "discounts_returns_pct": 0.30523378479548086,
       "gross_margin_1": 0.4541447071961756,
       "net_gross_ratio": 0.6947662152045192,
-      "checkout_abandonment_rate": 0.6923076923076923
+      "checkout_abandonment_rate": 0.6923076923076923,
+      "gross_profit_2": 150.96,
+      "gross_margin_2": 0.29576223036382515,
+      "gross_profit_3": 150.96,
+      "gross_margin_3": 0.29576223036382515
     },
     {
       "brand": "Cavali",
@@ -188,7 +216,11 @@
       "discounts_returns_pct": 0.2884584132349595,
       "gross_margin_1": 0.37345834094646446,
       "net_gross_ratio": 0.7115415867650404,
-      "checkout_abandonment_rate": 0.42857142857142855
+      "checkout_abandonment_rate": 0.42857142857142855,
+      "gross_profit_2": 275.4,
+      "gross_margin_2": 0.3144984469212498,
+      "gross_profit_3": 275.4,
+      "gross_margin_3": 0.3144984469212498
     },
     {
       "brand": "Cavali",
@@ -211,7 +243,11 @@
       "discounts_returns_pct": 0.009692921145182961,
       "gross_margin_1": 0.38851448560386637,
       "net_gross_ratio": 0.9903070788548171,
-      "checkout_abandonment_rate": 0.5
+      "checkout_abandonment_rate": 0.5,
+      "gross_profit_2": 24487.31,
+      "gross_margin_2": 0.3816873149610742,
+      "gross_profit_3": 24487.31,
+      "gross_margin_3": 0.3816873149610742
     },
     {
       "brand": "Cavali",
@@ -234,7 +270,11 @@
       "discounts_returns_pct": 0.11019120353668455,
       "gross_margin_1": 0.6709329173595745,
       "net_gross_ratio": 0.8898087964633155,
-      "checkout_abandonment_rate": 0.6222222222222222
+      "checkout_abandonment_rate": 0.6222222222222222,
+      "gross_profit_2": 1689.71,
+      "gross_margin_2": 0.5805685738238892,
+      "gross_profit_3": 1689.71,
+      "gross_margin_3": 0.5805685738238892
     },
     {
       "brand": "Cavali",
@@ -257,7 +297,11 @@
       "discounts_returns_pct": 0.20208425587164283,
       "gross_margin_1": 0.44118407724304404,
       "net_gross_ratio": 0.7979157441283571,
-      "checkout_abandonment_rate": 0.673469387755102
+      "checkout_abandonment_rate": 0.673469387755102,
+      "gross_profit_2": 593.82,
+      "gross_margin_2": 0.31995301622879807,
+      "gross_profit_3": 593.82,
+      "gross_margin_3": 0.31995301622879807
     },
     {
       "brand": "Cavali",
@@ -280,7 +324,11 @@
       "discounts_returns_pct": 0.020768459271926814,
       "gross_margin_1": 0.3465049164866327,
       "net_gross_ratio": 0.9792315407280733,
-      "checkout_abandonment_rate": 0.6666666666666666
+      "checkout_abandonment_rate": 0.6666666666666666,
+      "gross_profit_2": 18384.17,
+      "gross_margin_2": 0.3402493028599814,
+      "gross_profit_3": 18384.17,
+      "gross_margin_3": 0.3402493028599814
     },
     {
       "brand": "Cavali",
@@ -303,7 +351,11 @@
       "discounts_returns_pct": 0.014434549367985997,
       "gross_margin_1": 0.20657659094027045,
       "net_gross_ratio": 0.985565450632014,
-      "checkout_abandonment_rate": 0.39344262295081966
+      "checkout_abandonment_rate": 0.39344262295081966,
+      "gross_profit_2": 596.27,
+      "gross_margin_2": 0.11054360602004458,
+      "gross_profit_3": 596.27,
+      "gross_margin_3": 0.11054360602004458
     },
     {
       "brand": "Cavali",
@@ -326,7 +378,11 @@
       "discounts_returns_pct": 0.014644416913816622,
       "gross_margin_1": 0.20408542217510406,
       "net_gross_ratio": 0.9856183754426799,
-      "checkout_abandonment_rate": 0.45454545454545453
+      "checkout_abandonment_rate": 0.45454545454545453,
+      "gross_profit_2": 1318.93,
+      "gross_margin_2": 0.2093227359727279,
+      "gross_profit_3": 1318.93,
+      "gross_margin_3": 0.2093227359727279
     },
     {
       "brand": "Cavali",
@@ -349,7 +405,11 @@
       "discounts_returns_pct": 0.01829832052552342,
       "gross_margin_1": 0.3590035839396495,
       "net_gross_ratio": 0.9817016794744766,
-      "checkout_abandonment_rate": 0.5
+      "checkout_abandonment_rate": 0.5,
+      "gross_profit_2": 18089.07,
+      "gross_margin_2": 0.35492245261865396,
+      "gross_profit_3": 18089.07,
+      "gross_margin_3": 0.35492245261865396
     },
     {
       "brand": "Cavali",
@@ -372,7 +432,11 @@
       "discounts_returns_pct": 0.6831304905429577,
       "gross_margin_1": -0.00606555528976362,
       "net_gross_ratio": 0.3168695094570423,
-      "checkout_abandonment_rate": 0.42857142857142855
+      "checkout_abandonment_rate": 0.42857142857142855,
+      "gross_profit_2": -578.06,
+      "gross_margin_2": -0.15894174482324377,
+      "gross_profit_3": -578.06,
+      "gross_margin_3": -0.15894174482324377
     },
     {
       "brand": "Cavali",
@@ -395,7 +459,11 @@
       "discounts_returns_pct": 0.09330628803245436,
       "gross_margin_1": 0.40050708426547355,
       "net_gross_ratio": 0.9066937119675457,
-      "checkout_abandonment_rate": 0.45454545454545453
+      "checkout_abandonment_rate": 0.45454545454545453,
+      "gross_profit_2": 199.86,
+      "gross_margin_2": 0.29807606263982106,
+      "gross_profit_3": 199.86,
+      "gross_margin_3": 0.29807606263982106
     },
     {
       "brand": "Cavali",
@@ -418,7 +486,11 @@
       "discounts_returns_pct": 0.04065402490519026,
       "gross_margin_1": 0.5124858656708012,
       "net_gross_ratio": 0.9593459750948098,
-      "checkout_abandonment_rate": 0.5416666666666666
+      "checkout_abandonment_rate": 0.5416666666666666,
+      "gross_profit_2": 27402.2,
+      "gross_margin_2": 0.494650977741771,
+      "gross_profit_3": 27402.2,
+      "gross_margin_3": 0.494650977741771
     },
     {
       "brand": "Cavali",
@@ -441,7 +513,11 @@
       "discounts_returns_pct": 0.2101595238249448,
       "gross_margin_1": 0.5303856530188849,
       "net_gross_ratio": 0.7898404761750553,
-      "checkout_abandonment_rate": 0.4666666666666667
+      "checkout_abandonment_rate": 0.4666666666666667,
+      "gross_profit_2": 610.8,
+      "gross_margin_2": 0.5008651157451065,
+      "gross_profit_3": 610.8,
+      "gross_margin_3": 0.5008651157451065
     },
     {
       "brand": "Cavali",
@@ -464,7 +540,11 @@
       "discounts_returns_pct": 0.23198007299648857,
       "gross_margin_1": 0.40427927927927926,
       "net_gross_ratio": 0.7680199270035114,
-      "checkout_abandonment_rate": 0.3333333333333333
+      "checkout_abandonment_rate": 0.3333333333333333,
+      "gross_profit_2": 367.0,
+      "gross_margin_2": 0.4132882882882883,
+      "gross_profit_3": 367.0,
+      "gross_margin_3": 0.4132882882882883
     },
     {
       "brand": "Cavali",
@@ -487,7 +567,11 @@
       "discounts_returns_pct": 0.0331839249595924,
       "gross_margin_1": 0.4103050253343023,
       "net_gross_ratio": 0.9668160750404076,
-      "checkout_abandonment_rate": 0.38461538461538464
+      "checkout_abandonment_rate": 0.38461538461538464,
+      "gross_profit_2": 16187.399999999998,
+      "gross_margin_2": 0.386100349263465,
+      "gross_profit_3": 16187.399999999998,
+      "gross_margin_3": 0.386100349263465
     },
     {
       "brand": "Cavali",
@@ -510,7 +594,11 @@
       "discounts_returns_pct": 0.07109068711998728,
       "gross_margin_1": 0.3364828514871947,
       "net_gross_ratio": 0.9289093128800128,
-      "checkout_abandonment_rate": 0.48
+      "checkout_abandonment_rate": 0.48,
+      "gross_profit_2": 928.01,
+      "gross_margin_2": 0.2996703016368668,
+      "gross_profit_3": 928.01,
+      "gross_margin_3": 0.2996703016368668
     },
     {
       "brand": "Cavali",
@@ -533,7 +621,11 @@
       "discounts_returns_pct": 0.07113765822029326,
       "gross_margin_1": 0.32713066721496864,
       "net_gross_ratio": 0.9288623417797068,
-      "checkout_abandonment_rate": 0.5
+      "checkout_abandonment_rate": 0.5,
+      "gross_profit_2": 594.4,
+      "gross_margin_2": 0.3055412768582296,
+      "gross_profit_3": 594.4,
+      "gross_margin_3": 0.3055412768582296
     },
     {
       "brand": "Cavali",
@@ -556,7 +648,11 @@
       "discounts_returns_pct": 0.02789665300808801,
       "gross_margin_1": 0.39408338410798466,
       "net_gross_ratio": 0.972103346991912,
-      "checkout_abandonment_rate": 0.7777777777777778
+      "checkout_abandonment_rate": 0.7777777777777778,
+      "gross_profit_2": 14998.81,
+      "gross_margin_2": 0.3898767995541535,
+      "gross_profit_3": 14998.81,
+      "gross_margin_3": 0.3898767995541535
     },
     {
       "brand": "Cavali",
@@ -579,7 +675,11 @@
       "discounts_returns_pct": 0.212651172143793,
       "gross_margin_1": 0.27127430322766016,
       "net_gross_ratio": 0.787348827856207,
-      "checkout_abandonment_rate": 0.29411764705882354
+      "checkout_abandonment_rate": 0.29411764705882354,
+      "gross_profit_2": 589.77,
+      "gross_margin_2": 0.2353582032372378,
+      "gross_profit_3": 589.77,
+      "gross_margin_3": 0.2353582032372378
     },
     {
       "brand": "Cavali",
@@ -602,7 +702,11 @@
       "discounts_returns_pct": 0.0,
       "gross_margin_1": 0.05416364952932658,
       "net_gross_ratio": 1.0,
-      "checkout_abandonment_rate": 0.25
+      "checkout_abandonment_rate": 0.25,
+      "gross_profit_2": 2.9200000000000017,
+      "gross_margin_2": 0.005286024619840698,
+      "gross_profit_3": 2.9200000000000017,
+      "gross_margin_3": 0.005286024619840698
     },
     {
       "brand": "Cavali",
@@ -625,7 +729,11 @@
       "discounts_returns_pct": 0.01925664333263842,
       "gross_margin_1": 0.36907368691236275,
       "net_gross_ratio": 0.9807433566673616,
-      "checkout_abandonment_rate": 0.4
+      "checkout_abandonment_rate": 0.4,
+      "gross_profit_2": 12755.91,
+      "gross_margin_2": 0.36298407110167125,
+      "gross_profit_3": 12755.91,
+      "gross_margin_3": 0.36298407110167125
     },
     {
       "brand": "Cavali",
@@ -648,7 +756,11 @@
       "discounts_returns_pct": 0.9116507981073336,
       "gross_margin_1": -1.3399383119917752,
       "net_gross_ratio": 0.08834920189266633,
-      "checkout_abandonment_rate": 0.45454545454545453
+      "checkout_abandonment_rate": 0.45454545454545453,
+      "gross_profit_2": -207.36,
+      "gross_margin_2": -1.9381250584166747,
+      "gross_profit_3": -207.36,
+      "gross_margin_3": -1.9381250584166747
     },
     {
       "brand": "Cavali",
@@ -671,7 +783,11 @@
       "discounts_returns_pct": 0.0,
       "gross_margin_1": 0.34405934327451326,
       "net_gross_ratio": 1.0,
-      "checkout_abandonment_rate": 0.7333333333333333
+      "checkout_abandonment_rate": 0.7333333333333333,
+      "gross_profit_2": 89.9,
+      "gross_margin_2": 0.22760069875186714,
+      "gross_profit_3": 89.9,
+      "gross_margin_3": 0.22760069875186714
     },
     {
       "brand": "Cavali",
@@ -694,7 +810,11 @@
       "discounts_returns_pct": 0.04699725946622595,
       "gross_margin_1": 0.3419515335359363,
       "net_gross_ratio": 0.9530027405337741,
-      "checkout_abandonment_rate": 0.5
+      "checkout_abandonment_rate": 0.5,
+      "gross_profit_2": 6526.28,
+      "gross_margin_2": 0.3331708221043179,
+      "gross_profit_3": 6526.28,
+      "gross_margin_3": 0.3331708221043179
     },
     {
       "brand": "Cavali",
@@ -717,7 +837,11 @@
       "discounts_returns_pct": 0.18061360232117232,
       "gross_margin_1": 0.2021706338046174,
       "net_gross_ratio": 0.8193863976788276,
-      "checkout_abandonment_rate": 0.631578947368421
+      "checkout_abandonment_rate": 0.631578947368421,
+      "gross_profit_2": 146.15,
+      "gross_margin_2": 0.1868304655741058,
+      "gross_profit_3": 146.15,
+      "gross_margin_3": 0.1868304655741058
     },
     {
       "brand": "Cavali",
@@ -740,7 +864,11 @@
       "discounts_returns_pct": 0.0,
       "gross_margin_1": 0.06955219612771177,
       "net_gross_ratio": 1.0,
-      "checkout_abandonment_rate": 0.5833333333333334
+      "checkout_abandonment_rate": 0.5833333333333334,
+      "gross_profit_2": -45.56999999999999,
+      "gross_margin_2": -0.03429074518597668,
+      "gross_profit_3": -45.56999999999999,
+      "gross_margin_3": -0.03429074518597668
     },
     {
       "brand": "Cavali",
@@ -763,7 +891,11 @@
       "discounts_returns_pct": 0.040801935351039736,
       "gross_margin_1": 0.38635584846271015,
       "net_gross_ratio": 0.9591980646489602,
-      "checkout_abandonment_rate": 0.5
+      "checkout_abandonment_rate": 0.5,
+      "gross_profit_2": 9949.298711009067,
+      "gross_margin_2": 0.3813537714142004,
+      "gross_profit_3": 9949.298711009067,
+      "gross_margin_3": 0.3813537714142004
     },
     {
       "brand": "Cavali",
@@ -786,7 +918,11 @@
       "discounts_returns_pct": 0.5270902978043684,
       "gross_margin_1": -0.1470106387282068,
       "net_gross_ratio": 0.4729097021956318,
-      "checkout_abandonment_rate": 0.2857142857142857
+      "checkout_abandonment_rate": 0.2857142857142857,
+      "gross_profit_2": -149.55554763972904,
+      "gross_margin_2": -0.15124342425440823,
+      "gross_profit_3": -149.55554763972904,
+      "gross_margin_3": -0.15124342425440823
     },
     {
       "brand": "Cavali",
@@ -809,7 +945,11 @@
       "discounts_returns_pct": 0.1943240656773552,
       "gross_margin_1": 0.06686515449372636,
       "net_gross_ratio": 0.805675934322645,
-      "checkout_abandonment_rate": 0.3333333333333333
+      "checkout_abandonment_rate": 0.3333333333333333,
+      "gross_profit_2": 95.31409218257528,
+      "gross_margin_2": 0.049439077645001724,
+      "gross_profit_3": 95.31409218257528,
+      "gross_margin_3": 0.049439077645001724
     },
     {
       "brand": "Cavali",
@@ -832,7 +972,11 @@
       "discounts_returns_pct": 0.13389132913182883,
       "gross_margin_1": 0.360000136272388,
       "net_gross_ratio": 0.8661086708681712,
-      "checkout_abandonment_rate": 0.2
+      "checkout_abandonment_rate": 0.2,
+      "gross_profit_2": 8145.842469889631,
+      "gross_margin_2": 0.3468916894237139,
+      "gross_profit_3": 8145.842469889631,
+      "gross_margin_3": 0.3468916894237139
     },
     {
       "brand": "Cavali",
@@ -855,7 +999,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Cavali",
@@ -878,7 +1026,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Cavali",
@@ -901,7 +1053,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Cavali",
@@ -924,7 +1080,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Cavali",
@@ -947,7 +1107,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Cavali",
@@ -970,7 +1134,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Corro",
@@ -993,7 +1161,11 @@
       "discounts_returns_pct": 0.10490535936356836,
       "gross_margin_1": 0.36085903673937714,
       "net_gross_ratio": 0.8950946406364316,
-      "checkout_abandonment_rate": 0.48091603053435117
+      "checkout_abandonment_rate": 0.48091603053435117,
+      "gross_profit_2": 51590.969999999994,
+      "gross_margin_2": 0.3172989370285694,
+      "gross_profit_3": 51590.969999999994,
+      "gross_margin_3": 0.3172989370285694
     },
     {
       "brand": "Corro",
@@ -1016,7 +1188,11 @@
       "discounts_returns_pct": 0.3433088764607295,
       "gross_margin_1": 0.2033538591986073,
       "net_gross_ratio": 0.6566911235392705,
-      "checkout_abandonment_rate": 0.4883720930232558
+      "checkout_abandonment_rate": 0.4883720930232558,
+      "gross_profit_2": 16825.42,
+      "gross_margin_2": 0.15788438515959483,
+      "gross_profit_3": 16825.42,
+      "gross_margin_3": 0.15788438515959483
     },
     {
       "brand": "Corro",
@@ -1039,7 +1215,11 @@
       "discounts_returns_pct": 0.2934522023223408,
       "gross_margin_1": 0.21336733047809117,
       "net_gross_ratio": 0.7065477976776593,
-      "checkout_abandonment_rate": 0.5152317880794702
+      "checkout_abandonment_rate": 0.5152317880794702,
+      "gross_profit_2": 19877.62,
+      "gross_margin_2": 0.16788232641144032,
+      "gross_profit_3": 19877.62,
+      "gross_margin_3": 0.16788232641144032
     },
     {
       "brand": "Corro",
@@ -1062,7 +1242,11 @@
       "discounts_returns_pct": 0.2778205076705379,
       "gross_margin_1": 0.171969377113478,
       "net_gross_ratio": 0.7221794923294621,
-      "checkout_abandonment_rate": 0.5111821086261981
+      "checkout_abandonment_rate": 0.5111821086261981,
+      "gross_profit_2": 12634.689999999999,
+      "gross_margin_2": 0.1325999280678903,
+      "gross_profit_3": 12634.689999999999,
+      "gross_margin_3": 0.1325999280678903
     },
     {
       "brand": "Corro",
@@ -1085,7 +1269,11 @@
       "discounts_returns_pct": 0.2884977615992781,
       "gross_margin_1": 0.16057168052408613,
       "net_gross_ratio": 0.7115022384007219,
-      "checkout_abandonment_rate": 0.5680970149253731
+      "checkout_abandonment_rate": 0.5680970149253731,
+      "gross_profit_2": 13053.470000000001,
+      "gross_margin_2": 0.12764468394630335,
+      "gross_profit_3": 13053.470000000001,
+      "gross_margin_3": 0.12764468394630335
     },
     {
       "brand": "Corro",
@@ -1108,7 +1296,11 @@
       "discounts_returns_pct": 0.1451390488375064,
       "gross_margin_1": 0.30691426390424664,
       "net_gross_ratio": 0.8548609511624936,
-      "checkout_abandonment_rate": 0.5525502318392581
+      "checkout_abandonment_rate": 0.5525502318392581,
+      "gross_profit_2": 23739.99,
+      "gross_margin_2": 0.2589590431121174,
+      "gross_profit_3": 23739.99,
+      "gross_margin_3": 0.2589590431121174
     },
     {
       "brand": "Corro",
@@ -1131,7 +1323,11 @@
       "discounts_returns_pct": 0.19270192941854908,
       "gross_margin_1": 0.2482104422103516,
       "net_gross_ratio": 0.807298070581451,
-      "checkout_abandonment_rate": 0.5976008724100327
+      "checkout_abandonment_rate": 0.5976008724100327,
+      "gross_profit_2": 12368.71,
+      "gross_margin_2": 0.20376535710020055,
+      "gross_profit_3": 12368.71,
+      "gross_margin_3": 0.20376535710020055
     },
     {
       "brand": "Corro",
@@ -1154,7 +1350,11 @@
       "discounts_returns_pct": 0.12746367228020924,
       "gross_margin_1": 0.3243221224715168,
       "net_gross_ratio": 0.8725363277197908,
-      "checkout_abandonment_rate": 0.5798882681564246
+      "checkout_abandonment_rate": 0.5798882681564246,
+      "gross_profit_2": 23575.3,
+      "gross_margin_2": 0.29056665631362805,
+      "gross_profit_3": 23575.3,
+      "gross_margin_3": 0.29056665631362805
     },
     {
       "brand": "Corro",
@@ -1177,7 +1377,11 @@
       "discounts_returns_pct": 0.1545876002660789,
       "gross_margin_1": 0.3284516515461223,
       "net_gross_ratio": 0.8454123997339211,
-      "checkout_abandonment_rate": 0.5331781140861467
+      "checkout_abandonment_rate": 0.5331781140861467,
+      "gross_profit_2": 23623.86,
+      "gross_margin_2": 0.2931398975766305,
+      "gross_profit_3": 23623.86,
+      "gross_margin_3": 0.2931398975766305
     },
     {
       "brand": "Corro",
@@ -1200,7 +1404,11 @@
       "discounts_returns_pct": 0.22401623129539694,
       "gross_margin_1": 0.3142508976282753,
       "net_gross_ratio": 0.7759837687046031,
-      "checkout_abandonment_rate": 0.5334261838440112
+      "checkout_abandonment_rate": 0.5334261838440112,
+      "gross_profit_2": 23654.480000000003,
+      "gross_margin_2": 0.2857633334690402,
+      "gross_profit_3": 23654.480000000003,
+      "gross_margin_3": 0.2857633334690402
     },
     {
       "brand": "Corro",
@@ -1223,7 +1431,11 @@
       "discounts_returns_pct": 0.10809983389651141,
       "gross_margin_1": 0.4850395146253809,
       "net_gross_ratio": 0.8919001661034887,
-      "checkout_abandonment_rate": 0.5016146393972013
+      "checkout_abandonment_rate": 0.5016146393972013,
+      "gross_profit_2": 50458.72,
+      "gross_margin_2": 0.45675152177427575,
+      "gross_profit_3": 50458.72,
+      "gross_margin_3": 0.45675152177427575
     },
     {
       "brand": "Corro",
@@ -1246,7 +1458,11 @@
       "discounts_returns_pct": 0.2748353592711228,
       "gross_margin_1": 0.23280640225350704,
       "net_gross_ratio": 0.7251646407288771,
-      "checkout_abandonment_rate": 0.4956369982547993
+      "checkout_abandonment_rate": 0.4956369982547993,
+      "gross_profit_2": 20053.559999999998,
+      "gross_margin_2": 0.1929253694153571,
+      "gross_profit_3": 20053.559999999998,
+      "gross_margin_3": 0.1929253694153571
     },
     {
       "brand": "Corro",
@@ -1269,7 +1485,11 @@
       "discounts_returns_pct": 0.11735747422995456,
       "gross_margin_1": 0.3258543916976021,
       "net_gross_ratio": 0.8826425257700454,
-      "checkout_abandonment_rate": 0.5685903500473037
+      "checkout_abandonment_rate": 0.5685903500473037,
+      "gross_profit_2": 23120.7,
+      "gross_margin_2": 0.2808757811013739,
+      "gross_profit_3": 23120.7,
+      "gross_margin_3": 0.2808757811013739
     },
     {
       "brand": "Corro",
@@ -1292,7 +1512,11 @@
       "discounts_returns_pct": 0.21482596337167303,
       "gross_margin_1": 0.202365170351516,
       "net_gross_ratio": 0.7851740366283271,
-      "checkout_abandonment_rate": 0.5769980506822612
+      "checkout_abandonment_rate": 0.5769980506822612,
+      "gross_profit_2": 18189.14,
+      "gross_margin_2": 0.17598284632768643,
+      "gross_profit_3": 18189.14,
+      "gross_margin_3": 0.17598284632768643
     },
     {
       "brand": "Corro",
@@ -1315,7 +1539,11 @@
       "discounts_returns_pct": 0.16692831369415584,
       "gross_margin_1": 0.2740406386465842,
       "net_gross_ratio": 0.8330716863058443,
-      "checkout_abandonment_rate": 0.5601965601965602
+      "checkout_abandonment_rate": 0.5601965601965602,
+      "gross_profit_2": 29082.25,
+      "gross_margin_2": 0.24834173414341582,
+      "gross_profit_3": 29082.25,
+      "gross_margin_3": 0.24834173414341582
     },
     {
       "brand": "Corro",
@@ -1338,7 +1566,11 @@
       "discounts_returns_pct": 0.13332342827732355,
       "gross_margin_1": 0.2542127905439257,
       "net_gross_ratio": 0.8666765717226765,
-      "checkout_abandonment_rate": 0.5808550185873605
+      "checkout_abandonment_rate": 0.5808550185873605,
+      "gross_profit_2": 27556.059999999998,
+      "gross_margin_2": 0.22602786019441173,
+      "gross_profit_3": 27556.059999999998,
+      "gross_margin_3": 0.22602786019441173
     },
     {
       "brand": "Corro",
@@ -1361,7 +1593,11 @@
       "discounts_returns_pct": 0.19646269956592197,
       "gross_margin_1": 0.20714437136181776,
       "net_gross_ratio": 0.803537300434078,
-      "checkout_abandonment_rate": 0.5996523754345308
+      "checkout_abandonment_rate": 0.5996523754345308,
+      "gross_profit_2": 28477.23,
+      "gross_margin_2": 0.177243294939747,
+      "gross_profit_3": 28477.23,
+      "gross_margin_3": 0.177243294939747
     },
     {
       "brand": "Corro",
@@ -1384,7 +1620,11 @@
       "discounts_returns_pct": 0.15063325554454063,
       "gross_margin_1": 0.25954711931334074,
       "net_gross_ratio": 0.8493667444554593,
-      "checkout_abandonment_rate": 0.5641025641025641
+      "checkout_abandonment_rate": 0.5641025641025641,
+      "gross_profit_2": 31872.700000000004,
+      "gross_margin_2": 0.22973141576588038,
+      "gross_profit_3": 31872.700000000004,
+      "gross_margin_3": 0.22973141576588038
     },
     {
       "brand": "Corro",
@@ -1407,7 +1647,11 @@
       "discounts_returns_pct": 0.2530446680612951,
       "gross_margin_1": 0.21725863929306652,
       "net_gross_ratio": 0.746955331938705,
-      "checkout_abandonment_rate": 0.5637982195845698
+      "checkout_abandonment_rate": 0.5637982195845698,
+      "gross_profit_2": 30541.050000000003,
+      "gross_margin_2": 0.18527902583710298,
+      "gross_profit_3": 30541.050000000003,
+      "gross_margin_3": 0.18527902583710298
     },
     {
       "brand": "Corro",
@@ -1430,7 +1674,11 @@
       "discounts_returns_pct": 0.1480225146500765,
       "gross_margin_1": 0.22579119150219307,
       "net_gross_ratio": 0.8519774853499235,
-      "checkout_abandonment_rate": 0.6006191950464397
+      "checkout_abandonment_rate": 0.6006191950464397,
+      "gross_profit_2": 19880.69,
+      "gross_margin_2": 0.20130195723919694,
+      "gross_profit_3": 19880.69,
+      "gross_margin_3": 0.20130195723919694
     },
     {
       "brand": "Corro",
@@ -1453,7 +1701,11 @@
       "discounts_returns_pct": 0.22490668475513884,
       "gross_margin_1": 0.2181429782280863,
       "net_gross_ratio": 0.7750933152448612,
-      "checkout_abandonment_rate": 0.5529865125240848
+      "checkout_abandonment_rate": 0.5529865125240848,
+      "gross_profit_2": 22343.8,
+      "gross_margin_2": 0.19174373800142777,
+      "gross_profit_3": 22343.8,
+      "gross_margin_3": 0.19174373800142777
     },
     {
       "brand": "Corro",
@@ -1476,7 +1728,11 @@
       "discounts_returns_pct": 0.12043418532391102,
       "gross_margin_1": 0.27181607123082213,
       "net_gross_ratio": 0.8795658146760891,
-      "checkout_abandonment_rate": 0.5493519441674976
+      "checkout_abandonment_rate": 0.5493519441674976,
+      "gross_profit_2": 32313.510000000002,
+      "gross_margin_2": 0.2511147592579281,
+      "gross_profit_3": 32313.510000000002,
+      "gross_margin_3": 0.2511147592579281
     },
     {
       "brand": "Corro",
@@ -1499,7 +1755,11 @@
       "discounts_returns_pct": 0.09635012178574398,
       "gross_margin_1": 0.20907961093510075,
       "net_gross_ratio": 0.903649878214256,
-      "checkout_abandonment_rate": 0.4939759036144578
+      "checkout_abandonment_rate": 0.4939759036144578,
+      "gross_profit_2": 29569.5,
+      "gross_margin_2": 0.18654258882845237,
+      "gross_profit_3": 29569.5,
+      "gross_margin_3": 0.18654258882845237
     },
     {
       "brand": "Corro",
@@ -1522,7 +1782,11 @@
       "discounts_returns_pct": 0.23357244859352394,
       "gross_margin_1": 0.16902380886238808,
       "net_gross_ratio": 0.766427551406476,
-      "checkout_abandonment_rate": 0.508130081300813
+      "checkout_abandonment_rate": 0.508130081300813,
+      "gross_profit_2": 15475.41,
+      "gross_margin_2": 0.1283290343900262,
+      "gross_profit_3": 15475.41,
+      "gross_margin_3": 0.1283290343900262
     },
     {
       "brand": "Corro",
@@ -1545,7 +1809,11 @@
       "discounts_returns_pct": 0.15529476814332518,
       "gross_margin_1": 0.31704562573603207,
       "net_gross_ratio": 0.8447052318566747,
-      "checkout_abandonment_rate": 0.5296803652968036
+      "checkout_abandonment_rate": 0.5296803652968036,
+      "gross_profit_2": 33715.979999999996,
+      "gross_margin_2": 0.28826533011427163,
+      "gross_profit_3": 33715.979999999996,
+      "gross_margin_3": 0.28826533011427163
     },
     {
       "brand": "Corro",
@@ -1568,7 +1836,11 @@
       "discounts_returns_pct": 0.20327517293433542,
       "gross_margin_1": 0.29320413111974136,
       "net_gross_ratio": 0.7967248270656646,
-      "checkout_abandonment_rate": 0.5403225806451613
+      "checkout_abandonment_rate": 0.5403225806451613,
+      "gross_profit_2": 18636.339999999997,
+      "gross_margin_2": 0.26673740985467675,
+      "gross_profit_3": 18636.339999999997,
+      "gross_margin_3": 0.26673740985467675
     },
     {
       "brand": "Corro",
@@ -1591,7 +1863,11 @@
       "discounts_returns_pct": 0.16439331631382353,
       "gross_margin_1": 0.30399283220907114,
       "net_gross_ratio": 0.8356066836861765,
-      "checkout_abandonment_rate": 0.6540697674418605
+      "checkout_abandonment_rate": 0.6540697674418605,
+      "gross_profit_2": 16591.801288990933,
+      "gross_margin_2": 0.2989907551605614,
+      "gross_profit_3": 16591.801288990933,
+      "gross_margin_3": 0.2989907551605614
     },
     {
       "brand": "Corro",
@@ -1614,7 +1890,11 @@
       "discounts_returns_pct": 0.25122317106833214,
       "gross_margin_1": 0.25386359601594727,
       "net_gross_ratio": 0.7487768289316679,
-      "checkout_abandonment_rate": 0.5112540192926045
+      "checkout_abandonment_rate": 0.5112540192926045,
+      "gross_profit_2": 21499.79554763973,
+      "gross_margin_2": 0.24963081048974584,
+      "gross_profit_3": 21499.79554763973,
+      "gross_margin_3": 0.24963081048974584
     },
     {
       "brand": "Corro",
@@ -1637,7 +1917,11 @@
       "discounts_returns_pct": 0.0958775188895501,
       "gross_margin_1": 0.3199479359640151,
       "net_gross_ratio": 0.9041224811104499,
-      "checkout_abandonment_rate": 0.46540880503144655
+      "checkout_abandonment_rate": 0.46540880503144655,
+      "gross_profit_2": 26993.595907817424,
+      "gross_margin_2": 0.30252185911529045,
+      "gross_profit_3": 26993.595907817424,
+      "gross_margin_3": 0.30252185911529045
     },
     {
       "brand": "Corro",
@@ -1660,7 +1944,11 @@
       "discounts_returns_pct": 0.13416229041203542,
       "gross_margin_1": 0.3356175836190246,
       "net_gross_ratio": 0.8658377095879646,
-      "checkout_abandonment_rate": 0.5148936170212766
+      "checkout_abandonment_rate": 0.5148936170212766,
+      "gross_profit_2": 18477.76753011037,
+      "gross_margin_2": 0.3225091367703505,
+      "gross_profit_3": 18477.76753011037,
+      "gross_margin_3": 0.3225091367703505
     },
     {
       "brand": "Corro",
@@ -1683,7 +1971,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Corro",
@@ -1706,7 +1998,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Corro",
@@ -1729,7 +2025,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Corro",
@@ -1752,7 +2052,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Corro",
@@ -1775,7 +2079,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     },
     {
       "brand": "Corro",
@@ -1798,7 +2106,11 @@
       "discounts_returns_pct": 0,
       "gross_margin_1": 0,
       "net_gross_ratio": 0,
-      "checkout_abandonment_rate": 0
+      "checkout_abandonment_rate": 0,
+      "gross_profit_2": 0.0,
+      "gross_margin_2": 0,
+      "gross_profit_3": 0.0,
+      "gross_margin_3": 0
     }
   ],
   "shopify_by_channel": [
