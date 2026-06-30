@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import config
 from extractors.shopify import get_shopify_rows
 from extractors.quickbooks import get_qb_shipping_costs
+from extractors.google_sheets_marketing import get_marketing_spend
 from transforms.financial_report import build_financial_report
 
 
@@ -22,11 +23,11 @@ def run():
     all_shopify_rows = []
     all_bill_rows = []
     qb_summaries = {}
+    marketing_summaries = {}
 
     for year in years:
         print(f"Processing financial year: {year}")
 
-        # Extracción de Shopify (Corro y Cavali) intacta
         for brand, credentials in config.SHOPIFY_STORES.items():
             try:
                 print(f"Extracting Shopify data for {brand}...")
@@ -41,7 +42,6 @@ def run():
             except Exception as exc:
                 print(f"Shopify error for {brand} {year}: {exc}")
 
-        # Extracción activa conectada de QuickBooks
         if config.QB_CLIENT_ID and config.QB_CLIENT_SECRET and config.QB_REFRESH_TOKEN:
             try:
                 print(f"Extracting QuickBooks shipping data for year {year}...")
@@ -61,13 +61,21 @@ def run():
             print("QuickBooks credentials missing in config. Skipping API extraction.")
             qb_summaries[year] = {f"{m:02d}": 0.0 for m in range(1, 13)}
 
+        try:
+            print(f"Extracting marketing spend (Google+META) for year {year}...")
+            marketing_summaries[year] = get_marketing_spend(year=year)
+            print(f"Marketing spend extracted successfully for {year}.")
+        except Exception as exc:
+            print(f"Marketing spend error for year {year}: {exc}")
+            marketing_summaries[year] = {f"{m:02d}": 0.0 for m in range(1, 13)}
+
         print("BILL skipped for now.")
 
-    # Generación del reporte con la integración de ambas fuentes
     report = build_financial_report(
         shopify_rows=all_shopify_rows,
         bill_rows=all_bill_rows,
         qb_summaries=qb_summaries,
+        marketing_summaries=marketing_summaries,
     )
 
     save_json(report, "docs/financial_report.json")
