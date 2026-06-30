@@ -1,6 +1,6 @@
 pandas==2.2.3
 requests==2.31.0
-intuit-python==0.0.1
+intuitlib==3.0.0
 gspread==5.12.0
 google-auth==2.23.0
 python-dotenv==1.0.0
