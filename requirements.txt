@@ -1,5 +1,5 @@
-pandas
-requests
-intuitlib
-google-auth
-gspread
+pandas==2.2.3
+requests==2.31.0
+intuit-python==0.0.1
+gspread==5.12.0
+google-auth==2.23.0
