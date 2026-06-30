@@ -1,69 +1,31 @@
-name: Daily Financial Report
-
+name: Financial Report Daily Update
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 7 * * *"
-
-permissions:
-  contents: write
-
-concurrency:
-  group: financial-report-main
-  cancel-in-progress: true
-
+    - cron: '0 7 * * *'
+  workflow_dispatch:
 jobs:
-  financial-report:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
+          python-version: '3.9'
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Run financial report pipeline
         env:
-          PYTHONUNBUFFERED: "1"
-
-          CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
-          CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
-
-          CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
-          CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
-
-          # Vinculación segura de las variables secretas de QuickBooks desde GitHub
           QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
           QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
           QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
           QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
-
-          START_YEAR: "2024"
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: python -u main.py
-
-      - name: Commit and push updated dashboard data
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions@github.com"
-
-          git status
-
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/financial_report.json
-
-          if git diff --cached --quiet; then
-            echo "No dashboard data changes to commit."
-          else
-            git commit -m "Update financial report data with QuickBooks metrics"
-          fi
-
-          git pull --rebase origin main
-          git push origin main
+          git commit -m "Update financial report data with QuickBooks and Marketing metrics"
+          git push
