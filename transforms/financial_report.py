@@ -5,6 +5,7 @@ def build_financial_report(
     shopify_rows: list[dict],
     bill_rows: list[dict],
     qb_summaries: dict,
+    marketing_summaries: dict,
 ) -> dict:
     shopify_df = pd.DataFrame(shopify_rows)
 
@@ -128,11 +129,19 @@ def build_financial_report(
     shopify_by_brand_year['gross_profit_2'] = shopify_by_brand_year['gross_profit_1'] - shopify_by_brand_year['applied_shipping']
     shopify_by_brand_year['gross_margin_2'] = (shopify_by_brand_year['gross_profit_2'] / shopify_by_brand_year['net_sales'].replace(0, pd.NA)).fillna(0)
 
-    shopify_by_brand_year['gross_profit_3'] = shopify_by_brand_year['gross_profit_2']
-    shopify_by_brand_year['gross_margin_3'] = shopify_by_brand_year['gross_margin_2']
+    def get_marketing_year(row):
+        y = str(int(row['year']))
+        y_data = marketing_summaries.get(y, marketing_summaries.get(int(y), {}))
+        return sum(float(v) for v in y_data.values())
+
+    shopify_by_brand_year['marketing_spend_total'] = shopify_by_brand_year.apply(get_marketing_year, axis=1)
+    shopify_by_brand_year['marketing_allocated'] = shopify_by_brand_year['marketing_spend_total'] * shopify_by_brand_year['sales_proportion']
+
+    shopify_by_brand_year['gross_profit_3'] = shopify_by_brand_year['gross_profit_2'] - shopify_by_brand_year['marketing_allocated']
+    shopify_by_brand_year['gross_margin_3'] = (shopify_by_brand_year['gross_profit_3'] / shopify_by_brand_year['net_sales'].replace(0, pd.NA)).fillna(0)
 
     # Limpieza de columnas temporales
-    shopify_by_brand_year.drop(columns=['qb_shipping_total', 'sales_proportion', 'qb_shipping_allocated', 'applied_shipping'], inplace=True, errors='ignore')
+    shopify_by_brand_year.drop(columns=['qb_shipping_total', 'sales_proportion', 'qb_shipping_allocated', 'applied_shipping', 'marketing_spend_total', 'marketing_allocated'], inplace=True, errors='ignore')
 
 
     # ---------------------------------------------------------
@@ -198,11 +207,20 @@ def build_financial_report(
     shopify_by_brand_month['gross_profit_2'] = shopify_by_brand_month['gross_profit_1'] - shopify_by_brand_month['applied_shipping']
     shopify_by_brand_month['gross_margin_2'] = (shopify_by_brand_month['gross_profit_2'] / shopify_by_brand_month['net_sales'].replace(0, pd.NA)).fillna(0)
 
-    shopify_by_brand_month['gross_profit_3'] = shopify_by_brand_month['gross_profit_2']
-    shopify_by_brand_month['gross_margin_3'] = shopify_by_brand_month['gross_margin_2']
+    def get_marketing_month(row):
+        y = str(int(row['year']))
+        m = str(row['month']).zfill(2)
+        y_data = marketing_summaries.get(y, marketing_summaries.get(int(y), {}))
+        return float(y_data.get(m, 0.0))
+
+    shopify_by_brand_month['marketing_spend_total'] = shopify_by_brand_month.apply(get_marketing_month, axis=1)
+    shopify_by_brand_month['marketing_allocated'] = shopify_by_brand_month['marketing_spend_total'] * shopify_by_brand_month['sales_proportion']
+
+    shopify_by_brand_month['gross_profit_3'] = shopify_by_brand_month['gross_profit_2'] - shopify_by_brand_month['marketing_allocated']
+    shopify_by_brand_month['gross_margin_3'] = (shopify_by_brand_month['gross_profit_3'] / shopify_by_brand_month['net_sales'].replace(0, pd.NA)).fillna(0)
 
     # Limpieza de columnas temporales
-    shopify_by_brand_month.drop(columns=['qb_shipping_total', 'sales_proportion', 'qb_shipping_allocated', 'applied_shipping'], inplace=True, errors='ignore')
+    shopify_by_brand_month.drop(columns=['qb_shipping_total', 'sales_proportion', 'qb_shipping_allocated', 'applied_shipping', 'marketing_spend_total', 'marketing_allocated'], inplace=True, errors='ignore')
 
 
     # ---------------------------------------------------------
@@ -234,5 +252,7 @@ def build_financial_report(
         "shopify_kpis_by_brand_month": shopify_by_brand_month.to_dict(orient="records"),
         "shopify_by_channel": shopify_by_channel.to_dict(orient="records"),
         "qb_summary": qb_summaries,
+        "marketing_summary": marketing_summaries,
         "bill_rows": bill_rows,
     }
+Listo
