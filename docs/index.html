@@ -123,7 +123,8 @@
     }
 
     .dashboard-nav.active-view,
-    .brand-nav.active-brand {
+    .brand-nav.active-brand,
+    .location-nav.active-location {
       background: var(--panel-3);
       color: var(--text);
     }
@@ -714,13 +715,18 @@
         <a class="nav-item brand-nav" href="#" data-brand="Corro"><span class="nav-dot green"></span>Corro</a>
         <a class="nav-item brand-nav" href="#" data-brand="Cavali"><span class="nav-dot purple"></span>Cavali</a>
       </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Locations</div>
+        <a class="nav-item location-nav" href="#" data-brand="Wellington"><span class="nav-dot"></span>Wellington</a>
+      </div>
     </aside>
 
     <main class="main">
       <section class="header">
         <div class="title">
           <h1>Financial Report — Shopify Performance</h1>
-          <p>Corro · Cavali · Shopify calculated KPIs · GitHub Actions refresh</p>
+          <p>Corro · Cavali · Wellington location · Shopify calculated KPIs · GitHub Actions refresh</p>
         </div>
 
         <div class="header-actions">
@@ -1005,7 +1011,7 @@
     }
 
     function setupBrandNav() {
-      document.querySelectorAll(".brand-nav, .dashboard-nav").forEach(item => {
+      document.querySelectorAll(".brand-nav, .location-nav, .dashboard-nav").forEach(item => {
         item.addEventListener("click", event => {
           event.preventDefault();
           const brand = item.dataset.brand;
@@ -1021,8 +1027,13 @@
     function updateBrandNavActive(selectedBrand) {
       const dbNav = document.querySelector(".dashboard-nav");
       if (dbNav) dbNav.classList.toggle("active-view", selectedBrand === "all");
+
       document.querySelectorAll(".brand-nav").forEach(item => {
         item.classList.toggle("active-brand", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
+      });
+
+      document.querySelectorAll(".location-nav").forEach(item => {
+        item.classList.toggle("active-location", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
       });
     }
 
@@ -1038,7 +1049,12 @@
     function filterRows(rows, filters) {
       return rows.filter(row => {
         const rowMonth = String(row.month).padStart(2, "0");
-        return (filters.brand === "all" || row.brand === filters.brand) &&
+        const isLocationRow = row.view_type === "location" || row.brand === "Wellington";
+        const brandMatch = filters.brand === "all"
+          ? !isLocationRow
+          : row.brand === filters.brand;
+
+        return brandMatch &&
                (Number(row.year) === filters.year) &&
                (filters.month === "all" || rowMonth === filters.month) &&
                (!filters.quarter || filters.quarter === "all" || QUARTERS[filters.quarter].includes(rowMonth));
@@ -1094,7 +1110,10 @@
 
     function render() {
       const selected = getSelectedRows();
-      const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
+      const isLocationView = selected.filters.brand === "Wellington";
+      const brandText = selected.filters.brand === "all"
+        ? "All Brands"
+        : (isLocationView ? "Wellington · Location" : selected.filters.brand);
       updateBrandNavActive(selected.filters.brand);
 
       let periodText = "YTD / All Months";
