@@ -333,6 +333,11 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": transactions,
+            "orders": transactions,
+            "units_sold": 0,
+            "customers": 0,
+            "new_customers": 0,
+            "returning_customers": 0,
             "sessions_reached_checkout": 0,
             "sessions_completed_checkout": 0,
             "checkout_abandonments": 0,
@@ -363,7 +368,7 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
             "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
             "total_discounts,current_total_discounts,total_shipping_price_set,"
             "shipping_lines,source_name,financial_status,line_items,refunds,"
-            "location_id,fulfillments,customer,currency,cancelled_at,test"
+            "location_id,fulfillments,customer,email,currency,cancelled_at,test"
         ),
     }
 
@@ -486,6 +491,97 @@ def get_customer_id(order: dict) -> str:
     return str(email or "")
 
 
+
+def get_customer_orders_count(order: dict) -> float:
+    customer = order.get("customer") or {}
+    return money(customer.get("orders_count"))
+
+
+def get_order_activity_monthly(orders: list[dict]) -> dict[str, dict[str, float]]:
+    """
+    Builds monthly operational KPIs from Orders API:
+    - orders
+    - units sold
+    - unique customers
+    - new customers
+    - returning customers
+
+    New/returning is calculated within the extracted year:
+    first month where the customer appears = new;
+    later months where the same customer appears = returning.
+    """
+    monthly = {
+        str(month).zfill(2): {
+            "transactions": 0,
+            "units_sold": 0,
+            "customers": 0,
+            "new_customers": 0,
+            "returning_customers": 0,
+            "_customers": set(),
+            "_new_customers": set(),
+            "_returning_customers": set(),
+        }
+        for month in range(1, 13)
+    }
+
+    first_seen_month_by_customer = {}
+
+    sorted_orders = sorted(
+        [order for order in orders if order.get("test") is not True],
+        key=lambda order: order.get("created_at", "")
+    )
+
+    for order in sorted_orders:
+        created_at = order.get("created_at", "")
+        month = created_at[5:7] if len(created_at) >= 7 else ""
+
+        if month not in monthly:
+            continue
+
+        customer_id = get_customer_id(order)
+        units_sold = get_units_sold(order)
+
+        monthly[month]["transactions"] += 1
+        monthly[month]["units_sold"] += units_sold
+
+        if customer_id:
+            monthly[month]["_customers"].add(customer_id)
+
+            if customer_id not in first_seen_month_by_customer:
+                first_seen_month_by_customer[customer_id] = month
+                monthly[month]["_new_customers"].add(customer_id)
+            else:
+                monthly[month]["_returning_customers"].add(customer_id)
+
+    for month, data in monthly.items():
+        data["customers"] = len(data["_customers"])
+        data["new_customers"] = len(data["_new_customers"])
+        data["returning_customers"] = len(data["_returning_customers"])
+
+        data.pop("_customers", None)
+        data.pop("_new_customers", None)
+        data.pop("_returning_customers", None)
+
+    return monthly
+
+
+def attach_order_activity_metrics(rows: list[dict], orders: list[dict]) -> list[dict]:
+    activity_by_month = get_order_activity_monthly(orders)
+
+    for row in rows:
+        month = str(row.get("month", "")).zfill(2)
+        activity = activity_by_month.get(month, {})
+
+        row["transactions"] = float(activity.get("transactions") or row.get("transactions") or 0)
+        row["orders"] = float(activity.get("transactions") or row.get("transactions") or 0)
+        row["units_sold"] = float(activity.get("units_sold") or 0)
+        row["customers"] = float(activity.get("customers") or 0)
+        row["new_customers"] = float(activity.get("new_customers") or 0)
+        row["returning_customers"] = float(activity.get("returning_customers") or 0)
+
+    return rows
+
+
 def get_cogs(order: dict) -> float:
     cogs = 0.0
 
@@ -547,6 +643,7 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": 1,
+            "orders": 1,
             "units_sold": units_sold,
             "customer_id": customer_id,
             "customers": 1 if customer_id else 0,
@@ -777,6 +874,7 @@ def attach_checkout_funnel_metrics(rows: list[dict], checkout_funnel_by_month: d
 
 def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict]:
     rows = []
+    orders = None
 
     try:
         print(f"Trying Shopify Analytics-style query for {brand} {year}...")
@@ -790,6 +888,15 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
         orders = get_orders(brand=brand, store=store, token=token, year=year)
         print(f"{brand} Shopify orders: {len(orders)}")
         rows = normalize_shopify_orders(brand=brand, orders=orders, year=year)
+
+    # Orders API is still needed for operational KPIs that are not reliably
+    # exposed in the sales ShopifyQL table: units sold, customers, new customers,
+    # and returning customers.
+    if orders is None:
+        orders = get_orders(brand=brand, store=store, token=token, year=year)
+        print(f"{brand} {year}: order activity rows for operational KPIs: {len(orders)}")
+
+    rows = attach_order_activity_metrics(rows, orders)
 
     checkout_funnel_by_month = get_checkout_funnel_monthly(
         brand=brand,
