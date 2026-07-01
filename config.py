@@ -33,6 +33,13 @@ SHOPIFY_STORES = {
     },
 }
 
+# Wellington is NOT another Shopify store.
+# It is a Shopify location / warehouse inside the existing stores.
+# Default is the location id found in the uploaded reference file.
+WELLINGTON_LOCATION_ID = optional_env("WELLINGTON_LOCATION_ID", "63267766330")
+WELLINGTON_LOCATION_NAME = optional_env("WELLINGTON_LOCATION_NAME", "New Wellington Warehouse")
+WELLINGTON_VIEW_NAME = optional_env("WELLINGTON_VIEW_NAME", "Wellington")
+
 QB_CLIENT_ID = optional_env("QB_CLIENT_ID")
 QB_CLIENT_SECRET = optional_env("QB_CLIENT_SECRET")
 QB_REFRESH_TOKEN = optional_env("QB_REFRESH_TOKEN")
