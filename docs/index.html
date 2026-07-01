@@ -718,7 +718,7 @@
 
       <div class="nav-section">
         <div class="nav-label">Locations</div>
-        <a class="nav-item location-nav" href="#" data-brand="Wellington"><span class="nav-dot"></span>Wellington</a>
+        <a class="nav-item location-nav" href="#" data-location="Wellington"><span class="nav-dot"></span>Wellington</a>
       </div>
     </aside>
 
@@ -746,6 +746,11 @@
         <div class="filter-group">
           <span class="filter-label">Brand</span>
           <select id="brandFilter"></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Location</span>
+          <select id="locationFilter"></select>
         </div>
 
         <div class="filter-group">
@@ -984,18 +989,21 @@
 
     function setupFilters() {
       const brandFilter = document.getElementById("brandFilter");
+      const locationFilter = document.getElementById("locationFilter");
       const yearFilter = document.getElementById("yearFilter");
       const monthFilter = document.getElementById("monthFilter");
       const quarterFilter = document.getElementById("quarterFilter");
       const quarterFilterGroup = document.getElementById("quarterFilterGroup");
 
       brandFilter.innerHTML = `<option value="all">All Brands</option>` + safeArray(DATA.brands_available).map(b => `<option value="${b}">${b}</option>`).join("");
+      locationFilter.innerHTML = `<option value="all">All Locations</option>` + safeArray(DATA.locations_available).map(l => `<option value="${l}">${l}</option>`).join("");
       yearFilter.innerHTML = safeArray(DATA.years_available).map(y => `<option value="${y}">${y}</option>`).join("");
       if (safeArray(DATA.years_available).length > 0) yearFilter.value = Math.max(...safeArray(DATA.years_available));
 
       monthFilter.innerHTML = `<option value="all">All Months / YTD</option>` + MONTH_ORDER.map(v => `<option value="${v}">${MONTHS[v]}</option>`).join("");
       monthFilter.value = "all";
       quarterFilter.value = "all";
+      locationFilter.value = "all";
 
       function syncQuarterVisibility() {
         const isCavali = brandFilter.value === "Cavali";
@@ -1004,6 +1012,7 @@
       }
 
       brandFilter.addEventListener("change", () => { syncQuarterVisibility(); render(); });
+      locationFilter.addEventListener("change", render);
       yearFilter.addEventListener("change", render);
       monthFilter.addEventListener("change", () => { if (monthFilter.value !== "all") quarterFilter.value = "all"; render(); });
       quarterFilter.addEventListener("change", () => { if (quarterFilter.value !== "all") monthFilter.value = "all"; render(); });
@@ -1014,32 +1023,42 @@
       document.querySelectorAll(".brand-nav, .location-nav, .dashboard-nav").forEach(item => {
         item.addEventListener("click", event => {
           event.preventDefault();
-          const brand = item.dataset.brand;
           const brandFilter = document.getElementById("brandFilter");
-          if (brandFilter && [...brandFilter.options].some(o => o.value === brand)) {
-            brandFilter.value = brand;
-            brandFilter.dispatchEvent(new Event("change"));
+          const locationFilter = document.getElementById("locationFilter");
+
+          if (item.classList.contains("dashboard-nav")) {
+            brandFilter.value = "all";
+            locationFilter.value = "all";
+          } else if (item.classList.contains("brand-nav")) {
+            brandFilter.value = item.dataset.brand;
+            locationFilter.value = "all";
+          } else if (item.classList.contains("location-nav")) {
+            locationFilter.value = item.dataset.location;
           }
+
+          brandFilter.dispatchEvent(new Event("change"));
+          locationFilter.dispatchEvent(new Event("change"));
         });
       });
     }
 
-    function updateBrandNavActive(selectedBrand) {
+    function updateBrandNavActive(selectedBrand, selectedLocation) {
       const dbNav = document.querySelector(".dashboard-nav");
-      if (dbNav) dbNav.classList.toggle("active-view", selectedBrand === "all");
+      if (dbNav) dbNav.classList.toggle("active-view", selectedBrand === "all" && selectedLocation === "all");
 
       document.querySelectorAll(".brand-nav").forEach(item => {
         item.classList.toggle("active-brand", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
       });
 
       document.querySelectorAll(".location-nav").forEach(item => {
-        item.classList.toggle("active-location", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
+        item.classList.toggle("active-location", selectedLocation !== "all" && item.dataset.location === selectedLocation);
       });
     }
 
     function selectedFilters() {
       return {
         brand: document.getElementById("brandFilter").value,
+        location: document.getElementById("locationFilter").value,
         year: Number(document.getElementById("yearFilter").value),
         month: document.getElementById("monthFilter").value,
         quarter: document.getElementById("quarterFilter").value
@@ -1049,12 +1068,16 @@
     function filterRows(rows, filters) {
       return rows.filter(row => {
         const rowMonth = String(row.month).padStart(2, "0");
-        const isLocationRow = row.view_type === "location" || row.brand === "Wellington";
-        const brandMatch = filters.brand === "all"
-          ? !isLocationRow
-          : row.brand === filters.brand;
+        const viewType = row.view_type || "brand";
+        const rowLocation = row.location_filter || (viewType === "location" ? (row.location_name || "Wellington") : "All Locations");
+
+        const brandMatch = filters.brand === "all" || row.brand === filters.brand;
+        const locationMatch = filters.location === "all"
+          ? viewType !== "location"
+          : viewType === "location" && rowLocation === filters.location;
 
         return brandMatch &&
+               locationMatch &&
                (Number(row.year) === filters.year) &&
                (filters.month === "all" || rowMonth === filters.month) &&
                (!filters.quarter || filters.quarter === "all" || QUARTERS[filters.quarter].includes(rowMonth));
@@ -1110,18 +1133,17 @@
 
     function render() {
       const selected = getSelectedRows();
-      const isLocationView = selected.filters.brand === "Wellington";
-      const brandText = selected.filters.brand === "all"
-        ? "All Brands"
-        : (isLocationView ? "Wellington · Location" : selected.filters.brand);
-      updateBrandNavActive(selected.filters.brand);
+      const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
+      const locationText = selected.filters.location === "all" ? "All Locations" : selected.filters.location;
+      const viewText = selected.filters.location === "all" ? brandText : `${brandText} · ${locationText}`;
+      updateBrandNavActive(selected.filters.brand, selected.filters.location);
 
       let periodText = "YTD / All Months";
       if (selected.filters.quarter !== "all") periodText = QUARTER_LABELS[selected.filters.quarter];
       else if (selected.filters.month !== "all") periodText = MONTHS[selected.filters.month];
 
-      document.getElementById("dateStrip").textContent = `${brandText} · ${selected.filters.year} · ${periodText} · Shopify KPIs ✓`;
-      document.getElementById("matrixMeta").textContent = `${brandText} · ${selected.filters.year}`;
+      document.getElementById("dateStrip").textContent = `${viewText} · ${selected.filters.year} · ${periodText} · Shopify KPIs ✓`;
+      document.getElementById("matrixMeta").textContent = `${viewText} · ${selected.filters.year}`;
 
       renderMonthlyMatrix(selected.trendRows, selected.filters);
       highlightSelectedPeriod(selected.filters);
@@ -1343,12 +1365,14 @@
     function renderNotes(selected) {
       const totals = selected.totals;
       const brandText = selected.filters.brand === "all" ? "all brands" : selected.filters.brand;
+      const locationText = selected.filters.location === "all" ? "all locations" : selected.filters.location;
+      const viewText = selected.filters.location === "all" ? brandText : `${brandText} · ${locationText}`;
       let periodText = "all months";
       if (selected.filters.quarter !== "all") periodText = QUARTER_LABELS[selected.filters.quarter];
       else if (selected.filters.month !== "all") periodText = MONTHS[selected.filters.month];
 
       document.getElementById("executiveNotes").innerHTML = `
-        <li><span class="note-dot"></span><span>Selected Shopify view: <strong>${brandText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Selected Shopify view: <strong>${viewText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span></li>
         <li><span class="note-dot"></span><span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span></li>
