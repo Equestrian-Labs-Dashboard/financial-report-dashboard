@@ -1071,16 +1071,21 @@
         const viewType = row.view_type || "brand";
         const rowLocation = row.location_filter || (viewType === "location" ? (row.location_name || "Wellington") : "All Locations");
 
-        const brandMatch = filters.brand === "all" || row.brand === filters.brand;
-        const locationMatch = filters.location === "all"
+        const selectedBrand = filters.brand || "all";
+        const selectedLocation = filters.location || "all";
+        const selectedMonth = filters.month || "all";
+        const selectedQuarter = filters.quarter || "all";
+
+        const brandMatch = selectedBrand === "all" || row.brand === selectedBrand;
+        const locationMatch = selectedLocation === "all"
           ? viewType !== "location"
-          : viewType === "location" && rowLocation === filters.location;
+          : viewType === "location" && rowLocation === selectedLocation;
 
         return brandMatch &&
                locationMatch &&
-               (Number(row.year) === filters.year) &&
-               (filters.month === "all" || rowMonth === filters.month) &&
-               (!filters.quarter || filters.quarter === "all" || QUARTERS[filters.quarter].includes(rowMonth));
+               (Number(row.year) === Number(filters.year)) &&
+               (selectedMonth === "all" || rowMonth === selectedMonth) &&
+               (selectedQuarter === "all" || QUARTERS[selectedQuarter].includes(rowMonth));
       });
     }
 
@@ -1126,7 +1131,13 @@
       const monthlyRows = safeArray(DATA.shopify_kpis_by_brand_month);
       const yearRows = safeArray(DATA.shopify_kpis_by_brand_year);
       const selectedRows = (filters.month !== "all" || filters.quarter !== "all") ? filterRows(monthlyRows, filters) : filterRows(yearRows, filters);
-      const yearlyMonthlyRows = filterRows(monthlyRows, { brand: filters.brand, year: filters.year, month: "all", quarter: "all" });
+      const yearlyMonthlyRows = filterRows(monthlyRows, {
+        brand: filters.brand,
+        location: filters.location,
+        year: filters.year,
+        month: "all",
+        quarter: "all"
+      });
 
       return { filters, selectedRows, trendRows: yearlyMonthlyRows, totals: sumRows(selectedRows) };
     }
