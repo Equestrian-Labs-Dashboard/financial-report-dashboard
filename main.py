@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timezone
 
 import config
-from extractors.shopify import get_shopify_rows
+from extractors.shopify import get_shopify_rows, get_shopify_location_rows
 from extractors.quickbooks import get_qb_shipping_costs
 from extractors.google_sheets_marketing import get_marketing_spend
 from transforms.financial_report import build_financial_report
@@ -42,6 +42,28 @@ def run():
             except Exception as exc:
                 print(f"Shopify error for {brand} {year}: {exc}")
 
+            # Wellington is a Shopify location, not a separate store.
+            # We scan each existing Shopify store and keep only orders that match the Wellington location id.
+            if config.WELLINGTON_LOCATION_ID:
+                try:
+                    print(
+                        f"Extracting Wellington location data from {brand} "
+                        f"for location {config.WELLINGTON_LOCATION_ID}..."
+                    )
+                    wellington_rows = get_shopify_location_rows(
+                        view_name=config.WELLINGTON_VIEW_NAME,
+                        parent_brand=brand,
+                        store=credentials["store"],
+                        token=credentials["token"],
+                        year=year,
+                        location_id=str(config.WELLINGTON_LOCATION_ID),
+                        location_name=str(config.WELLINGTON_LOCATION_NAME),
+                    )
+                    all_shopify_rows.extend(wellington_rows)
+                    print(f"{brand} Wellington rows: {len(wellington_rows)}")
+                except Exception as exc:
+                    print(f"Wellington location error for {brand} {year}: {exc}")
+
         if config.QB_CLIENT_ID and config.QB_CLIENT_SECRET and config.QB_REFRESH_TOKEN:
             try:
                 print(f"Extracting QuickBooks shipping data for year {year}...")
@@ -50,7 +72,7 @@ def run():
                     client_secret=config.QB_CLIENT_SECRET,
                     refresh_token=config.QB_REFRESH_TOKEN,
                     realm_id=config.QB_REALM_ID,
-                    year=year
+                    year=year,
                 )
                 qb_summaries[year] = shipping_data
                 print(f"QuickBooks data extracted successfully for {year}.")
