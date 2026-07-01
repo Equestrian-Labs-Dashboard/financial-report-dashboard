@@ -554,6 +554,7 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "returning_customers": 0,
             "view_type": "brand",
             "parent_brand": brand,
+            "location_filter": "All Locations",
             "location_id": "",
             "location_name": "",
             "sessions_reached_checkout": 0,
@@ -611,14 +612,16 @@ def get_shopify_location_rows(
         if order_matches_location(order, location_id=location_id)
     ]
 
-    rows = normalize_shopify_orders(brand=view_name, orders=location_orders, year=year)
+    # Keep the real brand as Corro/Cavali. Wellington is a second filter, not a brand.
+    rows = normalize_shopify_orders(brand=parent_brand, orders=location_orders, year=year)
 
     for row in rows:
         row["view_type"] = "location"
         row["parent_brand"] = parent_brand
+        row["location_filter"] = view_name
         row["location_id"] = str(location_id)
         row["location_name"] = location_name
-        row["channel"] = location_name or "Wellington"
+        row["channel"] = location_name or view_name or "Wellington"
 
     print(
         f"{parent_brand} {year}: {view_name} location orders "
@@ -800,6 +803,7 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
     for row in rows:
         row.setdefault("view_type", "brand")
         row.setdefault("parent_brand", brand)
+        row.setdefault("location_filter", "All Locations")
         row.setdefault("location_id", "")
         row.setdefault("location_name", "")
 
