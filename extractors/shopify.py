@@ -363,7 +363,7 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
             "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
             "total_discounts,current_total_discounts,total_shipping_price_set,"
             "shipping_lines,source_name,financial_status,line_items,refunds,"
-            "currency,cancelled_at,test"
+            "location_id,fulfillments,customer,currency,cancelled_at,test"
         ),
     }
 
@@ -466,6 +466,26 @@ def get_gross_sales(order: dict) -> float:
     return gross_sales
 
 
+def get_units_sold(order: dict) -> float:
+    units = 0.0
+
+    for item in order.get("line_items", []) or []:
+        units += money(item.get("quantity"))
+
+    return units
+
+
+def get_customer_id(order: dict) -> str:
+    customer = order.get("customer") or {}
+    customer_id = customer.get("id")
+
+    if customer_id:
+        return str(customer_id)
+
+    email = customer.get("email") or order.get("email")
+    return str(email or "")
+
+
 def get_cogs(order: dict) -> float:
     cogs = 0.0
 
@@ -499,6 +519,9 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
         net_sales = gross_sales - discounts - returns
         total_sales = net_sales + shipping_charges + taxes
 
+        units_sold = get_units_sold(order)
+        customer_id = get_customer_id(order)
+
         cogs = get_cogs(order)
         gross_profit_1 = net_sales - cogs
         gross_margin_1 = gross_profit_1 / net_sales if net_sales else 0
@@ -524,6 +547,15 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
             "transactions": 1,
+            "units_sold": units_sold,
+            "customer_id": customer_id,
+            "customers": 1 if customer_id else 0,
+            "new_customers": 0,
+            "returning_customers": 0,
+            "view_type": "brand",
+            "parent_brand": brand,
+            "location_id": "",
+            "location_name": "",
             "sessions_reached_checkout": 0,
             "sessions_completed_checkout": 0,
             "checkout_abandonments": 0,
@@ -534,6 +566,66 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
 
 
 
+
+
+def order_matches_location(order: dict, location_id: str) -> bool:
+    target = str(location_id)
+
+    order_location_id = order.get("location_id")
+    if order_location_id is not None and str(order_location_id) == target:
+        return True
+
+    for fulfillment in order.get("fulfillments", []) or []:
+        fulfillment_location_id = fulfillment.get("location_id")
+        if fulfillment_location_id is not None and str(fulfillment_location_id) == target:
+            return True
+
+    for item in order.get("line_items", []) or []:
+        origin_location = item.get("origin_location") or {}
+        origin_location_id = origin_location.get("id")
+        if origin_location_id is not None and str(origin_location_id) == target:
+            return True
+
+    return False
+
+
+def get_shopify_location_rows(
+    view_name: str,
+    parent_brand: str,
+    store: str,
+    token: str,
+    year: int,
+    location_id: str,
+    location_name: str,
+) -> list[dict]:
+    """
+    Builds a Wellington location view from the existing Shopify stores.
+
+    Wellington is not a new brand/store. It is identified by Shopify location_id.
+    These rows use brand=view_name only so the existing dashboard filter can show it
+    as a separate view without adding a new API credential.
+    """
+    orders = get_orders(brand=parent_brand, store=store, token=token, year=year)
+    location_orders = [
+        order for order in orders
+        if order_matches_location(order, location_id=location_id)
+    ]
+
+    rows = normalize_shopify_orders(brand=view_name, orders=location_orders, year=year)
+
+    for row in rows:
+        row["view_type"] = "location"
+        row["parent_brand"] = parent_brand
+        row["location_id"] = str(location_id)
+        row["location_name"] = location_name
+        row["channel"] = location_name or "Wellington"
+
+    print(
+        f"{parent_brand} {year}: {view_name} location orders "
+        f"matched={len(location_orders)} location_id={location_id}"
+    )
+
+    return rows
 
 
 def get_checkout_funnel_monthly(brand: str, store: str, token: str, year: int) -> dict[str, dict[str, float]]:
@@ -703,4 +795,12 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
         year=year,
     )
 
-    return attach_checkout_funnel_metrics(rows, checkout_funnel_by_month)
+    rows = attach_checkout_funnel_metrics(rows, checkout_funnel_by_month)
+
+    for row in rows:
+        row.setdefault("view_type", "brand")
+        row.setdefault("parent_brand", brand)
+        row.setdefault("location_id", "")
+        row.setdefault("location_name", "")
+
+    return rows
