@@ -22,7 +22,7 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
         "brand", "year", "month", "channel", "view_type", "parent_brand",
         "location_filter", "location_id", "location_name", "total_sales", "gross_sales",
         "discounts", "returns", "discounts_returns", "shipping_charges", "taxes",
-        "net_sales", "cogs", "gross_profit_1", "transactions", "units_sold",
+        "net_sales", "cogs", "gross_profit_1", "transactions", "orders", "units_sold",
         "customers", "new_customers", "returning_customers", "sessions_reached_checkout",
         "sessions_completed_checkout", "checkout_abandonments",
     ]
@@ -60,6 +60,9 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
     ]
     for col in numeric_cols:
         shopify_df[col] = pd.to_numeric(shopify_df[col], errors="coerce").fillna(0)
+
+    if "orders" in shopify_df.columns:
+        shopify_df["orders"] = shopify_df["orders"].where(shopify_df["orders"] > 0, shopify_df["transactions"])
 
     for col in ["brand", "channel", "view_type", "parent_brand", "location_filter", "location_id", "location_name"]:
         shopify_df[col] = shopify_df[col].astype(str)
@@ -184,6 +187,7 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
             total_sales=("total_sales", "sum"),
             gross_sales=("gross_sales", "sum"),
             net_sales=("net_sales", "sum"),
+            orders=("orders", "sum"),
             transactions=("transactions", "sum"),
         )
     ) if not shopify_df.empty else pd.DataFrame()
