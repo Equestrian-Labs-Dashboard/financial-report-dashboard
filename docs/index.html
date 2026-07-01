@@ -1093,7 +1093,7 @@
       const result = {
         total_sales: 0, gross_sales: 0, discounts: 0, returns: 0, discounts_returns: 0,
         shipping_charges: 0, taxes: 0, net_sales: 0, cogs: 0, gross_profit_1: 0,
-        gross_profit_2: 0, gross_profit_3: 0, transactions: 0, net_gross_ratio: 0,
+        gross_profit_2: 0, gross_profit_3: 0, transactions: 0, orders: 0, units_sold: 0, customers: 0, new_customers: 0, returning_customers: 0, net_gross_ratio: 0,
         sessions_reached_checkout: 0, sessions_completed_checkout: 0, checkout_abandonments: 0
       };
 
@@ -1111,6 +1111,11 @@
         result.gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
         result.gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_2 || 0);
         result.transactions += Number(row.transactions || 0);
+        result.orders += Number(row.orders || row.transactions || 0);
+        result.units_sold += Number(row.units_sold || 0);
+        result.customers += Number(row.customers || 0);
+        result.new_customers += Number(row.new_customers || 0);
+        result.returning_customers += Number(row.returning_customers || 0);
         result.sessions_reached_checkout += rowReachedCheckout(row);
         result.sessions_completed_checkout += rowCompletedCheckout(row);
         result.checkout_abandonments += rowCheckoutAbandonments(row);
@@ -1177,6 +1182,11 @@
       document.getElementById("shopifyKpis").innerHTML = `
         <div class="kpi-card positive"><div class="kpi-label">Total Sales</div><div class="kpi-value">${compactMoney(totals.total_sales)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Net + Shipping + Taxes</div></div>
         <div class="kpi-card"><div class="kpi-label">Gross Sales</div><div class="kpi-value">${compactMoney(totals.gross_sales)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Price × Qty</div></div>
+        <div class="kpi-card"><div class="kpi-label">Orders</div><div class="kpi-value">${compactNumber(totals.orders || totals.transactions)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Order count</div></div>
+        <div class="kpi-card"><div class="kpi-label">Units Sold</div><div class="kpi-value">${compactNumber(totals.units_sold)}</div><div class="kpi-chip">Orders API</div><div class="kpi-note">Line item quantity</div></div>
+        <div class="kpi-card"><div class="kpi-label">Customers</div><div class="kpi-value">${compactNumber(totals.customers)}</div><div class="kpi-chip">Orders API</div><div class="kpi-note">Unique customer count</div></div>
+        <div class="kpi-card"><div class="kpi-label">New Customers</div><div class="kpi-value">${compactNumber(totals.new_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">First purchase in selected year</div></div>
+        <div class="kpi-card"><div class="kpi-label">Returning Customers</div><div class="kpi-value">${compactNumber(totals.returning_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Purchased again in selected year</div></div>
         <div class="kpi-card warning"><div class="kpi-label">Discounts + Returns</div><div class="kpi-value">${compactMoney(totals.discounts_returns)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Total deductions</div></div>
         <div class="kpi-card warning"><div class="kpi-label">% Discount + Returns</div><div class="kpi-value">${percent(totals.discounts_returns_pct)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Of Gross Sales</div></div>
         <div class="kpi-card"><div class="kpi-label">Shipping Charges</div><div class="kpi-value">${compactMoney(totals.shipping_charges)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Collected shipping</div></div>
@@ -1202,7 +1212,7 @@
           grouped[month] = {
             month, total_sales: 0, gross_sales: 0, discounts: 0, returns: 0, discounts_returns: 0,
             shipping_charges: 0, taxes: 0, net_sales: 0, cogs: 0, gross_profit_1: 0,
-            gross_profit_2: 0, gross_profit_3: 0, transactions: 0, sessions_reached_checkout: 0, sessions_completed_checkout: 0
+            gross_profit_2: 0, gross_profit_3: 0, transactions: 0, orders: 0, units_sold: 0, customers: 0, new_customers: 0, returning_customers: 0, sessions_reached_checkout: 0, sessions_completed_checkout: 0
           };
         }
         grouped[month].total_sales += Number(row.total_sales || 0);
@@ -1218,6 +1228,11 @@
         grouped[month].gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
         grouped[month].gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_2 || 0);
         grouped[month].transactions += Number(row.transactions || 0);
+        grouped[month].orders += Number(row.orders || row.transactions || 0);
+        grouped[month].units_sold += Number(row.units_sold || 0);
+        grouped[month].customers += Number(row.customers || 0);
+        grouped[month].new_customers += Number(row.new_customers || 0);
+        grouped[month].returning_customers += Number(row.returning_customers || 0);
         grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
         grouped[month].sessions_completed_checkout += rowCompletedCheckout(row);
       });
@@ -1335,6 +1350,11 @@
       const metrics = [
         { key: "total_sales", label: "Total Sales", formatter: money },
         { key: "gross_sales", label: "Gross Sales", formatter: money },
+        { key: "orders", label: "Orders", formatter: number },
+        { key: "units_sold", label: "Units Sold", formatter: number },
+        { key: "customers", label: "Customers", formatter: number },
+        { key: "new_customers", label: "New Customers", formatter: number },
+        { key: "returning_customers", label: "Returning Customers", formatter: number },
         { key: "discounts", label: "Discounts", formatter: money },
         { key: "returns", label: "Returns", formatter: money },
         { key: "discounts_returns_pct", label: "% Discount + Returns", formatter: percent },
@@ -1385,6 +1405,7 @@
       document.getElementById("executiveNotes").innerHTML = `
         <li><span class="note-dot"></span><span>Selected Shopify view: <strong>${viewText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Orders: <strong>${number(totals.orders || totals.transactions)}</strong>, Units Sold: <strong>${number(totals.units_sold)}</strong>, Customers: <strong>${number(totals.customers)}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span></li>
         <li><span class="note-dot"></span><span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span></li>
       `;
