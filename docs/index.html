@@ -779,7 +779,7 @@
 
       <section class="panel table-panel">
         <div class="matrix-topbar">
-          <div class="matrix-heading">Shopify KPIs by Month</div>
+          <div class="matrix-heading">Monthly Financial Summary</div>
           <div class="matrix-actions">
             <button class="matrix-toggle" id="matrixToggle" type="button">Expand months</button>
             <div class="matrix-meta" id="matrixMeta">Loading...</div>
@@ -1350,11 +1350,6 @@
       const metrics = [
         { key: "total_sales", label: "Total Sales", formatter: money },
         { key: "gross_sales", label: "Gross Sales", formatter: money },
-        { key: "orders", label: "Orders", formatter: number },
-        { key: "units_sold", label: "Units Sold", formatter: number },
-        { key: "customers", label: "Customers", formatter: number },
-        { key: "new_customers", label: "New Customers", formatter: number },
-        { key: "returning_customers", label: "Returning Customers", formatter: number },
         { key: "discounts", label: "Discounts", formatter: money },
         { key: "returns", label: "Returns", formatter: money },
         { key: "discounts_returns_pct", label: "% Discount + Returns", formatter: percent },
