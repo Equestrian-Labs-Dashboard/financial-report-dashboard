@@ -1,40 +1,75 @@
-name: Financial Report Daily Update
+name: Daily Financial Report
+
 on:
-  schedule:
-    - cron: '0 7 * * *'
   workflow_dispatch:
+  schedule:
+    # GitHub cron runs in UTC.
+    # 00:00 UTC = 02:00 Europe/Madrid during summer time.
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: financial-report-dashboard
+  cancel-in-progress: false
+
 jobs:
-  build:
+  financial-report:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          python-version: '3.11'
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Run financial report pipeline
         env:
-          # Secretos de Shopify (Para que config.py no falle)
+          TZ: Europe/Madrid
+
           CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
           CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
+
           CAVALI_SHOPIFY_STORE: ${{ secrets.CAVALI_SHOPIFY_STORE }}
           CAVALI_SHOPIFY_TOKEN: ${{ secrets.CAVALI_SHOPIFY_TOKEN }}
-          # Secretos de QuickBooks
+
           QB_CLIENT_ID: ${{ secrets.QB_CLIENT_ID }}
           QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
           QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
           QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
-          # Secretos de Marketing (Google Sheets público, solo lectura)
+
+          BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
+          BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
+          BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
+          BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
+          BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
+
           MARKETING_SHEET_GID: ${{ secrets.MARKETING_SHEET_GID }}
-          # Secreto de Google Sheets
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          START_YEAR: ${{ secrets.START_YEAR }}
         run: python -u main.py
-      - name: Commit and push changes
+
+      - name: Commit updated dashboard data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           git add docs/financial_report.json
-          git commit -m "Update financial report with QB and Marketing metrics"
-          git push
+
+          if git diff --staged --quiet; then
+            echo "No dashboard data changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update financial report data"
+          git pull --rebase --autostash origin main
+          git push origin main
