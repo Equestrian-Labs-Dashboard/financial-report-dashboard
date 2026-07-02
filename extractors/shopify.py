@@ -394,6 +394,147 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
     return orders
 
 
+
+def get_orders_updated_for_refunds(brand: str, store: str, token: str, year: int) -> list[dict]:
+    """
+    Shopify's Analytics total sales breakdown attributes Returns to the refund date,
+    not always to the original order created month. This pulls orders updated in the
+    year so refunds created during the year can be allocated to the correct month.
+    """
+    start_date = f"{year}-01-01T00:00:00Z"
+    end_date = f"{year}-12-31T23:59:59Z"
+
+    url = f"https://{store}/admin/api/{API_VERSION}/orders.json"
+
+    headers = {
+        "X-Shopify-Access-Token": token,
+        "Content-Type": "application/json",
+    }
+
+    params = {
+        "status": "any",
+        "updated_at_min": start_date,
+        "updated_at_max": end_date,
+        "limit": 250,
+        "fields": "id,updated_at,refunds,test",
+    }
+
+    orders = []
+
+    while url:
+        response = request_with_retry("GET", url, headers=headers, params=params)
+        payload = response.json()
+        orders.extend(payload.get("orders", []))
+
+        link_header = response.headers.get("Link", "")
+        next_url = None
+
+        if 'rel="next"' in link_header:
+            for part in link_header.split(","):
+                if 'rel="next"' in part:
+                    next_url = part.split(";")[0].strip().strip("<>")
+
+        url = next_url
+        params = None
+
+    return orders
+
+
+def get_refund_line_items_amount(refund: dict) -> float:
+    total_returns = 0.0
+
+    for refund_line_item in refund.get("refund_line_items", []) or []:
+        subtotal_set = refund_line_item.get("subtotal_set") or {}
+        shop_money = subtotal_set.get("shop_money") or {}
+
+        if shop_money.get("amount") is not None:
+            total_returns += abs(money(shop_money.get("amount")))
+        else:
+            total_returns += abs(money(refund_line_item.get("subtotal")))
+
+    return total_returns
+
+
+def get_refund_date_returns_monthly(brand: str, store: str, token: str, year: int) -> dict[str, float]:
+    monthly = {str(month).zfill(2): 0.0 for month in range(1, 13)}
+
+    try:
+        orders = get_orders_updated_for_refunds(brand=brand, store=store, token=token, year=year)
+    except Exception as exc:
+        print(f"{brand} {year}: refund-date returns unavailable: {exc}")
+        return monthly
+
+    for order in orders:
+        if order.get("test") is True:
+            continue
+
+        for refund in order.get("refunds", []) or []:
+            created_at = refund.get("created_at") or refund.get("processed_at") or ""
+
+            if not created_at.startswith(str(year)):
+                continue
+
+            month = created_at[5:7] if len(created_at) >= 7 else ""
+
+            if month in monthly:
+                monthly[month] += get_refund_line_items_amount(refund)
+
+    print(
+        f"{brand} {year}: refund-date returns total="
+        f"{round(sum(monthly.values()), 2)}"
+    )
+
+    return monthly
+
+
+def override_returns_with_refund_date(rows: list[dict], brand: str, store: str, token: str, year: int) -> list[dict]:
+    """
+    Align Returns/Net Sales/Total Sales with Shopify Analytics' total sales breakdown
+    when a refund was processed in the selected month for an order from a different
+    created month. This is the usual cause of small month-only differences.
+    """
+    returns_by_month = get_refund_date_returns_monthly(brand=brand, store=store, token=token, year=year)
+
+    for row in rows:
+        month = str(row.get("month", "")).zfill(2)
+
+        if month not in returns_by_month:
+            continue
+
+        refund_date_returns = float(returns_by_month.get(month) or 0)
+        current_returns = float(row.get("returns") or 0)
+
+        # Only override when refund-date data exists. Months with no refunds stay 0.
+        # This keeps ShopifyQL values intact when they are already aligned.
+        if refund_date_returns != current_returns:
+            row["returns"] = refund_date_returns
+            row["discounts_returns"] = float(row.get("discounts") or 0) + refund_date_returns
+            row["discounts_returns_pct"] = (
+                row["discounts_returns"] / float(row.get("gross_sales") or 0)
+                if float(row.get("gross_sales") or 0)
+                else 0
+            )
+            row["net_sales"] = (
+                float(row.get("gross_sales") or 0)
+                - float(row.get("discounts") or 0)
+                - refund_date_returns
+            )
+            row["total_sales"] = (
+                float(row.get("net_sales") or 0)
+                + float(row.get("shipping_charges") or 0)
+                + float(row.get("taxes") or 0)
+            )
+            row["gross_profit_1"] = float(row.get("net_sales") or 0) - float(row.get("cogs") or 0)
+            row["gross_margin_1"] = (
+                row["gross_profit_1"] / float(row.get("net_sales") or 0)
+                if float(row.get("net_sales") or 0)
+                else 0
+            )
+            row["returns_source"] = "refund_date"
+
+    return rows
+
+
 def get_shipping_refund_amount(order: dict) -> float:
     shipping_refunds = 0.0
 
@@ -897,6 +1038,7 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
         print(f"{brand} {year}: order activity rows for operational KPIs: {len(orders)}")
 
     rows = attach_order_activity_metrics(rows, orders)
+    rows = override_returns_with_refund_date(rows, brand=brand, store=store, token=token, year=year)
 
     checkout_funnel_by_month = get_checkout_funnel_monthly(
         brand=brand,
