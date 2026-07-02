@@ -941,6 +941,21 @@
       return Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
     }
 
+    function compactNumber(value) {
+      const numberValue = Number(value || 0);
+      const absValue = Math.abs(numberValue);
+
+      if (absValue >= 1000000) {
+        return (numberValue / 1000000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "M";
+      }
+
+      if (absValue >= 1000) {
+        return (numberValue / 1000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "K";
+      }
+
+      return numberValue.toLocaleString("en-US", { maximumFractionDigits: 0 });
+    }
+
     function percent(value) {
       return Number((Number(value || 0) * 100)).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "%";
     }
