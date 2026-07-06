@@ -885,6 +885,43 @@
       Q3: "Q3 · Jul–Sep", Q4: "Q4 · Oct–Dec"
     };
 
+    const ESTIMATED_ANNUAL_OPEX = {
+      Corro: 100000,
+      Cavali: 17500
+    };
+
+    function rowHasFinancialActivity(row) {
+      return Number(row.total_sales || 0) !== 0 ||
+             Number(row.gross_sales || 0) !== 0 ||
+             Number(row.net_sales || 0) !== 0;
+    }
+
+    function estimatedMonthlyOpexForRow(row) {
+      const viewType = row.view_type || "brand";
+
+      // Wellington is a location view. Do not double-count brand OPEX there.
+      if (viewType === "location") {
+        return 0;
+      }
+
+      if (!rowHasFinancialActivity(row)) {
+        return 0;
+      }
+
+      const brand = row.brand || "";
+      return Number(ESTIMATED_ANNUAL_OPEX[brand] || 0) / 12;
+    }
+
+    function estimatedNoiForRow(row) {
+      const jsonValue = Number(row.estimated_net_operating_income || 0);
+
+      if (jsonValue !== 0) {
+        return jsonValue;
+      }
+
+      return Number(row.gross_profit_3 || 0) - estimatedMonthlyOpexForRow(row);
+    }
+
     function setupTheme() {
       const savedTheme = localStorage.getItem("financialReportTheme") || "dark";
       document.documentElement.setAttribute("data-theme", savedTheme);
@@ -1106,10 +1143,32 @@
 
     function sumRows(rows) {
       const result = {
-        total_sales: 0, gross_sales: 0, discounts: 0, returns: 0, discounts_returns: 0,
-        shipping_charges: 0, taxes: 0, net_sales: 0, cogs: 0, gross_profit_1: 0,
-        gross_profit_2: 0, gross_profit_3: 0, estimated_average_opex: 0, estimated_net_operating_income: 0, estimated_net_operating_income_pct: 0, transactions: 0, orders: 0, units_sold: 0, customers: 0, new_customers: 0, returning_customers: 0, net_gross_ratio: 0,
-        sessions_reached_checkout: 0, sessions_completed_checkout: 0, checkout_abandonments: 0
+        total_sales: 0,
+        gross_sales: 0,
+        discounts: 0,
+        returns: 0,
+        discounts_returns: 0,
+        shipping_charges: 0,
+        taxes: 0,
+        net_sales: 0,
+        cogs: 0,
+        gross_profit_1: 0,
+        gross_profit_2: 0,
+        gross_profit_3: 0,
+        estimated_average_opex: 0,
+        estimated_net_operating_income: 0,
+        estimated_net_operating_income_pct: 0,
+        transactions: 0,
+        orders: 0,
+        units_sold: 0,
+        customers: 0,
+        new_customers: 0,
+        returning_customers: 0,
+        net_gross_ratio: 0,
+        sessions_reached_checkout: 0,
+        sessions_completed_checkout: 0,
+        checkout_abandonments: 0,
+        checkout_abandonment_rate: 0
       };
 
       rows.forEach(row => {
@@ -1123,25 +1182,42 @@
         result.net_sales += Number(row.net_sales || 0);
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
-        result.gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
-        result.gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_2 || 0);
+        result.gross_profit_2 += Number(row.gross_profit_2 || 0);
+        result.gross_profit_3 += Number(row.gross_profit_3 || 0);
+
+        // Use JSON values if they exist; otherwise calculate provisional OPEX live.
+        const jsonOpex = Number(row.estimated_average_opex || 0);
+        const rowOpex = jsonOpex !== 0 ? jsonOpex : estimatedMonthlyOpexForRow(row);
+        result.estimated_average_opex += rowOpex;
+        result.estimated_net_operating_income += Number(row.gross_profit_3 || 0) - rowOpex;
+
         result.transactions += Number(row.transactions || 0);
         result.orders += Number(row.orders || row.transactions || 0);
         result.units_sold += Number(row.units_sold || 0);
         result.customers += Number(row.customers || 0);
         result.new_customers += Number(row.new_customers || 0);
         result.returning_customers += Number(row.returning_customers || 0);
+
         result.sessions_reached_checkout += rowReachedCheckout(row);
         result.sessions_completed_checkout += rowCompletedCheckout(row);
         result.checkout_abandonments += rowCheckoutAbandonments(row);
       });
+
+      if (result.sessions_reached_checkout) {
+        result.checkout_abandonments = Math.max(
+          result.sessions_reached_checkout - result.sessions_completed_checkout,
+          0
+        );
+      }
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
       result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
       result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
-      result.checkout_abandonment_rate = result.sessions_reached_checkout ? result.checkout_abandonments / result.sessions_reached_checkout : 0;
+      result.checkout_abandonment_rate = result.sessions_reached_checkout
+        ? result.checkout_abandonments / result.sessions_reached_checkout
+        : 0;
       result.estimated_net_operating_income_pct = result.total_sales
         ? result.estimated_net_operating_income / result.total_sales
         : 0;
@@ -1227,15 +1303,41 @@
 
     function groupByMonth(rows) {
       const grouped = {};
+
       rows.forEach(row => {
         const month = String(row.month).padStart(2, "0");
+
         if (!grouped[month]) {
           grouped[month] = {
-            month, total_sales: 0, gross_sales: 0, discounts: 0, returns: 0, discounts_returns: 0,
-            shipping_charges: 0, taxes: 0, net_sales: 0, cogs: 0, gross_profit_1: 0,
-            gross_profit_2: 0, gross_profit_3: 0, estimated_average_opex: 0, estimated_net_operating_income: 0, estimated_net_operating_income_pct: 0, transactions: 0, orders: 0, units_sold: 0, customers: 0, new_customers: 0, returning_customers: 0, sessions_reached_checkout: 0, sessions_completed_checkout: 0
+            month,
+            total_sales: 0,
+            gross_sales: 0,
+            discounts: 0,
+            returns: 0,
+            discounts_returns: 0,
+            shipping_charges: 0,
+            taxes: 0,
+            net_sales: 0,
+            cogs: 0,
+            gross_profit_1: 0,
+            gross_profit_2: 0,
+            gross_profit_3: 0,
+            estimated_average_opex: 0,
+            estimated_net_operating_income: 0,
+            estimated_net_operating_income_pct: 0,
+            transactions: 0,
+            orders: 0,
+            units_sold: 0,
+            customers: 0,
+            new_customers: 0,
+            returning_customers: 0,
+            sessions_reached_checkout: 0,
+            sessions_completed_checkout: 0,
+            checkout_abandonments: 0,
+            checkout_abandonment_rate: 0
           };
         }
+
         grouped[month].total_sales += Number(row.total_sales || 0);
         grouped[month].gross_sales += Number(row.gross_sales || 0);
         grouped[month].discounts += Number(row.discounts || 0);
@@ -1246,31 +1348,51 @@
         grouped[month].net_sales += Number(row.net_sales || 0);
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
-        grouped[month].gross_profit_2 += Number(row.gross_profit_2 || row.gross_profit_1 || 0);
-        grouped[month].gross_profit_3 += Number(row.gross_profit_3 || row.gross_profit_2 || 0);
+        grouped[month].gross_profit_2 += Number(row.gross_profit_2 || 0);
+        grouped[month].gross_profit_3 += Number(row.gross_profit_3 || 0);
+
+        const jsonOpex = Number(row.estimated_average_opex || 0);
+        const rowOpex = jsonOpex !== 0 ? jsonOpex : estimatedMonthlyOpexForRow(row);
+        grouped[month].estimated_average_opex += rowOpex;
+        grouped[month].estimated_net_operating_income += Number(row.gross_profit_3 || 0) - rowOpex;
+
         grouped[month].transactions += Number(row.transactions || 0);
         grouped[month].orders += Number(row.orders || row.transactions || 0);
         grouped[month].units_sold += Number(row.units_sold || 0);
         grouped[month].customers += Number(row.customers || 0);
         grouped[month].new_customers += Number(row.new_customers || 0);
         grouped[month].returning_customers += Number(row.returning_customers || 0);
+
         grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
         grouped[month].sessions_completed_checkout += rowCompletedCheckout(row);
+        grouped[month].checkout_abandonments += rowCheckoutAbandonments(row);
       });
 
-      return Object.values(grouped).sort((a, b) => a.month.localeCompare(b.month)).map(row => {
-        const abandoned = Math.max(row.sessions_reached_checkout - row.sessions_completed_checkout, 0);
-        return {
-          ...row,
-          gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
-          gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
-          gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
-          net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
-          checkout_abandonment_rate: row.sessions_reached_checkout ? abandoned / row.sessions_reached_checkout : 0,
-          estimated_net_operating_income_pct: row.total_sales ? row.estimated_net_operating_income / row.total_sales : 0,
+      return Object.values(grouped)
+        .sort((a, b) => a.month.localeCompare(b.month))
+        .map(row => {
+          if (row.sessions_reached_checkout) {
+            row.checkout_abandonments = Math.max(
+              row.sessions_reached_checkout - row.sessions_completed_checkout,
+              0
+            );
+          }
+
+          return {
+            ...row,
+            gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+            gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
+            gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
+            net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
+            checkout_abandonment_rate: row.sessions_reached_checkout
+              ? row.checkout_abandonments / row.sessions_reached_checkout
+              : 0,
+            estimated_net_operating_income_pct: row.total_sales
+              ? row.estimated_net_operating_income / row.total_sales
+              : 0,
             discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
-        };
-      });
+          };
+        });
     }
 
     function renderSalesTrend(rows) {
