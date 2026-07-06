@@ -166,7 +166,48 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result["gross_profit_3"] = result["gross_profit_2"] - result["marketing_allocated"]
     result["gross_margin_3"] = (result["gross_profit_3"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
     result.drop(columns=["applied_shipping", "marketing_allocated"], inplace=True, errors="ignore")
+    result = add_estimated_operating_income(result)
+
     return result
+
+
+
+ESTIMATED_OPEX_BY_BRAND = {
+    "Corro": 100000,
+    "Cavali": 17500,
+}
+
+
+def add_estimated_operating_income(df):
+    """
+    Adds provisional operating estimates after GP3/GM3.
+
+    Values are annual estimates spread evenly by month:
+    - Corro: 100,000 / year
+    - Cavali: 17,500 / year
+    - Wellington/location rows: 0, so location view does not double-count brand OPEX.
+    """
+    if df.empty:
+        df["estimated_average_opex"] = 0
+        df["estimated_net_operating_income"] = 0
+        df["estimated_net_operating_income_pct"] = 0
+        return df
+
+    def monthly_opex(row):
+        view_type = str(row.get("view_type", "brand"))
+        if view_type == "location":
+            return 0.0
+
+        brand = str(row.get("brand", ""))
+        return ESTIMATED_OPEX_BY_BRAND.get(brand, 0) / 12
+
+    df["estimated_average_opex"] = df.apply(monthly_opex, axis=1)
+    df["estimated_net_operating_income"] = df["gross_profit_3"] - df["estimated_average_opex"]
+    df["estimated_net_operating_income_pct"] = (
+        df["estimated_net_operating_income"] / df["total_sales"].replace(0, pd.NA)
+    ).fillna(0)
+
+    return df
 
 
 def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_summaries: dict, marketing_summaries: dict | None = None) -> dict:
@@ -196,6 +237,14 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
     locations_available = sorted(shopify_df.loc[shopify_df["view_type"].eq("location"), "location_filter"].dropna().unique().tolist())
     locations_available = [loc for loc in locations_available if loc and loc != "All Locations"]
     years_available = sorted([int(year) for year in shopify_df["year"].dropna().unique().tolist() if int(year) > 0])
+
+    for frame in [shopify_by_brand_year, shopify_by_brand_month]:
+        if "estimated_average_opex" not in frame.columns:
+            frame["estimated_average_opex"] = 0
+            frame["estimated_net_operating_income"] = frame.get("gross_profit_3", 0)
+            frame["estimated_net_operating_income_pct"] = (
+                frame["estimated_net_operating_income"] / frame["total_sales"].replace(0, pd.NA)
+            ).fillna(0)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
