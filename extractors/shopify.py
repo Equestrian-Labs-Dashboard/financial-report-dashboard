@@ -4,6 +4,30 @@ import requests
 
 API_VERSION = "2025-10"
 
+# Wellington is a store/POS split inside Corro, not a warehouse split and not Cavali.
+WELLINGTON_PARENT_BRAND = "Corro"
+
+# Keep this filter strict so online orders fulfilled from Wellington warehouse
+# do not appear as Wellington Store sales.
+POS_SOURCE_NAMES = {
+    "pos",
+    "shopify_pos",
+    "shopify pos",
+    "point of sale",
+    "point_of_sale",
+}
+
+ONLINE_SOURCE_NAMES = {
+    "web",
+    "online_store",
+    "online store",
+    "shopify_draft_order",
+    "draft order",
+    "draft_orders",
+    "marketplace connect",
+}
+
+
 
 def request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
     last_response = None
@@ -367,7 +391,7 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
             "id,created_at,total_price,current_total_price,"
             "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
             "total_discounts,current_total_discounts,total_shipping_price_set,"
-            "shipping_lines,source_name,financial_status,line_items,refunds,"
+            "shipping_lines,source_name,app_id,financial_status,line_items,refunds,"
             "location_id,fulfillments,customer,email,currency,cancelled_at,test"
         ),
     }
@@ -395,144 +419,96 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
 
 
 
-def get_orders_updated_for_refunds(brand: str, store: str, token: str, year: int) -> list[dict]:
-    """
-    Shopify's Analytics total sales breakdown attributes Returns to the refund date,
-    not always to the original order created month. This pulls orders updated in the
-    year so refunds created during the year can be allocated to the correct month.
-    """
-    start_date = f"{year}-01-01T00:00:00Z"
-    end_date = f"{year}-12-31T23:59:59Z"
-
-    url = f"https://{store}/admin/api/{API_VERSION}/orders.json"
-
-    headers = {
-        "X-Shopify-Access-Token": token,
-        "Content-Type": "application/json",
-    }
-
-    params = {
-        "status": "any",
-        "updated_at_min": start_date,
-        "updated_at_max": end_date,
-        "limit": 250,
-        "fields": "id,updated_at,refunds,test",
-    }
-
-    orders = []
-
-    while url:
-        response = request_with_retry("GET", url, headers=headers, params=params)
-        payload = response.json()
-        orders.extend(payload.get("orders", []))
-
-        link_header = response.headers.get("Link", "")
-        next_url = None
-
-        if 'rel="next"' in link_header:
-            for part in link_header.split(","):
-                if 'rel="next"' in part:
-                    next_url = part.split(";")[0].strip().strip("<>")
-
-        url = next_url
-        params = None
-
-    return orders
+def chunked(values: list, size: int) -> list[list]:
+    return [values[index:index + size] for index in range(0, len(values), size)]
 
 
-def get_refund_line_items_amount(refund: dict) -> float:
-    total_returns = 0.0
-
-    for refund_line_item in refund.get("refund_line_items", []) or []:
-        subtotal_set = refund_line_item.get("subtotal_set") or {}
-        shop_money = subtotal_set.get("shop_money") or {}
-
-        if shop_money.get("amount") is not None:
-            total_returns += abs(money(shop_money.get("amount")))
-        else:
-            total_returns += abs(money(refund_line_item.get("subtotal")))
-
-    return total_returns
-
-
-def get_refund_date_returns_monthly(brand: str, store: str, token: str, year: int) -> dict[str, float]:
-    monthly = {str(month).zfill(2): 0.0 for month in range(1, 13)}
-
-    try:
-        orders = get_orders_updated_for_refunds(brand=brand, store=store, token=token, year=year)
-    except Exception as exc:
-        print(f"{brand} {year}: refund-date returns unavailable: {exc}")
-        return monthly
+def get_variant_ids_from_orders(orders: list[dict]) -> list[str]:
+    ids = set()
 
     for order in orders:
-        if order.get("test") is True:
+        for item in order.get("line_items", []) or []:
+            variant_id = item.get("variant_id")
+
+            if variant_id:
+                ids.add(str(variant_id))
+
+    return sorted(ids)
+
+
+def get_variant_unit_costs(store: str, token: str, orders: list[dict]) -> dict[str, float]:
+    """
+    REST Orders do not include product cost. For Wellington/POS rows we enrich
+    COGS from ProductVariant.inventoryItem.unitCost through GraphQL.
+    """
+    variant_ids = get_variant_ids_from_orders(orders)
+
+    if not variant_ids:
+        return {}
+
+    query = """
+    query VariantCosts($ids: [ID!]!) {
+      nodes(ids: $ids) {
+        ... on ProductVariant {
+          id
+          legacyResourceId
+          inventoryItem {
+            unitCost {
+              amount
+            }
+          }
+        }
+      }
+    }
+    """
+
+    costs = {}
+
+    for batch in chunked(variant_ids, 100):
+        gids = [f"gid://shopify/ProductVariant/{variant_id}" for variant_id in batch]
+
+        try:
+            data = graphql_request(
+                store=store,
+                token=token,
+                query=query,
+                variables={"ids": gids},
+            )
+        except Exception as exc:
+            print(f"Shopify variant COGS lookup failed for {len(batch)} variants: {exc}")
             continue
 
-        for refund in order.get("refunds", []) or []:
-            created_at = refund.get("created_at") or refund.get("processed_at") or ""
-
-            if not created_at.startswith(str(year)):
+        for node in (data.get("data", {}) or {}).get("nodes", []) or []:
+            if not node:
                 continue
 
-            month = created_at[5:7] if len(created_at) >= 7 else ""
+            legacy_id = str(node.get("legacyResourceId") or "")
+            inventory_item = node.get("inventoryItem") or {}
+            unit_cost = inventory_item.get("unitCost") or {}
+            amount = money(unit_cost.get("amount"))
 
-            if month in monthly:
-                monthly[month] += get_refund_line_items_amount(refund)
+            if legacy_id:
+                costs[legacy_id] = amount
 
-    print(
-        f"{brand} {year}: refund-date returns total="
-        f"{round(sum(monthly.values()), 2)}"
-    )
-
-    return monthly
+    return costs
 
 
-def override_returns_with_refund_date(rows: list[dict], brand: str, store: str, token: str, year: int) -> list[dict]:
-    """
-    Align Returns/Net Sales/Total Sales with Shopify Analytics' total sales breakdown
-    when a refund was processed in the selected month for an order from a different
-    created month. This is the usual cause of small month-only differences.
-    """
-    returns_by_month = get_refund_date_returns_monthly(brand=brand, store=store, token=token, year=year)
+def is_pos_order(order: dict) -> bool:
+    source_name = str(order.get("source_name") or "").strip().lower()
 
-    for row in rows:
-        month = str(row.get("month", "")).zfill(2)
+    if source_name in POS_SOURCE_NAMES:
+        return True
 
-        if month not in returns_by_month:
-            continue
+    return "pos" in source_name or "point of sale" in source_name
 
-        refund_date_returns = float(returns_by_month.get(month) or 0)
-        current_returns = float(row.get("returns") or 0)
 
-        # Only override when refund-date data exists. Months with no refunds stay 0.
-        # This keeps ShopifyQL values intact when they are already aligned.
-        if refund_date_returns != current_returns:
-            row["returns"] = refund_date_returns
-            row["discounts_returns"] = float(row.get("discounts") or 0) + refund_date_returns
-            row["discounts_returns_pct"] = (
-                row["discounts_returns"] / float(row.get("gross_sales") or 0)
-                if float(row.get("gross_sales") or 0)
-                else 0
-            )
-            row["net_sales"] = (
-                float(row.get("gross_sales") or 0)
-                - float(row.get("discounts") or 0)
-                - refund_date_returns
-            )
-            row["total_sales"] = (
-                float(row.get("net_sales") or 0)
-                + float(row.get("shipping_charges") or 0)
-                + float(row.get("taxes") or 0)
-            )
-            row["gross_profit_1"] = float(row.get("net_sales") or 0) - float(row.get("cogs") or 0)
-            row["gross_margin_1"] = (
-                row["gross_profit_1"] / float(row.get("net_sales") or 0)
-                if float(row.get("net_sales") or 0)
-                else 0
-            )
-            row["returns_source"] = "refund_date"
+def is_online_order(order: dict) -> bool:
+    source_name = str(order.get("source_name") or "").strip().lower()
 
-    return rows
+    if source_name in ONLINE_SOURCE_NAMES:
+        return True
+
+    return "online" in source_name or source_name == "web"
 
 
 def get_shipping_refund_amount(order: dict) -> float:
@@ -723,18 +699,39 @@ def attach_order_activity_metrics(rows: list[dict], orders: list[dict]) -> list[
     return rows
 
 
-def get_cogs(order: dict) -> float:
-    cogs = 0.0
+def get_cogs(order: dict, variant_unit_costs: dict[str, float] | None = None) -> float:
+    variant_unit_costs = variant_unit_costs or {}
+    raw_cogs = 0.0
 
     for item in order.get("line_items", []) or []:
         quantity = money(item.get("quantity"))
-        cost = money(item.get("cost") or item.get("unit_cost"))
-        cogs += quantity * cost
+        variant_id = str(item.get("variant_id") or "")
 
-    return cogs
+        cost = money(
+            item.get("cost")
+            or item.get("unit_cost")
+            or variant_unit_costs.get(variant_id)
+        )
+
+        raw_cogs += quantity * cost
+
+    # Match the commission/report logic: reduce COGS proportionally when returns
+    # reduce net sales, so refunded items do not keep full COGS in margin.
+    gross_sales = get_gross_sales(order)
+    discounts = abs(money(order.get("total_discounts")))
+    returns = get_return_amount(order)
+    net_before_returns = max(gross_sales - discounts, 0)
+    net_after_returns = max(net_before_returns - returns, 0)
+
+    if net_before_returns > 0:
+        cogs_factor = max(0, min(1, net_after_returns / net_before_returns))
+    else:
+        cogs_factor = 0
+
+    return raw_cogs * cogs_factor
 
 
-def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[dict]:
+def normalize_shopify_orders(brand: str, orders: list[dict], year: int, variant_unit_costs: dict[str, float] | None = None) -> list[dict]:
     rows = []
 
     for order in orders:
@@ -759,7 +756,7 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int) -> list[
         units_sold = get_units_sold(order)
         customer_id = get_customer_id(order)
 
-        cogs = get_cogs(order)
+        cogs = get_cogs(order, variant_unit_costs=variant_unit_costs)
         gross_profit_1 = net_sales - cogs
         gross_margin_1 = gross_profit_1 / net_sales if net_sales else 0
 
@@ -828,6 +825,33 @@ def order_matches_location(order: dict, location_id: str) -> bool:
     return False
 
 
+def order_matches_wellington_store(order: dict, location_id: str) -> bool:
+    """
+    Wellington Store is not the same thing as Wellington warehouse fulfillment.
+
+    The earlier location-only filter captured online orders shipped from the
+    Wellington warehouse, which inflated Total Sales and showed Shipping.
+    This stricter filter keeps only orders that:
+    - belong to the Wellington location,
+    - come from Shopify POS / Point of Sale,
+    - do not have online/web source_name,
+    - have zero collected shipping.
+    """
+    if not order_matches_location(order, location_id=location_id):
+        return False
+
+    if is_online_order(order):
+        return False
+
+    if not is_pos_order(order):
+        return False
+
+    if get_shipping_amount(order) > 0.01:
+        return False
+
+    return True
+
+
 def get_shopify_location_rows(
     view_name: str,
     parent_brand: str,
@@ -838,20 +862,38 @@ def get_shopify_location_rows(
     location_name: str,
 ) -> list[dict]:
     """
-    Builds a Wellington location view from the existing Shopify stores.
+    Builds the Wellington Store view.
 
-    Wellington is not a new brand/store. It is identified by Shopify location_id.
-    These rows use brand=view_name only so the existing dashboard filter can show it
-    as a separate view without adding a new API credential.
+    Important:
+    - Wellington is a location/store split inside Corro only.
+    - It should not include Cavali.
+    - It should not include online orders merely fulfilled from Wellington warehouse.
+    - It should have COGS enriched from variant inventoryItem.unitCost.
     """
+    if str(parent_brand).lower() != WELLINGTON_PARENT_BRAND.lower():
+        print(f"{parent_brand} {year}: {view_name} skipped. Wellington is Corro only.")
+        return []
+
     orders = get_orders(brand=parent_brand, store=store, token=token, year=year)
+
+    location_only_count = sum(
+        1 for order in orders
+        if order_matches_location(order, location_id=location_id)
+    )
+
     location_orders = [
         order for order in orders
-        if order_matches_location(order, location_id=location_id)
+        if order_matches_wellington_store(order, location_id=location_id)
     ]
 
-    # Keep the real brand as Corro/Cavali. Wellington is a second filter, not a brand.
-    rows = normalize_shopify_orders(brand=parent_brand, orders=location_orders, year=year)
+    variant_unit_costs = get_variant_unit_costs(store=store, token=token, orders=location_orders)
+
+    rows = normalize_shopify_orders(
+        brand=parent_brand,
+        orders=location_orders,
+        year=year,
+        variant_unit_costs=variant_unit_costs,
+    )
 
     for row in rows:
         row["view_type"] = "location"
@@ -859,11 +901,17 @@ def get_shopify_location_rows(
         row["location_filter"] = view_name
         row["location_id"] = str(location_id)
         row["location_name"] = location_name
-        row["channel"] = location_name or view_name or "Wellington"
+        row["channel"] = "Point of Sale / Wellington"
+
+        # By definition this view is store/POS. If Shopify still returns a tiny
+        # shipping value, keep it out of the Wellington Store financial view.
+        row["shipping_charges"] = 0.0
+        row["total_sales"] = row["net_sales"] + row["taxes"]
 
     print(
-        f"{parent_brand} {year}: {view_name} location orders "
-        f"matched={len(location_orders)} location_id={location_id}"
+        f"{parent_brand} {year}: {view_name} store/POS orders matched={len(location_orders)} "
+        f"(location-only before POS/shipping filter={location_only_count}) "
+        f"location_id={location_id}"
     )
 
     return rows
@@ -1028,7 +1076,13 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
 
         orders = get_orders(brand=brand, store=store, token=token, year=year)
         print(f"{brand} Shopify orders: {len(orders)}")
-        rows = normalize_shopify_orders(brand=brand, orders=orders, year=year)
+        variant_unit_costs = get_variant_unit_costs(store=store, token=token, orders=orders)
+        rows = normalize_shopify_orders(
+            brand=brand,
+            orders=orders,
+            year=year,
+            variant_unit_costs=variant_unit_costs,
+        )
 
     # Orders API is still needed for operational KPIs that are not reliably
     # exposed in the sales ShopifyQL table: units sold, customers, new customers,
@@ -1038,7 +1092,6 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
         print(f"{brand} {year}: order activity rows for operational KPIs: {len(orders)}")
 
     rows = attach_order_activity_metrics(rows, orders)
-    rows = override_returns_with_refund_date(rows, brand=brand, store=store, token=token, year=year)
 
     checkout_funnel_by_month = get_checkout_funnel_monthly(
         brand=brand,
