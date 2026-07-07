@@ -42,12 +42,11 @@ def run():
             except Exception as exc:
                 print(f"Shopify error for {brand} {year}: {exc}")
 
-            # Wellington is a Shopify location, not a separate store.
-            # We scan each existing Shopify store and keep only orders that match the Wellington location id.
-            if config.WELLINGTON_LOCATION_ID:
+            # Wellington is a Corro POS/store split, not a warehouse split and not Cavali.
+            if config.WELLINGTON_LOCATION_ID and brand == "Corro":
                 try:
                     print(
-                        f"Extracting Wellington location data from {brand} "
+                        f"Extracting Wellington POS/store data from Corro "
                         f"for location {config.WELLINGTON_LOCATION_ID}..."
                     )
                     wellington_rows = get_shopify_location_rows(
@@ -60,9 +59,9 @@ def run():
                         location_name=str(config.WELLINGTON_LOCATION_NAME),
                     )
                     all_shopify_rows.extend(wellington_rows)
-                    print(f"{brand} Wellington rows: {len(wellington_rows)}")
+                    print(f"Corro Wellington rows: {len(wellington_rows)}")
                 except Exception as exc:
-                    print(f"Wellington location error for {brand} {year}: {exc}")
+                    print(f"Wellington POS/store error for Corro {year}: {exc}")
 
         if config.QB_CLIENT_ID and config.QB_CLIENT_SECRET and config.QB_REFRESH_TOKEN:
             try:
