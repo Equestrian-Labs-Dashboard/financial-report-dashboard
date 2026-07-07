@@ -885,9 +885,9 @@
       Q3: "Q3 · Jul–Sep", Q4: "Q4 · Oct–Dec"
     };
 
-    const ESTIMATED_ANNUAL_OPEX = {
-      Corro: 100000,
-      Cavali: 17500
+    const ESTIMATED_OPEX_RULES = {
+      Corro: { amount: 100000, period: "monthly" },
+      Cavali: { amount: 17500, period: "quarterly" }
     };
 
     function rowHasFinancialActivity(row) {
@@ -909,7 +909,19 @@
       }
 
       const brand = row.brand || "";
-      return Number(ESTIMATED_ANNUAL_OPEX[brand] || 0) / 12;
+      const rule = ESTIMATED_OPEX_RULES[brand];
+
+      if (!rule) return 0;
+
+      if (rule.period === "monthly") {
+        return Number(rule.amount || 0);
+      }
+
+      if (rule.period === "quarterly") {
+        return Number(rule.amount || 0) / 3;
+      }
+
+      return 0;
     }
 
     function estimatedNoiForRow(row) {
@@ -1153,7 +1165,9 @@
         net_sales: 0,
         cogs: 0,
         gross_profit_1: 0,
+        shipping_cost: 0,
         gross_profit_2: 0,
+        ads_stats_spend: 0,
         gross_profit_3: 0,
         estimated_average_opex: 0,
         estimated_net_operating_income: 0,
@@ -1182,7 +1196,9 @@
         result.net_sales += Number(row.net_sales || 0);
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
+        result.shipping_cost += Number(row.shipping_cost || row.applied_shipping || 0);
         result.gross_profit_2 += Number(row.gross_profit_2 || 0);
+        result.ads_stats_spend += Number(row.ads_stats_spend || row.marketing_allocated || 0);
         result.gross_profit_3 += Number(row.gross_profit_3 || 0);
 
         // Use JSON values if they exist; otherwise calculate provisional OPEX live.
@@ -1290,9 +1306,9 @@
         <div class="kpi-card positive"><div class="kpi-label">Net Sales</div><div class="kpi-value">${compactMoney(totals.net_sales)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Gross - Deductions</div></div>
         <div class="kpi-card negative"><div class="kpi-label">COGS</div><div class="kpi-value">${compactMoney(totals.cogs)}</div><div class="kpi-chip red">Cost</div><div class="kpi-note">Product cost</div></div>
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 1</div><div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">Net Sales - COGS</div></div>
-        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping (QB)</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping Cost</div></div>
 
-        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - Marketing</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - Ads / Stats</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Net / Gross Ratio</div><div class="kpi-value">${percent(totals.net_gross_ratio)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Gross Sales</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Checkout Abandonment</div><div class="kpi-value">${percent(totals.checkout_abandonment_rate)}</div><div class="kpi-chip">ShopifyQL</div><div class="kpi-note">Reached - Completed / Reached</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Gross Margin 1</div><div class="kpi-value">${percent(totals.gross_margin_1)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP1 / Net Sales</div></div>
@@ -1320,7 +1336,9 @@
             net_sales: 0,
             cogs: 0,
             gross_profit_1: 0,
+            shipping_cost: 0,
             gross_profit_2: 0,
+            ads_stats_spend: 0,
             gross_profit_3: 0,
             estimated_average_opex: 0,
             estimated_net_operating_income: 0,
@@ -1348,7 +1366,9 @@
         grouped[month].net_sales += Number(row.net_sales || 0);
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
+        grouped[month].shipping_cost += Number(row.shipping_cost || row.applied_shipping || 0);
         grouped[month].gross_profit_2 += Number(row.gross_profit_2 || 0);
+        grouped[month].ads_stats_spend += Number(row.ads_stats_spend || row.marketing_allocated || 0);
         grouped[month].gross_profit_3 += Number(row.gross_profit_3 || 0);
 
         const jsonOpex = Number(row.estimated_average_opex || 0);
@@ -1505,8 +1525,10 @@
         { key: "cogs", label: "COGS", formatter: money },
         { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
         { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent },
+        { key: "shipping_cost", label: "Shipping Cost", formatter: money },
         { key: "gross_profit_2", label: "Gross Profit 2", formatter: money },
         { key: "gross_margin_2", label: "Gross Margin 2 (GM2)", formatter: percent },
+        { key: "ads_stats_spend", label: "Ads / Stats", formatter: money },
         { key: "gross_profit_3", label: "Gross Profit 3", formatter: money },
         { key: "gross_margin_3", label: "Gross Margin 3 (GM3)", formatter: percent },
         { key: "estimated_average_opex", label: "Estimated Average OPEX", formatter: money },
