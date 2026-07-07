@@ -158,8 +158,15 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
                 result.at[i, "marketing_allocated"] = marketing_total * proportion
 
-    result.loc[location_mask, "applied_shipping"] = result.loc[location_mask, "shipping_charges"]
+    # Wellington/location views should not include shipping or Ads / Stats unless
+    # an approved Wellington-specific campaign is added later.
+    result.loc[location_mask, "shipping_charges"] = 0.0
+    result.loc[location_mask, "applied_shipping"] = 0.0
     result.loc[location_mask, "marketing_allocated"] = 0.0
+
+    # Cavali should not deduct Ads / Stats in this view for now.
+    cavali_mask = result["brand"].astype(str).str.lower().eq("cavali") & result["view_type"].eq("brand")
+    result.loc[cavali_mask, "marketing_allocated"] = 0.0
 
     # Keep these visible in the financial table.
     # Shipping Cost sits under GM1 and is the adjustment used to get GP2.
