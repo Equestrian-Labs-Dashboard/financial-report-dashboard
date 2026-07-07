@@ -699,6 +699,47 @@ def attach_order_activity_metrics(rows: list[dict], orders: list[dict]) -> list[
     return rows
 
 
+
+def attach_order_cost_metrics(
+    rows: list[dict],
+    orders: list[dict],
+    variant_unit_costs: dict[str, float] | None = None,
+) -> list[dict]:
+    """
+    Enriches ShopifyQL monthly rows with COGS from Orders API + ProductVariant.inventoryItem.unitCost.
+    """
+    variant_unit_costs = variant_unit_costs or {}
+    monthly_cogs = {str(month).zfill(2): 0.0 for month in range(1, 13)}
+
+    for order in orders:
+        if order.get("test") is True:
+            continue
+
+        created_at = order.get("created_at", "")
+        month = created_at[5:7] if len(created_at) >= 7 else ""
+
+        if month in monthly_cogs:
+            monthly_cogs[month] += get_cogs(order, variant_unit_costs=variant_unit_costs)
+
+    total_cogs = sum(monthly_cogs.values())
+    print(f"Order API COGS enrichment total={round(total_cogs, 2)}")
+
+    for row in rows:
+        month = str(row.get("month", "")).zfill(2)
+        enriched_cogs = monthly_cogs.get(month, 0.0)
+
+        if enriched_cogs > 0 and money(row.get("cogs")) <= 0:
+            row["cogs"] = enriched_cogs
+            row["gross_profit_1"] = money(row.get("net_sales")) - enriched_cogs
+            row["gross_margin_1"] = (
+                row["gross_profit_1"] / money(row.get("net_sales"))
+                if money(row.get("net_sales"))
+                else 0
+            )
+
+    return rows
+
+
 def get_cogs(order: dict, variant_unit_costs: dict[str, float] | None = None) -> float:
     variant_unit_costs = variant_unit_costs or {}
     raw_cogs = 0.0
@@ -804,6 +845,251 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int, variant_
 
 
 
+
+def gql_money(value) -> float:
+    if value is None:
+        return 0.0
+
+    if isinstance(value, (int, float, str)):
+        return money(value)
+
+    if isinstance(value, dict):
+        if "amount" in value:
+            return money(value.get("amount"))
+
+        shop_money = value.get("shopMoney") or value.get("shop_money") or {}
+        if isinstance(shop_money, dict) and "amount" in shop_money:
+            return money(shop_money.get("amount"))
+
+    return 0.0
+
+
+def gql_edges_nodes(connection: dict | None) -> list[dict]:
+    if not connection:
+        return []
+
+    if isinstance(connection.get("nodes"), list):
+        return connection.get("nodes") or []
+
+    return [
+        (edge or {}).get("node")
+        for edge in (connection.get("edges") or [])
+        if (edge or {}).get("node")
+    ]
+
+
+def get_refund_subtotal_by_line_item_id(order: dict) -> dict[str, float]:
+    refund_map = {}
+
+    for refund in order.get("refunds", []) or []:
+        for refund_line in gql_edges_nodes(refund.get("refundLineItems")):
+            line_item = refund_line.get("lineItem") or {}
+            line_id = line_item.get("id")
+            if not line_id:
+                continue
+
+            refund_map[line_id] = refund_map.get(line_id, 0.0) + abs(
+                gql_money(refund_line.get("subtotalSet"))
+            )
+
+    return refund_map
+
+
+def is_wellington_name(name: str, location_name: str) -> bool:
+    clean = str(name or "").lower()
+    target = str(location_name or "").lower()
+    return "wellington" in clean or (target and target in clean)
+
+
+def graphql_order_has_wellington_evidence(order: dict, location_name: str) -> bool:
+    physical_location = order.get("physicalLocation") or {}
+    if is_wellington_name(physical_location.get("name"), location_name):
+        return True
+
+    for fulfillment in order.get("fulfillments", []) or []:
+        location = fulfillment.get("location") or {}
+        if is_wellington_name(location.get("name"), location_name):
+            return True
+
+    return False
+
+
+def graphql_order_source_name(order: dict) -> str:
+    source_name = str(order.get("sourceName") or "").strip().lower()
+    app = order.get("app") or {}
+    app_name = str(app.get("name") or "").strip().lower()
+    return f"{source_name} {app_name}".strip()
+
+
+def graphql_order_is_online(order: dict) -> bool:
+    source = graphql_order_source_name(order)
+    return any(name in source for name in ONLINE_SOURCE_NAMES) or "online" in source or source == "web"
+
+
+def graphql_order_is_pos(order: dict) -> bool:
+    source = graphql_order_source_name(order)
+    return any(name in source for name in POS_SOURCE_NAMES) or "pos" in source or "point of sale" in source
+
+
+def graphql_shipping_amount(order: dict) -> float:
+    return gql_money(order.get("totalShippingPriceSet"))
+
+
+def fetch_wellington_graphql_orders(store: str, token: str, year: int, location_id: str) -> list[dict]:
+    query = """
+    query WellingtonOrders($first: Int!, $after: String, $query: String!) {
+      orders(first: $first, after: $after, query: $query, sortKey: CREATED_AT) {
+        nodes {
+          id
+          name
+          createdAt
+          tags
+          sourceName
+          app { name }
+          physicalLocation { name }
+          cancelledAt
+          test
+          totalShippingPriceSet { shopMoney { amount } }
+          currentTotalTaxSet { shopMoney { amount } }
+          lineItems(first: 100) {
+            nodes {
+              id
+              title
+              quantity
+              originalTotalSet { shopMoney { amount } }
+              totalDiscountSet { shopMoney { amount } }
+              discountedTotalSet { shopMoney { amount } }
+              variant {
+                id
+                inventoryItem {
+                  unitCost { amount }
+                }
+              }
+            }
+          }
+          refunds(first: 100) {
+            refundLineItems(first: 100) {
+              nodes {
+                subtotalSet { shopMoney { amount } }
+                lineItem { id }
+              }
+            }
+          }
+          fulfillments(first: 20) {
+            location { name }
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+    """
+
+    search_query = (
+        f"location_id:{location_id} status:any "
+        f"created_at:>={year}-01-01 created_at:<={year}-12-31"
+    )
+
+    orders = []
+    after = None
+
+    while True:
+        data = graphql_request(
+            store=store,
+            token=token,
+            query=query,
+            variables={"first": 50, "after": after, "query": search_query},
+        )
+
+        connection = (data.get("data") or {}).get("orders") or {}
+        orders.extend(connection.get("nodes") or [])
+
+        page_info = connection.get("pageInfo") or {}
+        if not page_info.get("hasNextPage"):
+            break
+
+        after = page_info.get("endCursor")
+
+    return orders
+
+
+def graphql_order_to_wellington_row(order: dict, parent_brand: str, year: int, location_id: str, location_name: str) -> dict:
+    month = str(order.get("createdAt") or "")[5:7]
+    refund_map = get_refund_subtotal_by_line_item_id(order)
+
+    gross_sales = 0.0
+    discounts = 0.0
+    returns = 0.0
+    net_sales = 0.0
+    cogs = 0.0
+    units = 0.0
+
+    for item in gql_edges_nodes(order.get("lineItems")):
+        quantity = money(item.get("quantity"))
+        gross = gql_money(item.get("originalTotalSet"))
+        discount = abs(gql_money(item.get("totalDiscountSet")))
+        net_before_returns = gql_money(item.get("discountedTotalSet"))
+        line_return = abs(refund_map.get(item.get("id"), 0.0))
+        net = max(net_before_returns - line_return, 0.0)
+
+        variant = item.get("variant") or {}
+        inventory_item = variant.get("inventoryItem") or {}
+        unit_cost = gql_money(inventory_item.get("unitCost") or {})
+        raw_cogs = unit_cost * max(quantity, 0)
+
+        cogs_factor = net / net_before_returns if net_before_returns > 0 else 0
+        cogs_factor = max(0, min(1, cogs_factor))
+
+        gross_sales += gross
+        discounts += discount
+        returns += line_return
+        net_sales += net
+        cogs += raw_cogs * cogs_factor
+        units += quantity
+
+    taxes = gql_money(order.get("currentTotalTaxSet"))
+    shipping = 0.0
+    total_sales = net_sales + taxes
+    discounts_returns = discounts + returns
+    gross_profit_1 = net_sales - cogs
+
+    return {
+        "brand": parent_brand,
+        "year": int(year),
+        "month": month,
+        "channel": "Point of Sale / Wellington",
+        "view_type": "location",
+        "parent_brand": parent_brand,
+        "location_filter": "Wellington",
+        "location_id": str(location_id),
+        "location_name": location_name,
+        "total_sales": total_sales,
+        "gross_sales": gross_sales,
+        "discounts": discounts,
+        "returns": returns,
+        "discounts_returns": discounts_returns,
+        "discounts_returns_pct": discounts_returns / gross_sales if gross_sales else 0,
+        "shipping_charges": shipping,
+        "taxes": taxes,
+        "net_sales": net_sales,
+        "cogs": cogs,
+        "gross_profit_1": gross_profit_1,
+        "gross_margin_1": gross_profit_1 / net_sales if net_sales else 0,
+        "transactions": 1,
+        "orders": 1,
+        "units_sold": units,
+        "customers": 0,
+        "new_customers": 0,
+        "returning_customers": 0,
+        "sessions_reached_checkout": 0,
+        "sessions_completed_checkout": 0,
+        "checkout_abandonments": 0,
+        "checkout_abandonment_rate": 0,
+    }
+
+
 def order_matches_location(order: dict, location_id: str) -> bool:
     target = str(location_id)
 
@@ -864,15 +1150,56 @@ def get_shopify_location_rows(
     """
     Builds the Wellington Store view.
 
-    Important:
-    - Wellington is a location/store split inside Corro only.
-    - It should not include Cavali.
-    - It should not include online orders merely fulfilled from Wellington warehouse.
-    - It should have COGS enriched from variant inventoryItem.unitCost.
+    Wellington is Corro-only. It is NOT Cavali and NOT a warehouse-only split.
+    Uses GraphQL line-level data so COGS can come from variant.inventoryItem.unitCost.
     """
     if str(parent_brand).lower() != WELLINGTON_PARENT_BRAND.lower():
         print(f"{parent_brand} {year}: {view_name} skipped. Wellington is Corro only.")
         return []
+
+    try:
+        gql_orders = fetch_wellington_graphql_orders(
+            store=store,
+            token=token,
+            year=year,
+            location_id=str(location_id),
+        )
+
+        location_only_count = len(gql_orders)
+
+        matched_orders = [
+            order for order in gql_orders
+            if not order.get("test")
+            and graphql_order_has_wellington_evidence(order, location_name=location_name)
+            and graphql_order_is_pos(order)
+            and not graphql_order_is_online(order)
+            and graphql_shipping_amount(order) <= 0.01
+        ]
+
+        rows = [
+            graphql_order_to_wellington_row(
+                order,
+                parent_brand=parent_brand,
+                year=year,
+                location_id=str(location_id),
+                location_name=str(location_name),
+            )
+            for order in matched_orders
+        ]
+
+        total_cogs = sum(money(row.get("cogs")) for row in rows)
+        total_sales = sum(money(row.get("total_sales")) for row in rows)
+
+        print(
+            f"{parent_brand} {year}: {view_name} GraphQL POS orders matched={len(matched_orders)} "
+            f"(location-only before POS/shipping filter={location_only_count}) "
+            f"sales={round(total_sales, 2)} cogs={round(total_cogs, 2)}"
+        )
+
+        return rows
+
+    except Exception as exc:
+        print(f"{parent_brand} {year}: Wellington GraphQL extraction failed, using REST fallback: {exc}")
 
     orders = get_orders(brand=parent_brand, store=store, token=token, year=year)
 
@@ -902,16 +1229,16 @@ def get_shopify_location_rows(
         row["location_id"] = str(location_id)
         row["location_name"] = location_name
         row["channel"] = "Point of Sale / Wellington"
-
-        # By definition this view is store/POS. If Shopify still returns a tiny
-        # shipping value, keep it out of the Wellington Store financial view.
         row["shipping_charges"] = 0.0
+        row["shipping_cost"] = 0.0
         row["total_sales"] = row["net_sales"] + row["taxes"]
 
+    total_cogs = sum(money(row.get("cogs")) for row in rows)
+
     print(
-        f"{parent_brand} {year}: {view_name} store/POS orders matched={len(location_orders)} "
+        f"{parent_brand} {year}: {view_name} REST fallback POS orders matched={len(location_orders)} "
         f"(location-only before POS/shipping filter={location_only_count}) "
-        f"location_id={location_id}"
+        f"cogs={round(total_cogs, 2)} location_id={location_id}"
     )
 
     return rows
@@ -1084,13 +1411,12 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
             variant_unit_costs=variant_unit_costs,
         )
 
-    # Orders API is still needed for operational KPIs that are not reliably
-    # exposed in the sales ShopifyQL table: units sold, customers, new customers,
-    # and returning customers.
     if orders is None:
         orders = get_orders(brand=brand, store=store, token=token, year=year)
-        print(f"{brand} {year}: order activity rows for operational KPIs: {len(orders)}")
+        print(f"{brand} {year}: order activity rows for operational KPIs/COGS: {len(orders)}")
 
+    variant_unit_costs = get_variant_unit_costs(store=store, token=token, orders=orders)
+    rows = attach_order_cost_metrics(rows, orders, variant_unit_costs=variant_unit_costs)
     rows = attach_order_activity_metrics(rows, orders)
 
     checkout_funnel_by_month = get_checkout_funnel_monthly(
