@@ -161,9 +161,15 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result.loc[location_mask, "applied_shipping"] = result.loc[location_mask, "shipping_charges"]
     result.loc[location_mask, "marketing_allocated"] = 0.0
 
-    result["gross_profit_2"] = result["gross_profit_1"] - result["applied_shipping"]
+    # Keep these visible in the financial table.
+    # Shipping Cost sits under GM1 and is the adjustment used to get GP2.
+    # Ads / Stats sits under GM2 and is the adjustment used to get GP3.
+    result["shipping_cost"] = result["applied_shipping"]
+    result["ads_stats_spend"] = result["marketing_allocated"]
+
+    result["gross_profit_2"] = result["gross_profit_1"] - result["shipping_cost"]
     result["gross_margin_2"] = (result["gross_profit_2"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
-    result["gross_profit_3"] = result["gross_profit_2"] - result["marketing_allocated"]
+    result["gross_profit_3"] = result["gross_profit_2"] - result["ads_stats_spend"]
     result["gross_margin_3"] = (result["gross_profit_3"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
     result.drop(columns=["applied_shipping", "marketing_allocated"], inplace=True, errors="ignore")
     result = add_estimated_operating_income(result)
@@ -172,9 +178,9 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
 
 
-ESTIMATED_OPEX_BY_BRAND = {
-    "Corro": 100000,
-    "Cavali": 17500,
+ESTIMATED_OPEX_RULES = {
+    "Corro": {"amount": 100000, "period": "monthly"},
+    "Cavali": {"amount": 17500, "period": "quarterly"},
 }
 
 
@@ -182,9 +188,9 @@ def add_estimated_operating_income(df):
     """
     Adds provisional operating estimates after GP3/GM3.
 
-    Values are annual estimates spread evenly by month:
-    - Corro: 100,000 / year
-    - Cavali: 17,500 / year
+    Current provisional rules:
+    - Corro: 100,000 per month
+    - Cavali: 17,500 per quarter, allocated as 17,500 / 3 per month
     - Wellington/location rows: 0, so location view does not double-count brand OPEX.
     """
     if df.empty:
@@ -198,8 +204,28 @@ def add_estimated_operating_income(df):
         if view_type == "location":
             return 0.0
 
+        has_activity = (
+            _safe_float(row.get("total_sales")) != 0 or
+            _safe_float(row.get("gross_sales")) != 0 or
+            _safe_float(row.get("net_sales")) != 0
+        )
+        if not has_activity:
+            return 0.0
+
         brand = str(row.get("brand", ""))
-        return ESTIMATED_OPEX_BY_BRAND.get(brand, 0) / 12
+        rule = ESTIMATED_OPEX_RULES.get(brand)
+        if not rule:
+            return 0.0
+
+        amount = _safe_float(rule.get("amount"))
+        period = str(rule.get("period"))
+
+        if period == "monthly":
+            return amount
+        if period == "quarterly":
+            return amount / 3
+
+        return 0.0
 
     df["estimated_average_opex"] = df.apply(monthly_opex, axis=1)
     df["estimated_net_operating_income"] = df["gross_profit_3"] - df["estimated_average_opex"]
@@ -239,6 +265,10 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
     years_available = sorted([int(year) for year in shopify_df["year"].dropna().unique().tolist() if int(year) > 0])
 
     for frame in [shopify_by_brand_year, shopify_by_brand_month]:
+        if "shipping_cost" not in frame.columns:
+            frame["shipping_cost"] = 0
+        if "ads_stats_spend" not in frame.columns:
+            frame["ads_stats_spend"] = 0
         if "estimated_average_opex" not in frame.columns:
             frame["estimated_average_opex"] = 0
             frame["estimated_net_operating_income"] = frame.get("gross_profit_3", 0)
