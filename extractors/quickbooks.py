@@ -7,9 +7,22 @@ from urllib.parse import quote
 
 import requests
 
-QB_API_BASE = "https://quickbooks.api.intuit.com"
 QB_TOKEN_URL = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer"
 QB_MINOR_VERSION = os.getenv("QB_MINOR_VERSION", "75")
+
+# IMPORTANT:
+# This project is using Intuit Development/Sandbox credentials.
+# Sandbox access tokens must call the sandbox base URL. If we call the production
+# base URL with a sandbox token, QuickBooks returns HTTP 403:
+# ApplicationAuthorizationFailed / errorCode=003100.
+QB_ENVIRONMENT = os.getenv("QB_ENVIRONMENT", "sandbox").strip().lower()
+QB_API_BASE = os.getenv("QB_API_BASE", "").strip()
+
+if not QB_API_BASE:
+    if QB_ENVIRONMENT in {"prod", "production", "live"}:
+        QB_API_BASE = "https://quickbooks.api.intuit.com"
+    else:
+        QB_API_BASE = "https://sandbox-quickbooks.api.intuit.com"
 
 DEFAULT_SHIPPING_KEYWORDS = [
     "shipping",
@@ -304,6 +317,7 @@ def get_qb_shipping_costs(
         print("QuickBooks shipping skipped: missing credentials.")
         return result
 
+    print(f"QuickBooks API base URL: {QB_API_BASE}")
     access_token = refresh_access_token(client_id, client_secret, refresh_token)
 
     for month in range(1, 13):
