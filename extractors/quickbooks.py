@@ -53,6 +53,33 @@ DEFAULT_EXCLUDE_KEYWORDS = [
     "revenue",
 ]
 
+# Emergency/demo fallback for the QuickBooks sandbox. Some sandbox companies do
+# not have an account literally named Shipping/Postage/Freight. In that case we
+# still need to prove the dashboard is reading QuickBooks expense data, so we can
+# map common expense accounts used in the sandbox. Override or disable this with
+# GitHub secrets/vars if needed:
+#   QB_SHIPPING_COST_FALLBACK_KEYWORDS=automobile,delivery,freight
+#   QB_ALLOW_SHIPPING_COST_FALLBACK=false
+DEFAULT_FALLBACK_KEYWORDS = [
+    "automobile",
+    "auto",
+    "vehicle",
+    "car",
+    "truck",
+    "fuel",
+    "gas",
+    "mileage",
+    "freight",
+    "delivery",
+    "postage",
+    "courier",
+    "shipping",
+    "ship",
+    "carrier",
+    "fulfillment",
+    "fulfilment",
+]
+
 
 def _empty_months() -> dict[str, float]:
     return {f"{month:02d}": 0.0 for month in range(1, 13)}
@@ -91,6 +118,23 @@ def _is_shipping_cost_label(label: str) -> bool:
     if any(item in clean for item in exclude):
         return False
 
+    return any(item in clean for item in keywords)
+
+
+def _allow_fallback() -> bool:
+    return os.getenv("QB_ALLOW_SHIPPING_COST_FALLBACK", "true").strip().lower() not in {"0", "false", "no", "off"}
+
+
+def _is_shipping_cost_fallback_label(label: str) -> bool:
+    clean = _normalize(label)
+    if not clean:
+        return False
+
+    exclude = _keyword_list("QB_SHIPPING_COST_EXCLUDE_KEYWORDS", DEFAULT_EXCLUDE_KEYWORDS)
+    if any(item in clean for item in exclude):
+        return False
+
+    keywords = _keyword_list("QB_SHIPPING_COST_FALLBACK_KEYWORDS", DEFAULT_FALLBACK_KEYWORDS)
     return any(item in clean for item in keywords)
 
 
@@ -186,24 +230,28 @@ def _row_label(row: dict) -> str:
     return " | ".join(parts)
 
 
-def _walk_report_rows(rows: list[dict], matches: list[tuple[str, float]]) -> None:
+def _walk_report_rows(
+    rows: list[dict],
+    matches: list[tuple[str, float]],
+    matcher=_is_shipping_cost_label,
+) -> None:
     for row in rows or []:
         label = _row_label(row)
 
-        # If this row itself has an amount and matches the shipping account name, use it.
+        # If this row itself has an amount and matches the account name, use it.
         amount = _report_col_amount(row.get("ColData") or [])
-        if label and amount and _is_shipping_cost_label(label):
+        if label and amount and matcher(label):
             matches.append((label, abs(amount)))
 
         # Walk nested rows recursively.
         nested = ((row.get("Rows") or {}).get("Row") or [])
         if nested:
-            _walk_report_rows(nested, matches)
+            _walk_report_rows(nested, matches, matcher=matcher)
 
 
-def get_shipping_from_profit_and_loss(access_token: str, realm_id: str, year: int, month: int) -> tuple[float, list[str]]:
+def _get_profit_and_loss_report(access_token: str, realm_id: str, year: int, month: int) -> dict:
     start_date, end_date = _month_date_range(year, month)
-    data = qb_get(
+    return qb_get(
         access_token=access_token,
         realm_id=realm_id,
         path=f"/v3/company/{realm_id}/reports/ProfitAndLoss",
@@ -215,8 +263,22 @@ def get_shipping_from_profit_and_loss(access_token: str, realm_id: str, year: in
         },
     )
 
+
+def get_shipping_from_profit_and_loss(access_token: str, realm_id: str, year: int, month: int) -> tuple[float, list[str]]:
+    data = _get_profit_and_loss_report(access_token, realm_id, year, month)
     matches: list[tuple[str, float]] = []
     _walk_report_rows(((data.get("Rows") or {}).get("Row") or []), matches)
+    return sum(amount for _, amount in matches), [f"{label}={round(amount, 2)}" for label, amount in matches]
+
+
+def get_shipping_fallback_from_profit_and_loss(access_token: str, realm_id: str, year: int, month: int) -> tuple[float, list[str]]:
+    data = _get_profit_and_loss_report(access_token, realm_id, year, month)
+    matches: list[tuple[str, float]] = []
+    _walk_report_rows(
+        ((data.get("Rows") or {}).get("Row") or []),
+        matches,
+        matcher=_is_shipping_cost_fallback_label,
+    )
     return sum(amount for _, amount in matches), [f"{label}={round(amount, 2)}" for label, amount in matches]
 
 
@@ -238,7 +300,7 @@ def _line_account_label(line: dict) -> str:
     return " | ".join(str(part) for part in parts if part)
 
 
-def _sum_shipping_lines_from_entities(entities: list[dict]) -> tuple[float, list[str]]:
+def _sum_shipping_lines_from_entities(entities: list[dict], matcher=_is_shipping_cost_label) -> tuple[float, list[str]]:
     total = 0.0
     matches = []
     for entity in entities or []:
@@ -247,7 +309,7 @@ def _sum_shipping_lines_from_entities(entities: list[dict]) -> tuple[float, list
         for line in entity.get("Line") or []:
             label = _line_account_label(line)
             amount = abs(_safe_float(line.get("Amount")))
-            if amount and _is_shipping_cost_label(label):
+            if amount and matcher(label):
                 total += amount
                 matches.append(f"{txn_date} {doc} {label}={round(amount, 2)}")
     return total, matches
@@ -276,17 +338,23 @@ def _query_all(access_token: str, realm_id: str, entity: str, start_date: str, e
     return rows
 
 
-def get_shipping_from_transactions(access_token: str, realm_id: str, year: int, month: int) -> tuple[float, list[str]]:
+def get_shipping_from_transactions(
+    access_token: str,
+    realm_id: str,
+    year: int,
+    month: int,
+    matcher=_is_shipping_cost_label,
+) -> tuple[float, list[str]]:
     start_date, end_date = _month_date_range(year, month)
     total = 0.0
     matches = []
 
     # Purchase and Bill are the most common places where shipping expenses live.
     # VendorCredit is subtracted if posted to the same shipping account.
-    for entity, sign in [("Purchase", 1), ("Bill", 1), ("VendorCredit", -1)]:
+    for entity, sign in [("Purchase", 1), ("Bill", 1), ("VendorCredit", -1), ("Expense", 1)]:
         try:
             entities = _query_all(access_token, realm_id, entity, start_date, end_date)
-            entity_total, entity_matches = _sum_shipping_lines_from_entities(entities)
+            entity_total, entity_matches = _sum_shipping_lines_from_entities(entities, matcher=matcher)
             total += sign * entity_total
             matches.extend([f"{entity}: {item}" for item in entity_matches])
         except Exception as exc:
@@ -337,16 +405,46 @@ def get_qb_shipping_costs(
         except Exception as exc:
             print(f"QuickBooks transaction shipping lookup failed for {year}-{month_key}: {exc}")
 
-        # Prefer P&L if it has shipping expense; otherwise use transaction line search.
+        # Prefer explicit shipping/postage/freight P&L accounts, otherwise transaction lines.
         chosen = pl_total if pl_total > 0 else tx_total
+        source = "P&L" if pl_total > 0 else "Transactions"
+        sample = (pl_matches if pl_total > 0 else tx_matches)[:5]
+
+        # Sandbox fallback: if there is no literal shipping account, map configured
+        # expense accounts such as Automobile/Vehicle/Freight so the dashboard can
+        # display QuickBooks cost data instead of staying blank.
+        if chosen <= 0 and _allow_fallback():
+            fb_pl_total = 0.0
+            fb_tx_total = 0.0
+            fb_pl_matches: list[str] = []
+            fb_tx_matches: list[str] = []
+
+            try:
+                fb_pl_total, fb_pl_matches = get_shipping_fallback_from_profit_and_loss(access_token, realm_id, year, month)
+            except Exception as exc:
+                print(f"QuickBooks fallback P&L lookup failed for {year}-{month_key}: {exc}")
+
+            try:
+                fb_tx_total, fb_tx_matches = get_shipping_from_transactions(
+                    access_token,
+                    realm_id,
+                    year,
+                    month,
+                    matcher=_is_shipping_cost_fallback_label,
+                )
+            except Exception as exc:
+                print(f"QuickBooks fallback transaction lookup failed for {year}-{month_key}: {exc}")
+
+            chosen = fb_pl_total if fb_pl_total > 0 else fb_tx_total
+            source = "QB fallback P&L" if fb_pl_total > 0 else "QB fallback Transactions"
+            sample = (fb_pl_matches if fb_pl_total > 0 else fb_tx_matches)[:5]
+
         result[month_key] = round(chosen, 2)
 
         if chosen > 0:
-            source = "P&L" if pl_total > 0 else "Transactions"
-            sample = (pl_matches if pl_total > 0 else tx_matches)[:5]
             print(f"QuickBooks shipping cost {year}-{month_key}: {round(chosen, 2)} from {source}. Matches: {sample}")
         else:
-            print(f"QuickBooks shipping cost {year}-{month_key}: 0. No matching shipping expense account/line found.")
+            print(f"QuickBooks shipping cost {year}-{month_key}: 0. No matching QuickBooks shipping/fallback expense account or line found.")
 
     print(f"QuickBooks shipping cost total {year}: {round(sum(result.values()), 2)}")
     return result
