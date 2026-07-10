@@ -1105,7 +1105,9 @@
       const quarterFilterGroup = document.getElementById("quarterFilterGroup");
 
       brandFilter.innerHTML = `<option value="all">All Brands</option>` + safeArray(DATA.brands_available).map(b => `<option value="${b}">${b}</option>`).join("");
-      locationFilter.innerHTML = `<option value="all">All Splits</option>` + safeArray(DATA.locations_available).map(l => `<option value="${l}">${l}</option>`).join("");
+      const availableSplits = Array.from(new Set(["Wellington", "Concierge"].concat(safeArray(DATA.locations_available || []))))
+        .filter(Boolean);
+      locationFilter.innerHTML = `<option value="all">All Splits</option>` + availableSplits.map(l => `<option value="${l}">${l}</option>`).join("");
       yearFilter.innerHTML = safeArray(DATA.years_available).map(y => `<option value="${y}">${y}</option>`).join("");
       if (safeArray(DATA.years_available).length > 0) yearFilter.value = Math.max(...safeArray(DATA.years_available));
 

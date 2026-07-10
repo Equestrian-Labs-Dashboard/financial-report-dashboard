@@ -397,7 +397,8 @@ def get_orders(brand: str, store: str, token: str, year: int) -> list[dict]:
             "subtotal_price,current_subtotal_price,total_tax,current_total_tax,"
             "total_discounts,current_total_discounts,total_shipping_price_set,"
             "shipping_lines,source_name,app_id,financial_status,line_items,refunds,"
-            "location_id,fulfillments,customer,email,currency,cancelled_at,test"
+            "location_id,fulfillments,customer,email,currency,cancelled_at,test,"
+            "tags,note_attributes"
         ),
     }
 
@@ -1154,15 +1155,57 @@ def order_matches_wellington_store(order: dict, location_id: str) -> bool:
 
 
 
+def split_shopify_tags(value) -> list[str]:
+    if isinstance(value, list):
+        raw_values = value
+    else:
+        raw_values = str(value or "").replace(";", ",").split(",")
+
+    return [str(tag or "").strip().lower() for tag in raw_values if str(tag or "").strip()]
+
+
+def has_exact_or_word_tag(tags, target: str) -> bool:
+    target = str(target or "").strip().lower()
+    if not target:
+        return False
+
+    tag_list = split_shopify_tags(tags)
+    if target in tag_list:
+        return True
+
+    # Fallback for malformed tag strings from Shopify exports.
+    return any(target in tag for tag in tag_list)
+
+
+def get_customer_tags(order: dict) -> str:
+    customer = order.get("customer") or {}
+    return str(customer.get("tags") or "")
+
+
 def order_matches_concierge(order: dict) -> bool:
     """
-    Concierge split logic copied from the existing commission / channel logic:
-    order is Concierge when the order source_name or order tags contain
-    the word "concierge". No commission exclusions/discount rules are applied here.
+    Concierge split follows the existing commission pipeline's source-of-truth:
+    the order qualifies when Concierge context is present in Shopify order tags
+    or customer tags. We intentionally ignore the 2-letter rep initials (DG, LH,
+    SS, JS, JW, etc.); those were only for rep-level commission reports, not for
+    the financial split.
+
+    Accepted context tags/words:
+    - concierge
+    - commissioneligible (keeps compatibility with the commission pipeline)
+    - source_name containing concierge, if a store/app sends that instead of tags
     """
     source_name = str(order.get("source_name") or "").lower().strip()
-    tags = str(order.get("tags") or "").lower()
-    return "concierge" in source_name or "concierge" in tags
+    order_tags = order.get("tags") or ""
+    customer_tags = get_customer_tags(order)
+
+    return (
+        "concierge" in source_name
+        or has_exact_or_word_tag(order_tags, "concierge")
+        or has_exact_or_word_tag(customer_tags, "concierge")
+        or has_exact_or_word_tag(order_tags, "commissioneligible")
+        or has_exact_or_word_tag(customer_tags, "commissioneligible")
+    )
 
 
 def get_shopify_concierge_rows(parent_brand: str, store: str, token: str, year: int) -> list[dict]:
