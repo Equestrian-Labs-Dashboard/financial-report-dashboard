@@ -135,9 +135,7 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                # Shipping Cost must come only from QuickBooks.
-                # Do NOT fall back to Shopify shipping_charges; that is customer-paid revenue, not company cost.
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
 
             marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
             for i in brand_index:
@@ -153,9 +151,7 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                # Shipping Cost must come only from QuickBooks.
-                # Do NOT fall back to Shopify shipping_charges; that is customer-paid revenue, not company cost.
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
 
             marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
             for i in brand_index:
