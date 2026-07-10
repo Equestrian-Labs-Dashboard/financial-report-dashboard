@@ -1096,6 +1096,15 @@
       }
     }
 
+
+    function normalizeLabel(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function rowSplitLabel(row) {
+      return String((row && (row.split_filter || row.location_filter || row.location_name)) || "").trim();
+    }
+
     function setupFilters() {
       const brandFilter = document.getElementById("brandFilter");
       const locationFilter = document.getElementById("locationFilter");
@@ -1105,7 +1114,9 @@
       const quarterFilterGroup = document.getElementById("quarterFilterGroup");
 
       brandFilter.innerHTML = `<option value="all">All Brands</option>` + safeArray(DATA.brands_available).map(b => `<option value="${b}">${b}</option>`).join("");
-      const availableSplits = Array.from(new Set(["Wellington", "Concierge"].concat(safeArray(DATA.locations_available || []))))
+      const availableSplits = Array.from(new Set(["Wellington", "Concierge"]
+        .concat(safeArray(DATA.splits_available || []))
+        .concat(safeArray(DATA.locations_available || []))))
         .filter(Boolean);
       locationFilter.innerHTML = `<option value="all">All Splits</option>` + availableSplits.map(l => `<option value="${l}">${l}</option>`).join("");
       yearFilter.innerHTML = safeArray(DATA.years_available).map(y => `<option value="${y}">${y}</option>`).join("");
@@ -1187,23 +1198,27 @@
     }
 
     function filterRows(rows, filters) {
+      const selectedBrand = filters.brand || "all";
+      const selectedSplit = filters.location || "all";
+      const selectedMonth = filters.month || "all";
+      const selectedQuarter = filters.quarter || "all";
+
+      const selectedSplitNorm = normalizeLabel(selectedSplit);
+
       return rows.filter(row => {
         const rowMonth = String(row.month).padStart(2, "0");
-        const viewType = row.view_type || "brand";
-        const rowLocation = row.location_filter || (viewType === "location" ? (row.location_name || "Wellington") : "All Locations");
+        const viewType = String(row.view_type || "brand").trim().toLowerCase();
+        const rowBrand = String(row.brand || "").trim();
+        const rowSplit = rowSplitLabel(row);
+        const rowSplitNorm = normalizeLabel(rowSplit);
 
-        const selectedBrand = filters.brand || "all";
-        const selectedLocation = filters.location || "all";
-        const selectedMonth = filters.month || "all";
-        const selectedQuarter = filters.quarter || "all";
-
-        const brandMatch = selectedBrand === "all" || row.brand === selectedBrand;
-        const locationMatch = selectedLocation === "all"
+        const brandMatch = selectedBrand === "all" || rowBrand === selectedBrand;
+        const splitMatch = selectedSplit === "all"
           ? viewType !== "location"
-          : viewType === "location" && rowLocation === selectedLocation;
+          : viewType === "location" && rowSplitNorm === selectedSplitNorm;
 
         return brandMatch &&
-               locationMatch &&
+               splitMatch &&
                (Number(row.year) === Number(filters.year)) &&
                (selectedMonth === "all" || rowMonth === selectedMonth) &&
                (selectedQuarter === "all" || QUARTERS[selectedQuarter].includes(rowMonth));
@@ -1314,6 +1329,15 @@
         quarter: "all"
       });
 
+      if (filters.location !== "all" && selectedRows.length === 0) {
+        const availableForSplit = monthlyRows.filter(row =>
+          String(row.brand || "").trim() === filters.brand &&
+          normalizeLabel(rowSplitLabel(row)) === normalizeLabel(filters.location) &&
+          Number(row.year) === Number(filters.year)
+        );
+        console.warn("No selected rows for split", filters.location, "available raw monthly split rows:", availableForSplit.length);
+      }
+
       return { filters, selectedRows, trendRows: yearlyMonthlyRows, totals: sumRows(selectedRows) };
     }
 
@@ -1338,6 +1362,9 @@
       renderDiscountReturns(selected.trendRows);
       renderMarginTrend(selected.trendRows);
       renderNotes(selected);
+      if (selected.filters.location !== "all" && selected.trendRows.length === 0) {
+        document.getElementById("notes").innerHTML = `<div class="empty">No data found for ${selected.filters.location}. Check Actions log for Financial transform ${selected.filters.location} rows.</div>`;
+      }
     }
 
     function highlightSelectedPeriod(filters) {

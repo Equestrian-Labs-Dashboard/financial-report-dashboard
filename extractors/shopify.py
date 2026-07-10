@@ -1075,6 +1075,8 @@ def graphql_order_to_wellington_row(order: dict, parent_brand: str, year: int, l
         "month": month,
         "channel": "Point of Sale / Wellington",
         "view_type": "location",
+        "split_type": "wellington",
+        "split_filter": "Wellington",
         "parent_brand": parent_brand,
         "location_filter": "Wellington",
         "location_id": str(location_id),
@@ -1230,6 +1232,8 @@ def get_shopify_concierge_rows(parent_brand: str, store: str, token: str, year: 
 
     for row in rows:
         row["view_type"] = "location"
+        row["split_type"] = "concierge"
+        row["split_filter"] = "Concierge"
         row["parent_brand"] = parent_brand
         row["location_filter"] = "Concierge"
         row["location_id"] = ""
@@ -1329,6 +1333,8 @@ def get_shopify_location_rows(
 
     for row in rows:
         row["view_type"] = "location"
+        row["split_type"] = "wellington"
+        row["split_filter"] = view_name
         row["parent_brand"] = parent_brand
         row["location_filter"] = view_name
         row["location_id"] = str(location_id)
@@ -1535,6 +1541,8 @@ def get_shopify_rows(brand: str, store: str, token: str, year: int) -> list[dict
 
     for row in rows:
         row.setdefault("view_type", "brand")
+        row.setdefault("split_type", "brand")
+        row.setdefault("split_filter", "All Splits")
         row.setdefault("parent_brand", brand)
         row.setdefault("location_filter", "All Locations")
         row.setdefault("location_id", "")

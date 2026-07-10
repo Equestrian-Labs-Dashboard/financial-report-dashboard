@@ -19,7 +19,7 @@ def _safe_float(value) -> float:
 
 def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
     required_cols = [
-        "brand", "year", "month", "channel", "view_type", "parent_brand",
+        "brand", "year", "month", "channel", "view_type", "split_type", "split_filter", "parent_brand",
         "location_filter", "location_id", "location_name", "total_sales", "gross_sales",
         "discounts", "returns", "discounts_returns", "shipping_charges", "taxes",
         "net_sales", "cogs", "gross_profit_1", "gross_margin_1",
@@ -35,7 +35,7 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
 
     for col in required_cols:
         if col not in shopify_df.columns:
-            if col in ["brand", "channel", "view_type", "parent_brand", "location_filter", "location_id", "location_name"]:
+            if col in ["brand", "channel", "view_type", "split_type", "split_filter", "parent_brand", "location_filter", "location_id", "location_name"]:
                 shopify_df[col] = ""
             else:
                 shopify_df[col] = 0
@@ -51,8 +51,17 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
     shopify_df.loc[old_wellington_mask, "view_type"] = "location"
 
     location_mask = shopify_df["view_type"].astype(str).eq("location")
+    shopify_df["location_filter"] = shopify_df["location_filter"].astype(str).str.strip()
+    shopify_df["split_filter"] = shopify_df["split_filter"].astype(str).str.strip()
+
     shopify_df.loc[~location_mask, "location_filter"] = "All Locations"
+    shopify_df.loc[~location_mask, "split_filter"] = "All Splits"
+    shopify_df.loc[~location_mask, "split_type"] = "brand"
+
+    shopify_df.loc[location_mask & shopify_df["location_filter"].astype(str).eq(""), "location_filter"] = shopify_df.loc[location_mask & shopify_df["location_filter"].astype(str).eq(""), "split_filter"]
     shopify_df.loc[location_mask & shopify_df["location_filter"].astype(str).eq(""), "location_filter"] = "Wellington"
+    shopify_df.loc[location_mask & shopify_df["split_filter"].astype(str).eq(""), "split_filter"] = shopify_df.loc[location_mask & shopify_df["split_filter"].astype(str).eq(""), "location_filter"]
+    shopify_df.loc[location_mask & shopify_df["split_type"].astype(str).eq(""), "split_type"] = shopify_df.loc[location_mask & shopify_df["split_type"].astype(str).eq(""), "location_filter"].str.lower()
 
     numeric_cols = [
         "total_sales", "gross_sales", "discounts", "returns", "discounts_returns",
@@ -67,8 +76,8 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
     if "orders" in shopify_df.columns:
         shopify_df["orders"] = shopify_df["orders"].where(shopify_df["orders"] > 0, shopify_df["transactions"])
 
-    for col in ["brand", "channel", "view_type", "parent_brand", "location_filter", "location_id", "location_name"]:
-        shopify_df[col] = shopify_df[col].astype(str)
+    for col in ["brand", "channel", "view_type", "split_type", "split_filter", "parent_brand", "location_filter", "location_id", "location_name"]:
+        shopify_df[col] = shopify_df[col].astype(str).str.strip()
 
     shopify_df["year"] = pd.to_numeric(shopify_df["year"], errors="coerce").fillna(0).astype(int)
     shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
@@ -87,6 +96,8 @@ def _aggregate_shopify(shopify_df: pd.DataFrame, group_cols: list[str]) -> pd.Da
         shopify_df
         .groupby(group_cols, as_index=False)
         .agg(
+            split_type=("split_type", "first"),
+            split_filter=("split_filter", "first"),
             parent_brand=("parent_brand", "first"),
             location_id=("location_id", "first"),
             location_name=("location_name", "first"),
@@ -275,6 +286,8 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
         shopify_df
         .groupby(["brand", "view_type", "location_filter", "year", "month", "channel"], as_index=False)
         .agg(
+            split_type=("split_type", "first"),
+            split_filter=("split_filter", "first"),
             parent_brand=("parent_brand", "first"),
             total_sales=("total_sales", "sum"),
             gross_sales=("gross_sales", "sum"),
@@ -287,7 +300,25 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
     brands_available = sorted(shopify_df.loc[shopify_df["view_type"].eq("brand"), "brand"].dropna().unique().tolist())
     locations_available = sorted(shopify_df.loc[shopify_df["view_type"].eq("location"), "location_filter"].dropna().unique().tolist())
     locations_available = [loc for loc in locations_available if loc and loc != "All Locations"]
+    splits_available = sorted(shopify_df.loc[shopify_df["view_type"].eq("location"), "split_filter"].dropna().unique().tolist())
+    splits_available = [loc for loc in splits_available if loc and loc != "All Splits"]
+    for required_split in ["Wellington", "Concierge"]:
+        if required_split not in splits_available:
+            splits_available.append(required_split)
+        if required_split not in locations_available:
+            locations_available.append(required_split)
     years_available = sorted([int(year) for year in shopify_df["year"].dropna().unique().tolist() if int(year) > 0])
+
+    concierge_debug = shopify_df[(shopify_df["view_type"].eq("location")) & (shopify_df["split_filter"].str.lower().eq("concierge"))]
+    if not concierge_debug.empty:
+        print(
+            "Financial transform Concierge rows:",
+            len(concierge_debug),
+            "sales=", round(concierge_debug["total_sales"].sum(), 2),
+            "months=", sorted(concierge_debug["month"].dropna().unique().tolist()),
+        )
+    else:
+        print("Financial transform Concierge rows: 0")
 
     for frame in [shopify_by_brand_year, shopify_by_brand_month]:
         if "shipping_cost" not in frame.columns:
@@ -305,6 +336,7 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "brands_available": brands_available,
         "locations_available": locations_available,
+        "splits_available": splits_available,
         "years_available": years_available,
         "shopify_kpis_by_brand_year": shopify_by_brand_year.to_dict(orient="records"),
         "shopify_kpis_by_brand_month": shopify_by_brand_month.to_dict(orient="records"),
