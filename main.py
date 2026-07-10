@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timezone
 
 import config
-from extractors.shopify import get_shopify_rows, get_shopify_location_rows
+from extractors.shopify import get_shopify_rows, get_shopify_location_rows, get_shopify_concierge_rows
 from extractors.quickbooks import get_qb_shipping_costs
 from extractors.google_sheets_marketing import get_marketing_spend
 from transforms.financial_report import build_financial_report
@@ -62,6 +62,22 @@ def run():
                     print(f"Corro Wellington rows: {len(wellington_rows)}")
                 except Exception as exc:
                     print(f"Wellington POS/store error for Corro {year}: {exc}")
+
+            # Concierge is another Corro-only split. It filters orders where
+            # source_name or order tags contain "concierge".
+            if brand == "Corro":
+                try:
+                    print(f"Extracting Concierge data from Corro...")
+                    concierge_rows = get_shopify_concierge_rows(
+                        parent_brand=brand,
+                        store=credentials["store"],
+                        token=credentials["token"],
+                        year=year,
+                    )
+                    all_shopify_rows.extend(concierge_rows)
+                    print(f"Corro Concierge rows: {len(concierge_rows)}")
+                except Exception as exc:
+                    print(f"Concierge error for Corro {year}: {exc}")
 
         if config.QB_CLIENT_ID and config.QB_CLIENT_SECRET and config.QB_REFRESH_TOKEN:
             try:

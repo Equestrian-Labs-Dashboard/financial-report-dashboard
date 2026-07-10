@@ -717,8 +717,9 @@
       </div>
 
       <div class="nav-section">
-        <div class="nav-label">Locations</div>
+        <div class="nav-label">Splits</div>
         <a class="nav-item location-nav" href="#" data-location="Wellington"><span class="nav-dot"></span>Wellington</a>
+        <a class="nav-item location-nav" href="#" data-location="Concierge"><span class="nav-dot green"></span>Concierge</a>
       </div>
     </aside>
 
@@ -726,7 +727,7 @@
       <section class="header">
         <div class="title">
           <h1>Financial Report — Shopify Performance</h1>
-          <p>Corro · Cavali · Wellington location · Shopify calculated KPIs · GitHub Actions refresh</p>
+          <p>Corro · Cavali · Wellington · Concierge · Shopify calculated KPIs · GitHub Actions refresh</p>
         </div>
 
         <div class="header-actions">
@@ -749,7 +750,7 @@
         </div>
 
         <div class="filter-group">
-          <span class="filter-label">Location</span>
+          <span class="filter-label">Split</span>
           <select id="locationFilter"></select>
         </div>
 
@@ -944,8 +945,12 @@
       return String((row && row.view_type) || "").toLowerCase() === "location";
     }
 
+    function isWellingtonRow(row) {
+      return isLocationRow(row) && String((row && row.location_filter) || "").toLowerCase() === "wellington";
+    }
+
     function displayShippingCharges(row) {
-      return isLocationRow(row) ? 0 : Number(row.shipping_charges || 0);
+      return isWellingtonRow(row) ? 0 : Number(row.shipping_charges || 0);
     }
 
     function displayShippingCost(row) {
@@ -1100,7 +1105,7 @@
       const quarterFilterGroup = document.getElementById("quarterFilterGroup");
 
       brandFilter.innerHTML = `<option value="all">All Brands</option>` + safeArray(DATA.brands_available).map(b => `<option value="${b}">${b}</option>`).join("");
-      locationFilter.innerHTML = `<option value="all">All Locations</option>` + safeArray(DATA.locations_available).map(l => `<option value="${l}">${l}</option>`).join("");
+      locationFilter.innerHTML = `<option value="all">All Splits</option>` + safeArray(DATA.locations_available).map(l => `<option value="${l}">${l}</option>`).join("");
       yearFilter.innerHTML = safeArray(DATA.years_available).map(y => `<option value="${y}">${y}</option>`).join("");
       if (safeArray(DATA.years_available).length > 0) yearFilter.value = Math.max(...safeArray(DATA.years_available));
 
@@ -1116,7 +1121,7 @@
         quarterFilterGroup.style.display = isCavali ? "flex" : "none";
         if (!isCavali) quarterFilter.value = "all";
 
-        // Wellington is Corro-only. Hide Location when Cavali is selected.
+        // Wellington and Concierge are Corro-only. Hide Split when Cavali is selected.
         if (locationGroup) locationGroup.style.display = isCavali ? "none" : "flex";
         if (isCavali) locationFilter.value = "all";
       }
@@ -1143,7 +1148,7 @@
             brandFilter.value = item.dataset.brand;
             locationFilter.value = "all";
           } else if (item.classList.contains("location-nav")) {
-            // Wellington is Corro-only.
+            // Wellington and Concierge are Corro-only.
             brandFilter.value = "Corro";
             locationFilter.value = item.dataset.location;
           }
@@ -1232,7 +1237,8 @@
         sessions_reached_checkout: 0,
         sessions_completed_checkout: 0,
         checkout_abandonments: 0,
-        checkout_abandonment_rate: 0
+        checkout_abandonment_rate: 0,
+        _gross_margin_1_weight: 0
       };
 
       rows.forEach(row => {
@@ -1246,6 +1252,7 @@
         result.net_sales += Number(row.net_sales || 0);
         result.cogs += Number(row.cogs || 0);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
+        result._gross_margin_1_weight += Number(row.gross_margin_1 || 0) * Number(row.net_sales || 0);
         result.shipping_cost += displayShippingCost(row);
         result.gross_profit_2 += displayGrossProfit2(row);
         result.ads_stats_spend += displayAdsStats(row);
@@ -1277,7 +1284,7 @@
       }
 
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
-      result.gross_margin_1 = result.net_sales ? result.gross_profit_1 / result.net_sales : 0;
+      result.gross_margin_1 = result.net_sales ? result._gross_margin_1_weight / result.net_sales : 0;
       result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
       result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
@@ -1288,6 +1295,7 @@
         ? result.estimated_net_operating_income / result.total_sales
         : 0;
 
+      delete result._gross_margin_1_weight;
       return result;
     }
 
@@ -1416,6 +1424,7 @@
         grouped[month].net_sales += Number(row.net_sales || 0);
         grouped[month].cogs += Number(row.cogs || 0);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
+        grouped[month]._gross_margin_1_weight = (grouped[month]._gross_margin_1_weight || 0) + Number(row.gross_margin_1 || 0) * Number(row.net_sales || 0);
         grouped[month].shipping_cost += displayShippingCost(row);
         grouped[month].gross_profit_2 += displayGrossProfit2(row);
         grouped[month].ads_stats_spend += displayAdsStats(row);
@@ -1450,7 +1459,7 @@
 
           return {
             ...row,
-            gross_margin_1: row.net_sales ? row.gross_profit_1 / row.net_sales : 0,
+            gross_margin_1: row.net_sales ? (row._gross_margin_1_weight || 0) / row.net_sales : 0,
             gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
             gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
             net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,

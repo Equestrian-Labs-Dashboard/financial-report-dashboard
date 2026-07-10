@@ -22,7 +22,9 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
         "brand", "year", "month", "channel", "view_type", "parent_brand",
         "location_filter", "location_id", "location_name", "total_sales", "gross_sales",
         "discounts", "returns", "discounts_returns", "shipping_charges", "taxes",
-        "net_sales", "cogs", "gross_profit_1", "transactions", "orders", "units_sold",
+        "net_sales", "cogs", "gross_profit_1", "gross_margin_1",
+        "shopify_gross_profit_1_source", "shopify_gross_margin_1_source",
+        "transactions", "orders", "units_sold",
         "customers", "new_customers", "returning_customers", "sessions_reached_checkout",
         "sessions_completed_checkout", "checkout_abandonments",
     ]
@@ -54,7 +56,8 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
 
     numeric_cols = [
         "total_sales", "gross_sales", "discounts", "returns", "discounts_returns",
-        "shipping_charges", "taxes", "net_sales", "cogs", "gross_profit_1",
+        "shipping_charges", "taxes", "net_sales", "cogs", "gross_profit_1", "gross_margin_1",
+        "shopify_gross_profit_1_source", "shopify_gross_margin_1_source",
         "transactions", "units_sold", "customers", "new_customers", "returning_customers",
         "sessions_reached_checkout", "sessions_completed_checkout", "checkout_abandonments",
     ]
@@ -77,6 +80,9 @@ def _aggregate_shopify(shopify_df: pd.DataFrame, group_cols: list[str]) -> pd.Da
     if shopify_df.empty:
         return pd.DataFrame(columns=group_cols)
 
+    shopify_df = shopify_df.copy()
+    shopify_df["gross_margin_1_weighted"] = shopify_df["gross_margin_1"] * shopify_df["net_sales"]
+
     grouped = (
         shopify_df
         .groupby(group_cols, as_index=False)
@@ -94,6 +100,9 @@ def _aggregate_shopify(shopify_df: pd.DataFrame, group_cols: list[str]) -> pd.Da
             net_sales=("net_sales", "sum"),
             cogs=("cogs", "sum"),
             gross_profit_1=("gross_profit_1", "sum"),
+            gross_margin_1_weighted=("gross_margin_1_weighted", "sum"),
+            shopify_gross_profit_1_source=("shopify_gross_profit_1_source", "max"),
+            shopify_gross_margin_1_source=("shopify_gross_margin_1_source", "max"),
             transactions=("transactions", "sum"),
             units_sold=("units_sold", "sum"),
             customers=("customers", "sum"),
@@ -106,7 +115,14 @@ def _aggregate_shopify(shopify_df: pd.DataFrame, group_cols: list[str]) -> pd.Da
     )
 
     grouped["discounts_returns_pct"] = (grouped["discounts_returns"] / grouped["gross_sales"].replace(0, pd.NA)).fillna(0)
-    grouped["gross_margin_1"] = (grouped["gross_profit_1"] / grouped["net_sales"].replace(0, pd.NA)).fillna(0)
+    # Preserve Shopify Gross Margin 1 when ShopifyQL provides it. For grouped
+    # views, use the net-sales-weighted average of the Shopify monthly margin.
+    grouped["gross_margin_1"] = (grouped["gross_margin_1_weighted"] / grouped["net_sales"].replace(0, pd.NA)).fillna(0)
+    no_shopify_margin = grouped["shopify_gross_margin_1_source"].fillna(0).eq(0)
+    grouped.loc[no_shopify_margin, "gross_margin_1"] = (
+        grouped.loc[no_shopify_margin, "gross_profit_1"] / grouped.loc[no_shopify_margin, "net_sales"].replace(0, pd.NA)
+    ).fillna(0)
+    grouped.drop(columns=["gross_margin_1_weighted"], inplace=True, errors="ignore")
     grouped["net_gross_ratio"] = (grouped["net_sales"] / grouped["gross_sales"].replace(0, pd.NA)).fillna(0)
     grouped["checkout_abandonment_rate"] = (grouped["checkout_abandonments"] / grouped["sessions_reached_checkout"].replace(0, pd.NA)).fillna(0)
     return grouped
@@ -158,9 +174,11 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
                 result.at[i, "marketing_allocated"] = marketing_total * proportion
 
-    # Wellington/location views should not include shipping or Ads / Stats unless
-    # an approved Wellington-specific campaign is added later.
-    result.loc[location_mask, "shipping_charges"] = 0.0
+    # Wellington should not include shipping or Ads / Stats unless an approved
+    # Wellington-specific campaign is added later. Concierge keeps Shopify
+    # Shipping Income, but does not receive allocated global shipping/ads.
+    wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
+    result.loc[wellington_mask, "shipping_charges"] = 0.0
     result.loc[location_mask, "applied_shipping"] = 0.0
     result.loc[location_mask, "marketing_allocated"] = 0.0
 

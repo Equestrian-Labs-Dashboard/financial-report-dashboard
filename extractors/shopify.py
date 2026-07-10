@@ -325,6 +325,9 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
         analytics_gross_profit = pick(row, "gross_profit", "Gross profit")
         analytics_gross_margin = pick(row, "gross_margin", "Gross margin")
 
+        has_shopify_gross_profit_1 = analytics_gross_profit is not None
+        has_shopify_gross_margin_1 = analytics_gross_margin is not None
+
         if analytics_gross_profit is not None:
             gross_profit_1 = money(analytics_gross_profit)
         else:
@@ -356,6 +359,8 @@ def normalize_shopifyql_rows(brand: str, year: int, rows: list[dict]) -> list[di
             "cogs": cogs,
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
+            "shopify_gross_profit_1_source": 1 if has_shopify_gross_profit_1 else 0,
+            "shopify_gross_margin_1_source": 1 if has_shopify_gross_margin_1 else 0,
             "transactions": transactions,
             "orders": transactions,
             "units_sold": 0,
@@ -730,12 +735,18 @@ def attach_order_cost_metrics(
 
         if enriched_cogs > 0 and money(row.get("cogs")) <= 0:
             row["cogs"] = enriched_cogs
-            row["gross_profit_1"] = money(row.get("net_sales")) - enriched_cogs
-            row["gross_margin_1"] = (
-                row["gross_profit_1"] / money(row.get("net_sales"))
-                if money(row.get("net_sales"))
-                else 0
-            )
+
+            # IMPORTANT: if ShopifyQL returned Gross Profit / Gross Margin, keep
+            # those Shopify values. Do not replace GM1 with a local calculation.
+            if not money(row.get("shopify_gross_profit_1_source")):
+                row["gross_profit_1"] = money(row.get("net_sales")) - enriched_cogs
+
+            if not money(row.get("shopify_gross_margin_1_source")):
+                row["gross_margin_1"] = (
+                    money(row.get("gross_profit_1")) / money(row.get("net_sales"))
+                    if money(row.get("net_sales"))
+                    else 0
+                )
 
     return rows
 
@@ -821,6 +832,8 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int, variant_
             "cogs": cogs,
             "gross_profit_1": gross_profit_1,
             "gross_margin_1": gross_margin_1,
+            "shopify_gross_profit_1_source": 0,
+            "shopify_gross_margin_1_source": 0,
             "transactions": 1,
             "orders": 1,
             "units_sold": units_sold,
@@ -1077,6 +1090,8 @@ def graphql_order_to_wellington_row(order: dict, parent_brand: str, year: int, l
         "cogs": cogs,
         "gross_profit_1": gross_profit_1,
         "gross_margin_1": gross_profit_1 / net_sales if net_sales else 0,
+        "shopify_gross_profit_1_source": 0,
+        "shopify_gross_margin_1_source": 0,
         "transactions": 1,
         "orders": 1,
         "units_sold": units,
@@ -1136,6 +1151,53 @@ def order_matches_wellington_store(order: dict, location_id: str) -> bool:
         return False
 
     return True
+
+
+
+def order_matches_concierge(order: dict) -> bool:
+    """
+    Concierge split logic copied from the existing commission / channel logic:
+    order is Concierge when the order source_name or order tags contain
+    the word "concierge". No commission exclusions/discount rules are applied here.
+    """
+    source_name = str(order.get("source_name") or "").lower().strip()
+    tags = str(order.get("tags") or "").lower()
+    return "concierge" in source_name or "concierge" in tags
+
+
+def get_shopify_concierge_rows(parent_brand: str, store: str, token: str, year: int) -> list[dict]:
+    """
+    Corro-only Concierge split. This uses the same base order calculations as
+    the brand rows, but only includes orders tagged/source_name with Concierge.
+    """
+    if str(parent_brand).lower() != "corro":
+        print(f"{parent_brand} {year}: Concierge skipped. Concierge is Corro only.")
+        return []
+
+    orders = get_orders(brand=parent_brand, store=store, token=token, year=year)
+    concierge_orders = [order for order in orders if order_matches_concierge(order)]
+    variant_unit_costs = get_variant_unit_costs(store=store, token=token, orders=concierge_orders)
+
+    rows = normalize_shopify_orders(
+        brand=parent_brand,
+        orders=concierge_orders,
+        year=year,
+        variant_unit_costs=variant_unit_costs,
+    )
+
+    for row in rows:
+        row["view_type"] = "location"
+        row["parent_brand"] = parent_brand
+        row["location_filter"] = "Concierge"
+        row["location_id"] = ""
+        row["location_name"] = "Concierge"
+        row["channel"] = "Concierge"
+
+    total_sales = sum(money(row.get("total_sales")) for row in rows)
+    total_cogs = sum(money(row.get("cogs")) for row in rows)
+    print(f"{parent_brand} {year}: Concierge orders matched={len(concierge_orders)} sales={round(total_sales, 2)} cogs={round(total_cogs, 2)}")
+
+    return rows
 
 
 def get_shopify_location_rows(
