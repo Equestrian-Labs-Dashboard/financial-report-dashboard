@@ -148,50 +148,67 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result["marketing_allocated"] = 0.0
 
     # Brand rows keep the original Google Sheet / QB allocation logic.
-    # Location rows, including Wellington, are not allocated global marketing.
+    # Concierge is a Corro split made of regular customers, so it DOES receive
+    # a QuickBooks Shipping Cost allocation. Wellington remains the exception.
     brand_mask = result["view_type"].eq("brand")
     location_mask = result["view_type"].eq("location")
+    split_norm = result["location_filter"].astype(str).str.strip().str.lower()
+    concierge_mask = location_mask & split_norm.eq("concierge")
+    wellington_mask = location_mask & split_norm.eq("wellington")
+
+    def allocate_brand_rows(index, qb_shipping_total, marketing_total):
+        brand_index = [i for i in index if bool(brand_mask.loc[i])]
+        brand_net_total = result.loc[brand_index, "net_sales"].sum() if brand_index else 0
+
+        for i in brand_index:
+            proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+            result.at[i, "applied_shipping"] = qb_shipping_total * proportion
+            result.at[i, "marketing_allocated"] = marketing_total * proportion
+
+    def allocate_concierge_rows(index, qb_shipping_total):
+        # Allocate shipping to Concierge by its share of the parent Corro net sales.
+        # This gives the split a real Shipping Cost while keeping the all-brand
+        # view unchanged and avoiding Wellington.
+        concierge_index = [i for i in index if bool(concierge_mask.loc[i])]
+        if not concierge_index:
+            return
+
+        for i in concierge_index:
+            parent_brand = str(result.at[i, "parent_brand"] or result.at[i, "brand"]).strip()
+            parent_brand_index = [
+                j for j in index
+                if bool(brand_mask.loc[j]) and str(result.at[j, "brand"]).strip() == parent_brand
+            ]
+            parent_net_total = result.loc[parent_brand_index, "net_sales"].sum() if parent_brand_index else 0
+            proportion = result.at[i, "net_sales"] / parent_net_total if parent_net_total else 0
+            result.at[i, "applied_shipping"] = qb_shipping_total * proportion
 
     if monthly:
         for (year, month), index in result.groupby(["year", "month"]).groups.items():
             index = list(index)
-            brand_index = [i for i in index if bool(brand_mask.loc[i])]
             y_data = _lookup_year_dict(qb_summaries, int(year))
             qb_shipping_total = _safe_float(y_data.get(str(month).zfill(2), 0))
-            brand_net_total = result.loc[brand_index, "net_sales"].sum() if brand_index else 0
-
-            for i in brand_index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
-
             marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
-            for i in brand_index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "marketing_allocated"] = marketing_total * proportion
+
+            allocate_brand_rows(index, qb_shipping_total, marketing_total)
+            allocate_concierge_rows(index, qb_shipping_total)
     else:
         for year, index in result.groupby("year").groups.items():
             index = list(index)
-            brand_index = [i for i in index if bool(brand_mask.loc[i])]
             y_data = _lookup_year_dict(qb_summaries, int(year))
             qb_shipping_total = sum(_safe_float(v) for v in y_data.values())
-            brand_net_total = result.loc[brand_index, "net_sales"].sum() if brand_index else 0
-
-            for i in brand_index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
-
             marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
-            for i in brand_index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "marketing_allocated"] = marketing_total * proportion
 
-    # Wellington should not include shipping or Ads / Stats unless an approved
-    # Wellington-specific campaign is added later. Concierge keeps Shopify
-    # Shipping Income, but does not receive allocated global shipping/ads.
-    wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
+            allocate_brand_rows(index, qb_shipping_total, marketing_total)
+            allocate_concierge_rows(index, qb_shipping_total)
+
+    # Wellington should not include shipping income/cost or Ads / Stats unless
+    # Nicole confirms Wellington-specific costs later. Concierge keeps Shopify
+    # Shipping Income and receives QB Shipping Cost, but no Ads/OPEX by default.
     result.loc[wellington_mask, "shipping_charges"] = 0.0
-    result.loc[location_mask, "applied_shipping"] = 0.0
-    result.loc[location_mask, "marketing_allocated"] = 0.0
+    result.loc[wellington_mask, "applied_shipping"] = 0.0
+    result.loc[wellington_mask, "marketing_allocated"] = 0.0
+    result.loc[concierge_mask, "marketing_allocated"] = 0.0
 
     # Cavali should not deduct Ads / Stats in this view for now.
     cavali_mask = result["brand"].astype(str).str.lower().eq("cavali") & result["view_type"].eq("brand")
