@@ -448,3 +448,4 @@ def get_qb_shipping_costs(
 
     print(f"QuickBooks shipping cost total {year}: {round(sum(result.values()), 2)}")
     return result
+ 
