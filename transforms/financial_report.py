@@ -212,10 +212,9 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                # Primary source is QuickBooks. If QuickBooks returns 0 because no matching
-                # shipping-cost account exists yet, keep the table populated using Shopify
-                # Shipping Income as a temporary fallback instead of showing all zeros.
-                result.at[i, "applied_shipping"] = (qb_shipping_total * proportion) if qb_shipping_total > 0 else result.at[i, "shipping_charges"]
+                # Primary source is QuickBooks only. Do NOT fallback to Shopify
+                # Shipping Income; Shipping Income is revenue, not cost.
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
 
             marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
             for i in brand_index:
@@ -231,10 +230,9 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                # Primary source is QuickBooks. If QuickBooks returns 0 because no matching
-                # shipping-cost account exists yet, keep the table populated using Shopify
-                # Shipping Income as a temporary fallback instead of showing all zeros.
-                result.at[i, "applied_shipping"] = (qb_shipping_total * proportion) if qb_shipping_total > 0 else result.at[i, "shipping_charges"]
+                # Primary source is QuickBooks only. Do NOT fallback to Shopify
+                # Shipping Income; Shipping Income is revenue, not cost.
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
 
             marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
             for i in brand_index:
@@ -244,8 +242,8 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     # Wellington should not include shipping or Ads / Stats unless an approved
     # Wellington-specific campaign is added later.
     # Concierge is NOT Wellington. It is a Corro customer split.
-    # Per Ceci's latest request, Concierge Shipping Cost should come from Shopify
-    # for the Concierge split; brand/all-brand rows keep QuickBooks Shipping Cost.
+    # Shipping Cost must come from QuickBooks only. Shopify Shipping Income is
+    # revenue and must never be copied into Shipping Cost.
     wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
     concierge_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("concierge")
 
@@ -254,12 +252,44 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result.loc[location_mask, "applied_shipping"] = 0.0
     result.loc[location_mask, "marketing_allocated"] = 0.0
 
+    # Concierge is a Corro customer split, so it should get QuickBooks Shipping Cost
+    # allocated proportionally by Net Sales. It must NOT use Shopify Shipping Income.
+    if monthly:
+        for (year, month), index in result.loc[concierge_mask].groupby(["year", "month"]).groups.items():
+            index = list(index)
+            y_data = _lookup_year_dict(qb_summaries, int(year))
+            qb_shipping_total = _safe_float(y_data.get(str(month).zfill(2), 0))
+            brand_month_mask = (
+                result["view_type"].eq("brand")
+                & result["year"].eq(year)
+                & result["month"].astype(str).str.zfill(2).eq(str(month).zfill(2))
+                & result["brand"].astype(str).str.lower().eq("corro")
+            )
+            brand_net_total = result.loc[brand_month_mask, "net_sales"].sum()
+            for i in index:
+                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+    else:
+        for year, index in result.loc[concierge_mask].groupby("year").groups.items():
+            index = list(index)
+            y_data = _lookup_year_dict(qb_summaries, int(year))
+            qb_shipping_total = sum(_safe_float(v) for v in y_data.values())
+            brand_year_mask = (
+                result["view_type"].eq("brand")
+                & result["year"].eq(year)
+                & result["brand"].astype(str).str.lower().eq("corro")
+            )
+            brand_net_total = result.loc[brand_year_mask, "net_sales"].sum()
+            for i in index:
+                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+
     # Wellington remains zero until Nicole/Ceci provide Wellington-specific data.
     result.loc[wellington_mask, "shipping_charges"] = 0.0
     result.loc[wellington_mask, "applied_shipping"] = 0.0
 
-    # Concierge uses Shopify shipping amount as Shipping Cost in the Concierge view.
-    result.loc[concierge_mask, "applied_shipping"] = result.loc[concierge_mask, "shipping_charges"]
+    # Concierge also uses QuickBooks Shipping Cost, allocated proportionally below.
+    # It must not use Shopify Shipping Income as cost.
 
     # Cavali should not deduct Ads / Stats in this view for now.
     cavali_mask = result["brand"].astype(str).str.lower().eq("cavali") & result["view_type"].eq("brand")
@@ -270,8 +300,7 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     # Ads / Stats sits under GM2 and is the adjustment used to get GP3.
     result["shipping_cost"] = result["applied_shipping"]
     result["shipping_cost_source"] = "QuickBooks"
-    result.loc[result["shipping_cost"].fillna(0).eq(result["shipping_charges"].fillna(0)) & result["shipping_cost"].fillna(0).gt(0), "shipping_cost_source"] = "Shopify fallback"
-    result.loc[concierge_mask, "shipping_cost_source"] = "Shopify Concierge"
+    result.loc[result["shipping_cost"].fillna(0).eq(0), "shipping_cost_source"] = "QuickBooks unavailable / unmapped"
     result.loc[wellington_mask, "shipping_cost_source"] = "Pending Wellington data"
     result["ads_stats_spend"] = result["marketing_allocated"]
 
