@@ -680,6 +680,9 @@ def get_order_activity_monthly(orders: list[dict]) -> dict[str, dict[str, float]
         data["customers"] = len(data["_customers"])
         data["new_customers"] = len(data["_new_customers"])
         data["returning_customers"] = len(data["_returning_customers"])
+        data["customer_ids"] = "|".join(sorted(data["_customers"]))
+        data["new_customer_ids"] = "|".join(sorted(data["_new_customers"]))
+        data["returning_customer_ids"] = "|".join(sorted(data["_returning_customers"]))
 
         data.pop("_customers", None)
         data.pop("_new_customers", None)
@@ -701,6 +704,9 @@ def attach_order_activity_metrics(rows: list[dict], orders: list[dict]) -> list[
         row["customers"] = float(activity.get("customers") or 0)
         row["new_customers"] = float(activity.get("new_customers") or 0)
         row["returning_customers"] = float(activity.get("returning_customers") or 0)
+        row["customer_ids"] = activity.get("customer_ids") or ""
+        row["new_customer_ids"] = activity.get("new_customer_ids") or ""
+        row["returning_customer_ids"] = activity.get("returning_customer_ids") or ""
 
     return rows
 
@@ -839,6 +845,9 @@ def normalize_shopify_orders(brand: str, orders: list[dict], year: int, variant_
             "orders": 1,
             "units_sold": units_sold,
             "customer_id": customer_id,
+            "customer_ids": customer_id,
+            "new_customer_ids": "",
+            "returning_customer_ids": "",
             "customers": 1 if customer_id else 0,
             "new_customers": 0,
             "returning_customers": 0,
@@ -1098,6 +1107,10 @@ def graphql_order_to_wellington_row(order: dict, parent_brand: str, year: int, l
         "transactions": 1,
         "orders": 1,
         "units_sold": units,
+        "customer_id": "",
+        "customer_ids": "",
+        "new_customer_ids": "",
+        "returning_customer_ids": "",
         "customers": 0,
         "new_customers": 0,
         "returning_customers": 0,

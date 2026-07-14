@@ -17,6 +17,27 @@ def _safe_float(value) -> float:
         return 0.0
 
 
+def _split_id_values(value) -> set[str]:
+    if value is None:
+        return set()
+    if isinstance(value, (list, tuple, set)):
+        values = value
+    else:
+        values = str(value).replace(",", "|").split("|")
+    return {str(v).strip() for v in values if str(v).strip() and str(v).strip().lower() not in {"nan", "none", "0"}}
+
+
+def _merge_id_values(series) -> str:
+    values = set()
+    for value in series:
+        values.update(_split_id_values(value))
+    return "|".join(sorted(values))
+
+
+def _count_id_string(value) -> int:
+    return len(_split_id_values(value))
+
+
 def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
     required_cols = [
         "brand", "year", "month", "channel", "view_type", "split_type", "split_filter", "parent_brand",
@@ -24,7 +45,7 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
         "discounts", "returns", "discounts_returns", "shipping_charges", "taxes",
         "net_sales", "cogs", "gross_profit_1", "gross_margin_1",
         "shopify_gross_profit_1_source", "shopify_gross_margin_1_source",
-        "transactions", "orders", "units_sold",
+        "transactions", "orders", "units_sold", "customer_id", "customer_ids", "new_customer_ids", "returning_customer_ids",
         "customers", "new_customers", "returning_customers", "sessions_reached_checkout",
         "sessions_completed_checkout", "checkout_abandonments",
     ]
@@ -35,7 +56,7 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
 
     for col in required_cols:
         if col not in shopify_df.columns:
-            if col in ["brand", "channel", "view_type", "split_type", "split_filter", "parent_brand", "location_filter", "location_id", "location_name"]:
+            if col in ["brand", "channel", "view_type", "split_type", "split_filter", "parent_brand", "location_filter", "location_id", "location_name", "customer_id", "customer_ids", "new_customer_ids", "returning_customer_ids"]:
                 shopify_df[col] = ""
             else:
                 shopify_df[col] = 0
@@ -76,11 +97,23 @@ def _prepare_shopify_df(shopify_rows: list[dict]) -> pd.DataFrame:
     if "orders" in shopify_df.columns:
         shopify_df["orders"] = shopify_df["orders"].where(shopify_df["orders"] > 0, shopify_df["transactions"])
 
-    for col in ["brand", "channel", "view_type", "split_type", "split_filter", "parent_brand", "location_filter", "location_id", "location_name"]:
+    for col in ["brand", "channel", "view_type", "split_type", "split_filter", "parent_brand", "location_filter", "location_id", "location_name", "customer_id", "customer_ids", "new_customer_ids", "returning_customer_ids"]:
         shopify_df[col] = shopify_df[col].astype(str).str.strip()
+
+    # Keep customer identity sets so YTD/quarter totals count unique customers,
+    # not the same customer repeated in multiple months.
+    missing_customer_ids = shopify_df["customer_ids"].astype(str).str.strip().isin(["", "0", "nan", "None"])
+    shopify_df.loc[missing_customer_ids, "customer_ids"] = shopify_df.loc[missing_customer_ids, "customer_id"]
+    shopify_df.loc[shopify_df["new_customer_ids"].astype(str).str.strip().isin(["", "0", "nan", "None"]), "new_customer_ids"] = ""
+    shopify_df.loc[shopify_df["returning_customer_ids"].astype(str).str.strip().isin(["", "0", "nan", "None"]), "returning_customer_ids"] = ""
 
     shopify_df["year"] = pd.to_numeric(shopify_df["year"], errors="coerce").fillna(0).astype(int)
     shopify_df["month"] = shopify_df["month"].astype(str).str.zfill(2)
+    # COGS should be available in the table. If the row has GP1 and Net Sales but
+    # COGS came empty from ShopifyQL, reconstruct COGS as Net Sales - GP1.
+    cogs_missing = shopify_df["cogs"].fillna(0).eq(0) & shopify_df["net_sales"].fillna(0).ne(0) & shopify_df["gross_profit_1"].fillna(0).ne(0)
+    shopify_df.loc[cogs_missing, "cogs"] = (shopify_df.loc[cogs_missing, "net_sales"] - shopify_df.loc[cogs_missing, "gross_profit_1"]).clip(lower=0)
+
     shopify_df["checkout_abandonments"] = (shopify_df["sessions_reached_checkout"] - shopify_df["sessions_completed_checkout"]).clip(lower=0)
     return shopify_df
 
@@ -116,6 +149,9 @@ def _aggregate_shopify(shopify_df: pd.DataFrame, group_cols: list[str]) -> pd.Da
             shopify_gross_margin_1_source=("shopify_gross_margin_1_source", "max"),
             transactions=("transactions", "sum"),
             units_sold=("units_sold", "sum"),
+            customer_ids=("customer_ids", _merge_id_values),
+            new_customer_ids=("new_customer_ids", _merge_id_values),
+            returning_customer_ids=("returning_customer_ids", _merge_id_values),
             customers=("customers", "sum"),
             new_customers=("new_customers", "sum"),
             returning_customers=("returning_customers", "sum"),
@@ -125,6 +161,20 @@ def _aggregate_shopify(shopify_df: pd.DataFrame, group_cols: list[str]) -> pd.Da
         )
     )
 
+    # Prefer unique customer ID counts when available, so Customers matches the
+    # selected period instead of summing monthly duplicates.
+    grouped["customers_from_ids"] = grouped["customer_ids"].apply(_count_id_string)
+    grouped["new_customers_from_ids"] = grouped["new_customer_ids"].apply(_count_id_string)
+    grouped["returning_customers_from_ids"] = grouped["returning_customer_ids"].apply(_count_id_string)
+    grouped["customers"] = grouped["customers_from_ids"].where(grouped["customers_from_ids"] > 0, grouped["customers"])
+    grouped["new_customers"] = grouped["new_customers_from_ids"].where(grouped["new_customers_from_ids"] > 0, grouped["new_customers"])
+    grouped["returning_customers"] = grouped["returning_customers_from_ids"].where(grouped["returning_customers_from_ids"] > 0, grouped["returning_customers"])
+    grouped.drop(columns=["customers_from_ids", "new_customers_from_ids", "returning_customers_from_ids"], inplace=True, errors="ignore")
+
+    # Ensure COGS is filled for the financial table.
+    grouped["cogs"] = grouped["cogs"].where(grouped["cogs"].fillna(0).ne(0), (grouped["net_sales"] - grouped["gross_profit_1"]).clip(lower=0))
+
+    grouped["discount_pct"] = (grouped["discounts"] / grouped["gross_sales"].replace(0, pd.NA)).fillna(0)
     grouped["discounts_returns_pct"] = (grouped["discounts_returns"] / grouped["gross_sales"].replace(0, pd.NA)).fillna(0)
     # Preserve Shopify Gross Margin 1 when ShopifyQL provides it. For grouped
     # views, use the net-sales-weighted average of the Shopify monthly margin.
@@ -148,67 +198,53 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result["marketing_allocated"] = 0.0
 
     # Brand rows keep the original Google Sheet / QB allocation logic.
-    # Concierge is a Corro split made of regular customers, so it DOES receive
-    # a QuickBooks Shipping Cost allocation. Wellington remains the exception.
+    # Location rows, including Wellington, are not allocated global marketing.
     brand_mask = result["view_type"].eq("brand")
     location_mask = result["view_type"].eq("location")
-    split_norm = result["location_filter"].astype(str).str.strip().str.lower()
-    concierge_mask = location_mask & split_norm.eq("concierge")
-    wellington_mask = location_mask & split_norm.eq("wellington")
-
-    def allocate_brand_rows(index, qb_shipping_total, marketing_total):
-        brand_index = [i for i in index if bool(brand_mask.loc[i])]
-        brand_net_total = result.loc[brand_index, "net_sales"].sum() if brand_index else 0
-
-        for i in brand_index:
-            proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-            result.at[i, "applied_shipping"] = qb_shipping_total * proportion
-            result.at[i, "marketing_allocated"] = marketing_total * proportion
-
-    def allocate_concierge_rows(index, qb_shipping_total):
-        # Allocate shipping to Concierge by its share of the parent Corro net sales.
-        # This gives the split a real Shipping Cost while keeping the all-brand
-        # view unchanged and avoiding Wellington.
-        concierge_index = [i for i in index if bool(concierge_mask.loc[i])]
-        if not concierge_index:
-            return
-
-        for i in concierge_index:
-            parent_brand = str(result.at[i, "parent_brand"] or result.at[i, "brand"]).strip()
-            parent_brand_index = [
-                j for j in index
-                if bool(brand_mask.loc[j]) and str(result.at[j, "brand"]).strip() == parent_brand
-            ]
-            parent_net_total = result.loc[parent_brand_index, "net_sales"].sum() if parent_brand_index else 0
-            proportion = result.at[i, "net_sales"] / parent_net_total if parent_net_total else 0
-            result.at[i, "applied_shipping"] = qb_shipping_total * proportion
 
     if monthly:
         for (year, month), index in result.groupby(["year", "month"]).groups.items():
             index = list(index)
+            brand_index = [i for i in index if bool(brand_mask.loc[i])]
             y_data = _lookup_year_dict(qb_summaries, int(year))
             qb_shipping_total = _safe_float(y_data.get(str(month).zfill(2), 0))
-            marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
+            brand_net_total = result.loc[brand_index, "net_sales"].sum() if brand_index else 0
 
-            allocate_brand_rows(index, qb_shipping_total, marketing_total)
-            allocate_concierge_rows(index, qb_shipping_total)
+            for i in brand_index:
+                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
+
+            marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
+            for i in brand_index:
+                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+                result.at[i, "marketing_allocated"] = marketing_total * proportion
     else:
         for year, index in result.groupby("year").groups.items():
             index = list(index)
+            brand_index = [i for i in index if bool(brand_mask.loc[i])]
             y_data = _lookup_year_dict(qb_summaries, int(year))
             qb_shipping_total = sum(_safe_float(v) for v in y_data.values())
+            brand_net_total = result.loc[brand_index, "net_sales"].sum() if brand_index else 0
+
+            for i in brand_index:
+                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
+
             marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
+            for i in brand_index:
+                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
+                result.at[i, "marketing_allocated"] = marketing_total * proportion
 
-            allocate_brand_rows(index, qb_shipping_total, marketing_total)
-            allocate_concierge_rows(index, qb_shipping_total)
-
-    # Wellington should not include shipping income/cost or Ads / Stats unless
-    # Nicole confirms Wellington-specific costs later. Concierge keeps Shopify
-    # Shipping Income and receives QB Shipping Cost, but no Ads/OPEX by default.
+    # Wellington should not include shipping or Ads / Stats unless an approved
+    # Wellington-specific campaign is added later.
+    # Concierge is Corro regular customers, so its Shipping Cost should come
+    # from Shopify shipping income for now, as requested by Ceci.
+    wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
+    concierge_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("concierge")
     result.loc[wellington_mask, "shipping_charges"] = 0.0
-    result.loc[wellington_mask, "applied_shipping"] = 0.0
-    result.loc[wellington_mask, "marketing_allocated"] = 0.0
-    result.loc[concierge_mask, "marketing_allocated"] = 0.0
+    result.loc[location_mask, "applied_shipping"] = 0.0
+    result.loc[concierge_mask, "applied_shipping"] = result.loc[concierge_mask, "shipping_charges"]
+    result.loc[location_mask, "marketing_allocated"] = 0.0
 
     # Cavali should not deduct Ads / Stats in this view for now.
     cavali_mask = result["brand"].astype(str).str.lower().eq("cavali") & result["view_type"].eq("brand")

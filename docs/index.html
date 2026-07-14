@@ -817,26 +817,26 @@
         <div class="panel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">Discounts + Returns by Month</h2>
-              <p class="panel-subtitle">Shopify discounts and returns as monthly totals.</p>
+              <h2 class="panel-title">Gross Margin Trend</h2>
+              <p class="panel-subtitle">GM1, GM2 and GM3 by month.</p>
             </div>
-            <div class="panel-tag">Risk</div>
+            <div class="panel-tag">Margin</div>
           </div>
-          <div class="chart-wrap">
-            <canvas id="discountReturnsChart"></canvas>
+          <div class="chart-wrap large">
+            <canvas id="marginTrendChart"></canvas>
           </div>
         </div>
 
         <div class="panel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">Gross Margin Trend</h2>
-              <p class="panel-subtitle">Gross Profit divided by Net Sales.</p>
+              <h2 class="panel-title">Discounts + Returns by Month</h2>
+              <p class="panel-subtitle">Includes % Discounts and % Discount + Returns.</p>
             </div>
-            <div class="panel-tag">Margin</div>
+            <div class="panel-tag">Risk</div>
           </div>
           <div class="chart-wrap">
-            <canvas id="marginTrendChart"></canvas>
+            <canvas id="discountReturnsChart"></canvas>
           </div>
         </div>
       </section>
@@ -977,6 +977,30 @@
       if (direct) return direct;
 
       return displayGrossProfit2(row) - displayAdsStats(row);
+    }
+
+    function splitIdValues(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) return value.map(v => String(v || "").trim()).filter(Boolean);
+      return String(value || "")
+        .replace(/,/g, "|")
+        .split("|")
+        .map(v => v.trim())
+        .filter(v => v && !["0", "nan", "none", "undefined"].includes(v.toLowerCase()));
+    }
+
+    function uniqueCountFromRows(rows, field, fallbackField) {
+      const values = new Set();
+      rows.forEach(row => splitIdValues(row[field]).forEach(v => values.add(v)));
+      if (values.size) return values.size;
+      return rows.reduce((sum, row) => sum + Number(row[fallbackField] || 0), 0);
+    }
+
+    function displayCogs(row) {
+      const direct = Number(row.cogs || 0);
+      if (direct) return direct;
+      const derived = Number(row.net_sales || 0) - Number(row.gross_profit_1 || 0);
+      return derived > 0 ? derived : 0;
     }
 
     function setupTheme() {
@@ -1232,6 +1256,7 @@
         discounts: 0,
         returns: 0,
         discounts_returns: 0,
+        discount_pct: 0,
         shipping_charges: 0,
         taxes: 0,
         net_sales: 0,
@@ -1267,7 +1292,7 @@
         result.shipping_charges += displayShippingCharges(row);
         result.taxes += Number(row.taxes || 0);
         result.net_sales += Number(row.net_sales || 0);
-        result.cogs += Number(row.cogs || 0);
+        result.cogs += displayCogs(row);
         result.gross_profit_1 += Number(row.gross_profit_1 || 0);
         result._gross_margin_1_weight += Number(row.gross_margin_1 || 0) * Number(row.net_sales || 0);
         result.shipping_cost += displayShippingCost(row);
@@ -1293,6 +1318,10 @@
         result.checkout_abandonments += rowCheckoutAbandonments(row);
       });
 
+      result.customers = uniqueCountFromRows(rows, "customer_ids", "customers");
+      result.new_customers = uniqueCountFromRows(rows, "new_customer_ids", "new_customers");
+      result.returning_customers = uniqueCountFromRows(rows, "returning_customer_ids", "returning_customers");
+
       if (result.sessions_reached_checkout) {
         result.checkout_abandonments = Math.max(
           result.sessions_reached_checkout - result.sessions_completed_checkout,
@@ -1300,6 +1329,7 @@
         );
       }
 
+      result.discount_pct = result.gross_sales ? result.discounts / result.gross_sales : 0;
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result._gross_margin_1_weight / result.net_sales : 0;
       result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
@@ -1379,28 +1409,27 @@
       document.getElementById("shopifyKpis").innerHTML = `
         <div class="kpi-card"><div class="kpi-label">Orders</div><div class="kpi-value">${compactNumber(totals.orders || totals.transactions)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Order count</div></div>
         <div class="kpi-card"><div class="kpi-label">Units Sold</div><div class="kpi-value">${compactNumber(totals.units_sold)}</div><div class="kpi-chip">Orders API</div><div class="kpi-note">Line item quantity</div></div>
-        <div class="kpi-card"><div class="kpi-label">Customers</div><div class="kpi-value">${compactNumber(totals.customers)}</div><div class="kpi-chip">Orders API</div><div class="kpi-note">Unique customer count</div></div>
+        <div class="kpi-card"><div class="kpi-label">Customers</div><div class="kpi-value">${compactNumber(totals.customers)}</div><div class="kpi-chip">Unique</div><div class="kpi-note">Unique selected period</div></div>
         <div class="kpi-card"><div class="kpi-label">New Customers</div><div class="kpi-value">${compactNumber(totals.new_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">First purchase in selected year</div></div>
         <div class="kpi-card"><div class="kpi-label">Returning Customers</div><div class="kpi-value">${compactNumber(totals.returning_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Purchased again in selected year</div></div>
 
-        <div class="kpi-card positive"><div class="kpi-label">Total Sales</div><div class="kpi-value">${compactMoney(totals.total_sales)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Net + Shipping + Taxes</div></div>
         <div class="kpi-card"><div class="kpi-label">Gross Sales</div><div class="kpi-value">${compactMoney(totals.gross_sales)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Price × Qty</div></div>
-        <div class="kpi-card warning"><div class="kpi-label">Discounts + Returns</div><div class="kpi-value">${compactMoney(totals.discounts_returns)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Total deductions</div></div>
-        <div class="kpi-card warning"><div class="kpi-label">% Discount + Returns</div><div class="kpi-value">${percent(totals.discounts_returns_pct)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Of Gross Sales</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Discounts</div><div class="kpi-value">${compactMoney(totals.discounts)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Discount amount</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">% Discounts</div><div class="kpi-value">${percent(totals.discount_pct)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Discounts / Gross Sales</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Returns</div><div class="kpi-value">${compactMoney(totals.returns)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Returns amount</div></div>
         <div class="kpi-card"><div class="kpi-label">Shipping Income</div><div class="kpi-value">${compactMoney(totals.shipping_charges)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Customer-paid shipping</div></div>
 
-        <div class="kpi-card"><div class="kpi-label">Taxes</div><div class="kpi-value">${compactMoney(totals.taxes)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Total taxes</div></div>
-        <div class="kpi-card positive"><div class="kpi-label">Net Sales</div><div class="kpi-value">${compactMoney(totals.net_sales)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Gross - Deductions</div></div>
         <div class="kpi-card negative"><div class="kpi-label">COGS</div><div class="kpi-value">${compactMoney(totals.cogs)}</div><div class="kpi-chip red">Cost</div><div class="kpi-note">Product cost</div></div>
-        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 1</div><div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">Net Sales - COGS</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 1</div><div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Net Sales - COGS</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 1</div><div class="kpi-value">${percent(totals.gross_margin_1)}</div><div class="kpi-chip">Shopify-derived</div><div class="kpi-note">GP1 / Net Sales</div></div>
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping Cost</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 2 (GM2)</div><div class="kpi-value">${percent(totals.gross_margin_2)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP2 / Net Sales</div></div>
 
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - Ads / Stats</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 3 (GM3)</div><div class="kpi-value">${percent(totals.gross_margin_3)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP3 / Net Sales</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Net / Gross Ratio</div><div class="kpi-value">${percent(totals.net_gross_ratio)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Gross Sales</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Checkout Abandonment</div><div class="kpi-value">${percent(totals.checkout_abandonment_rate)}</div><div class="kpi-chip">ShopifyQL</div><div class="kpi-note">Reached - Completed / Reached</div></div>
-        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 1</div><div class="kpi-value">${percent(totals.gross_margin_1)}</div><div class="kpi-chip">Shopify-derived</div><div class="kpi-note">GP1 / Net Sales</div></div>
-        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 2 (GM2)</div><div class="kpi-value">${percent(totals.gross_margin_2)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP2 / Net Sales</div></div>
-        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 3 (GM3)</div><div class="kpi-value">${percent(totals.gross_margin_3)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP3 / Net Sales</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taxes</div><div class="kpi-value">${compactMoney(totals.taxes)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Moved to final row</div></div>
       `;
     }
 
@@ -1418,6 +1447,7 @@
             discounts: 0,
             returns: 0,
             discounts_returns: 0,
+            discount_pct: 0,
             shipping_charges: 0,
             taxes: 0,
             net_sales: 0,
@@ -1439,7 +1469,10 @@
             sessions_reached_checkout: 0,
             sessions_completed_checkout: 0,
             checkout_abandonments: 0,
-            checkout_abandonment_rate: 0
+            checkout_abandonment_rate: 0,
+            _customer_ids: new Set(),
+            _new_customer_ids: new Set(),
+            _returning_customer_ids: new Set()
           };
         }
 
@@ -1451,7 +1484,7 @@
         grouped[month].shipping_charges += displayShippingCharges(row);
         grouped[month].taxes += Number(row.taxes || 0);
         grouped[month].net_sales += Number(row.net_sales || 0);
-        grouped[month].cogs += Number(row.cogs || 0);
+        grouped[month].cogs += displayCogs(row);
         grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
         grouped[month]._gross_margin_1_weight = (grouped[month]._gross_margin_1_weight || 0) + Number(row.gross_margin_1 || 0) * Number(row.net_sales || 0);
         grouped[month].shipping_cost += displayShippingCost(row);
@@ -1470,6 +1503,9 @@
         grouped[month].customers += Number(row.customers || 0);
         grouped[month].new_customers += Number(row.new_customers || 0);
         grouped[month].returning_customers += Number(row.returning_customers || 0);
+        splitIdValues(row.customer_ids).forEach(v => grouped[month]._customer_ids.add(v));
+        splitIdValues(row.new_customer_ids).forEach(v => grouped[month]._new_customer_ids.add(v));
+        splitIdValues(row.returning_customer_ids).forEach(v => grouped[month]._returning_customer_ids.add(v));
 
         grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
         grouped[month].sessions_completed_checkout += rowCompletedCheckout(row);
@@ -1486,8 +1522,17 @@
             );
           }
 
+          if (row._customer_ids && row._customer_ids.size) row.customers = row._customer_ids.size;
+          if (row._new_customer_ids && row._new_customer_ids.size) row.new_customers = row._new_customer_ids.size;
+          if (row._returning_customer_ids && row._returning_customer_ids.size) row.returning_customers = row._returning_customer_ids.size;
+
+          const cleanRow = { ...row };
+          delete cleanRow._customer_ids;
+          delete cleanRow._new_customer_ids;
+          delete cleanRow._returning_customer_ids;
+
           return {
-            ...row,
+            ...cleanRow,
             gross_margin_1: row.net_sales ? (row._gross_margin_1_weight || 0) / row.net_sales : 0,
             gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
             gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
@@ -1498,6 +1543,7 @@
             estimated_net_operating_income_pct: row.total_sales
               ? row.estimated_net_operating_income / row.total_sales
               : 0,
+            discount_pct: row.gross_sales ? row.discounts / row.gross_sales : 0,
             discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
           };
         });
@@ -1528,7 +1574,8 @@
         data: {
           labels: monthly.map(row => MONTHS[row.month] || row.month),
           datasets: [
-            { label: "Discounts + Returns", data: monthly.map(row => row.discounts_returns), borderColor: "#f59e0b", backgroundColor: "#f59e0b", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y" },
+            { label: "Discounts", data: monthly.map(row => row.discounts), borderColor: "#f59e0b", backgroundColor: "#f59e0b", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y" },
+            { label: "% Discounts", data: monthly.map(row => row.discount_pct * 100), borderColor: "#22c55e", backgroundColor: "#22c55e", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" },
             { label: "% Discount + Returns", data: monthly.map(row => row.discounts_returns_pct * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" }
           ]
         },
@@ -1600,16 +1647,13 @@
       document.getElementById("monthlyMatrixHead").innerHTML = `<tr><th class="sticky-kpi">KPI</th>${monthHeaders}<th class="right total-col">YTD</th>${quarterHeaders}</tr>`;
 
       const metrics = [
-        { key: "total_sales", label: "Total Sales", formatter: money },
         { key: "gross_sales", label: "Gross Sales", formatter: money },
         { key: "discounts", label: "Discounts", formatter: money },
+        { key: "discount_pct", label: "% Discounts", formatter: percent },
         { key: "returns", label: "Returns", formatter: money },
         { key: "discounts_returns_pct", label: "% Discount + Returns", formatter: percent },
         { key: "shipping_charges", label: "Shipping Income", formatter: money },
-        { key: "taxes", label: "Taxes", formatter: money },
         { key: "net_sales", label: "Net Sales", formatter: money },
-        { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
-        { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
         { key: "cogs", label: "COGS", formatter: money },
         { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
         { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent },
@@ -1619,9 +1663,12 @@
         { key: "ads_stats_spend", label: "Ads / Stats", formatter: money },
         { key: "gross_profit_3", label: "Gross Profit 3", formatter: money },
         { key: "gross_margin_3", label: "Gross Margin 3 (GM3)", formatter: percent },
+        { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
+        { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
         { key: "estimated_average_opex", label: "Estimated Average OPEX", formatter: money },
         { key: "estimated_net_operating_income", label: "Estimated Net Operating Income", formatter: money },
-        { key: "estimated_net_operating_income_pct", label: "Estimated Net Operating Income %", formatter: percent }
+        { key: "estimated_net_operating_income_pct", label: "Estimated Net Operating Income %", formatter: percent },
+        { key: "taxes", label: "Taxes", formatter: money }
       ];
 
       const ytyTotals = sumRows(rows);
@@ -1656,7 +1703,7 @@
 
       document.getElementById("executiveNotes").innerHTML = `
         <li><span class="note-dot"></span><span>Selected Shopify view: <strong>${viewText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span></li>
-        <li><span class="note-dot"></span><span>Total Sales are <strong>${money(totals.total_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Gross Sales are <strong>${money(totals.gross_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Orders: <strong>${number(totals.orders || totals.transactions)}</strong>, Units Sold: <strong>${number(totals.units_sold)}</strong>, Customers: <strong>${number(totals.customers)}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span></li>
         <li><span class="note-dot"></span><span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span></li>
