@@ -237,14 +237,23 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
     # Wellington should not include shipping or Ads / Stats unless an approved
     # Wellington-specific campaign is added later.
-    # Concierge is Corro regular customers, so its Shipping Cost should come
-    # from Shopify shipping income for now, as requested by Ceci.
+    # Concierge is NOT Wellington. It is a Corro customer split.
+    # Per Ceci's latest request, Concierge Shipping Cost should come from Shopify
+    # for the Concierge split; brand/all-brand rows keep QuickBooks Shipping Cost.
     wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
     concierge_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("concierge")
-    result.loc[wellington_mask, "shipping_charges"] = 0.0
+
+    # Only location/split rows are zeroed by default, never brand rows. This keeps
+    # All Brands / Corro / Cavali Shipping Cost from QuickBooks visible.
     result.loc[location_mask, "applied_shipping"] = 0.0
-    result.loc[concierge_mask, "applied_shipping"] = result.loc[concierge_mask, "shipping_charges"]
     result.loc[location_mask, "marketing_allocated"] = 0.0
+
+    # Wellington remains zero until Nicole/Ceci provide Wellington-specific data.
+    result.loc[wellington_mask, "shipping_charges"] = 0.0
+    result.loc[wellington_mask, "applied_shipping"] = 0.0
+
+    # Concierge uses Shopify shipping amount as Shipping Cost in the Concierge view.
+    result.loc[concierge_mask, "applied_shipping"] = result.loc[concierge_mask, "shipping_charges"]
 
     # Cavali should not deduct Ads / Stats in this view for now.
     cavali_mask = result["brand"].astype(str).str.lower().eq("cavali") & result["view_type"].eq("brand")
