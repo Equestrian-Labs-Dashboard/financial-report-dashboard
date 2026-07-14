@@ -78,6 +78,13 @@ DEFAULT_FALLBACK_KEYWORDS = [
     "carrier",
     "fulfillment",
     "fulfilment",
+    "shipping and delivery",
+    "shipping & delivery",
+    "delivery and freight",
+    "freight and delivery",
+    "courier services",
+    "delivery expense",
+    "postage and delivery",
 ]
 
 
@@ -448,4 +455,3 @@ def get_qb_shipping_costs(
 
     print(f"QuickBooks shipping cost total {year}: {round(sum(result.values()), 2)}")
     return result
- 

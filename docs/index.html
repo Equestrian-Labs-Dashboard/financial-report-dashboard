@@ -351,6 +351,30 @@
       margin-bottom: 9px;
     }
 
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .kpi-value-row .kpi-value {
+      margin-bottom: 0;
+    }
+
+    .kpi-secondary-value {
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
     .kpi-chip {
       display: inline-flex;
       align-items: center;
@@ -385,7 +409,7 @@
 
     .content-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin-top: 12px;
     }
@@ -954,7 +978,8 @@
     }
 
     function displayShippingCost(row) {
-      return isLocationRow(row) ? 0 : Number(row.shipping_cost || row.applied_shipping || 0);
+      if (isWellingtonRow(row)) return 0;
+      return Number(row.shipping_cost || row.applied_shipping || 0);
     }
 
     function displayAdsStats(row) {
@@ -1414,9 +1439,9 @@
         <div class="kpi-card"><div class="kpi-label">Returning Customers</div><div class="kpi-value">${compactNumber(totals.returning_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Purchased again in selected year</div></div>
 
         <div class="kpi-card"><div class="kpi-label">Gross Sales</div><div class="kpi-value">${compactMoney(totals.gross_sales)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Price × Qty</div></div>
-        <div class="kpi-card warning"><div class="kpi-label">Discounts</div><div class="kpi-value">${compactMoney(totals.discounts)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Discount amount</div></div>
-        <div class="kpi-card warning"><div class="kpi-label">% Discounts</div><div class="kpi-value">${percent(totals.discount_pct)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Discounts / Gross Sales</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Discounts</div><div class="kpi-value-row"><div class="kpi-value">${compactMoney(totals.discounts)}</div><div class="kpi-secondary-value">${percent(totals.discount_pct)}</div></div><div class="kpi-chip">Shopify</div><div class="kpi-note">Amount + % of Gross Sales</div></div>
         <div class="kpi-card warning"><div class="kpi-label">Returns</div><div class="kpi-value">${compactMoney(totals.returns)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Returns amount</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Discounts + Returns</div><div class="kpi-value-row"><div class="kpi-value">${compactMoney(totals.discounts_returns)}</div><div class="kpi-secondary-value">${percent(totals.discounts_returns_pct)}</div></div><div class="kpi-chip">Risk</div><div class="kpi-note">Combined amount + %</div></div>
         <div class="kpi-card"><div class="kpi-label">Shipping Income</div><div class="kpi-value">${compactMoney(totals.shipping_charges)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Customer-paid shipping</div></div>
 
         <div class="kpi-card negative"><div class="kpi-label">COGS</div><div class="kpi-value">${compactMoney(totals.cogs)}</div><div class="kpi-chip red">Cost</div><div class="kpi-note">Product cost</div></div>

@@ -212,7 +212,10 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
+                # Primary source is QuickBooks. If QuickBooks returns 0 because no matching
+                # shipping-cost account exists yet, keep the table populated using Shopify
+                # Shipping Income as a temporary fallback instead of showing all zeros.
+                result.at[i, "applied_shipping"] = (qb_shipping_total * proportion) if qb_shipping_total > 0 else result.at[i, "shipping_charges"]
 
             marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
             for i in brand_index:
@@ -228,7 +231,10 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion
+                # Primary source is QuickBooks. If QuickBooks returns 0 because no matching
+                # shipping-cost account exists yet, keep the table populated using Shopify
+                # Shipping Income as a temporary fallback instead of showing all zeros.
+                result.at[i, "applied_shipping"] = (qb_shipping_total * proportion) if qb_shipping_total > 0 else result.at[i, "shipping_charges"]
 
             marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
             for i in brand_index:
@@ -263,6 +269,10 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     # Shipping Cost sits under GM1 and is the adjustment used to get GP2.
     # Ads / Stats sits under GM2 and is the adjustment used to get GP3.
     result["shipping_cost"] = result["applied_shipping"]
+    result["shipping_cost_source"] = "QuickBooks"
+    result.loc[result["shipping_cost"].fillna(0).eq(result["shipping_charges"].fillna(0)) & result["shipping_cost"].fillna(0).gt(0), "shipping_cost_source"] = "Shopify fallback"
+    result.loc[concierge_mask, "shipping_cost_source"] = "Shopify Concierge"
+    result.loc[wellington_mask, "shipping_cost_source"] = "Pending Wellington data"
     result["ads_stats_spend"] = result["marketing_allocated"]
 
     result["gross_profit_2"] = result["gross_profit_1"] - result["shipping_cost"]
