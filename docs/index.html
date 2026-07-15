@@ -910,10 +910,15 @@
       Q3: "Q3 · Jul–Sep", Q4: "Q4 · Oct–Dec"
     };
 
-    const ESTIMATED_OPEX_RULES = {
-      Corro: { amount: 100000, period: "monthly" },
-      Cavali: { amount: 17500, period: "quarterly" }
-    };
+    const GENERAL_OPEX_PAYROLL_MONTHLY = 40000;
+    const GENERAL_OPEX_GA_MONTHLY = 45000;
+    const GENERAL_OPEX_SALES_MARKETING_PCT = 0.0662;
+    const GENERAL_OPEX_TECHNOLOGY_MONTHLY = 0;
+    const CHANNEL_OPEX_POOL_ANNUAL = 70000;
+    const CONCIERGE_OPEX_BASE_PCT = 0.60;
+    const WELLINGTON_OPEX_BASE_PCT = 0.40;
+    const CONCIERGE_COMMISSION_PCT = 0.10;
+    const WELLINGTON_COMMISSION_PCT = 0.01;
 
     function rowHasFinancialActivity(row) {
       return Number(row.total_sales || 0) !== 0 ||
@@ -921,33 +926,34 @@
              Number(row.net_sales || 0) !== 0;
     }
 
-    function estimatedMonthlyOpexForRow(row) {
-      const viewType = row.view_type || "brand";
-
-      // Wellington is a location view. Do not double-count brand OPEX there.
-      if (viewType === "location") {
-        return 0;
-      }
-
-      if (!rowHasFinancialActivity(row)) {
-        return 0;
-      }
-
-      const brand = row.brand || "";
-      const rule = ESTIMATED_OPEX_RULES[brand];
-
-      if (!rule) return 0;
-
-      if (rule.period === "monthly") {
-        return Number(rule.amount || 0);
-      }
-
-      if (rule.period === "quarterly") {
-        return Number(rule.amount || 0) / 3;
-      }
-
-      return 0;
+    function rowSplitName(row) {
+      return String((row && (row.location_filter || row.split_filter || row.location_name)) || "").trim().toLowerCase();
     }
+
+    function estimatedMonthlyOpexForRow(row) {
+      if (!rowHasFinancialActivity(row)) return 0;
+
+      const viewType = String(row.view_type || "brand").toLowerCase();
+      const split = rowSplitName(row);
+      const netSales = Number(row.net_sales || 0);
+
+      if (viewType === "location") {
+        if (split === "concierge") {
+          return (CHANNEL_OPEX_POOL_ANNUAL * CONCIERGE_OPEX_BASE_PCT / 12) + (netSales * CONCIERGE_COMMISSION_PCT);
+        }
+        if (split === "wellington") {
+          return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12) + (netSales * WELLINGTON_COMMISSION_PCT);
+        }
+        return 0;
+      }
+
+      // Fallback only. The JSON normally already contains the allocated OPEX.
+      return GENERAL_OPEX_PAYROLL_MONTHLY +
+             GENERAL_OPEX_GA_MONTHLY +
+             GENERAL_OPEX_TECHNOLOGY_MONTHLY +
+             (Number(row.gross_sales || 0) * GENERAL_OPEX_SALES_MARKETING_PCT);
+    }
+
 
     function estimatedNoiForRow(row) {
       const jsonValue = Number(row.estimated_net_operating_income || 0);
@@ -974,16 +980,15 @@
     }
 
     function displayShippingCharges(row) {
-      return isWellingtonRow(row) ? 0 : Number(row.shipping_charges || 0);
+      return Number(row.shipping_charges || 0);
     }
 
     function displayShippingCost(row) {
-      if (isWellingtonRow(row)) return 0;
       return Number(row.shipping_cost || row.applied_shipping || 0);
     }
 
     function displayAdsStats(row) {
-      if (isLocationRow(row) || isCavaliBrand(row)) return 0;
+      if (isCavaliBrand(row) && !isLocationRow(row)) return 0;
       return Number(row.ads_stats_spend || row.marketing_allocated || 0);
     }
 
@@ -994,7 +999,7 @@
     }
 
     function displayGrossProfit3(row) {
-      if (isLocationRow(row) || isCavaliBrand(row)) {
+      if (isCavaliBrand(row) && !isLocationRow(row)) {
         return displayGrossProfit2(row);
       }
 
@@ -1363,8 +1368,8 @@
       result.checkout_abandonment_rate = result.sessions_reached_checkout
         ? result.checkout_abandonments / result.sessions_reached_checkout
         : 0;
-      result.estimated_net_operating_income_pct = result.total_sales
-        ? result.estimated_net_operating_income / result.total_sales
+      result.estimated_net_operating_income_pct = result.net_sales
+        ? result.estimated_net_operating_income / result.net_sales
         : 0;
 
       delete result._gross_margin_1_weight;
@@ -1565,8 +1570,8 @@
             checkout_abandonment_rate: row.sessions_reached_checkout
               ? row.checkout_abandonments / row.sessions_reached_checkout
               : 0,
-            estimated_net_operating_income_pct: row.total_sales
-              ? row.estimated_net_operating_income / row.total_sales
+            estimated_net_operating_income_pct: row.net_sales
+              ? row.estimated_net_operating_income / row.net_sales
               : 0,
             discount_pct: row.gross_sales ? row.discounts / row.gross_sales : 0,
             discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0

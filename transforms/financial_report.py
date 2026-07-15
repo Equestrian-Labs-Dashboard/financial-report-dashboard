@@ -197,11 +197,24 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result["applied_shipping"] = 0.0
     result["marketing_allocated"] = 0.0
 
-    # Brand rows keep the original Google Sheet / QB allocation logic.
-    # Location rows, including Wellington, are not allocated global marketing.
     brand_mask = result["view_type"].eq("brand")
     location_mask = result["view_type"].eq("location")
+    wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
+    concierge_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("concierge")
+    channel_shipping_estimate_mask = wellington_mask | concierge_mask
 
+    def _corro_net_total(year_value, month_value=None) -> float:
+        mask = (
+            result["view_type"].eq("brand")
+            & result["brand"].astype(str).str.lower().eq("corro")
+            & result["year"].eq(year_value)
+        )
+        if month_value is not None and "month" in result.columns:
+            mask &= result["month"].astype(str).str.zfill(2).eq(str(month_value).zfill(2))
+        return result.loc[mask, "net_sales"].sum()
+
+    # 1) Main business rows: Corro/Cavali brand rows use QuickBooks only.
+    #    Shipping Income is Shopify revenue and must not be copied as cost.
     if monthly:
         for (year, month), index in result.groupby(["year", "month"]).groups.items():
             index = list(index)
@@ -212,8 +225,6 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                # Primary source is QuickBooks only. Do NOT fallback to Shopify
-                # Shipping Income; Shipping Income is revenue, not cost.
                 result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
 
             marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
@@ -230,8 +241,6 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
             for i in brand_index:
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                # Primary source is QuickBooks only. Do NOT fallback to Shopify
-                # Shipping Income; Shipping Income is revenue, not cost.
                 result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
 
             marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
@@ -239,71 +248,45 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
                 result.at[i, "marketing_allocated"] = marketing_total * proportion
 
-    # Wellington should not include shipping or Ads / Stats unless an approved
-    # Wellington-specific campaign is added later.
-    # Concierge is NOT Wellington. It is a Corro customer split.
-    # Shipping Cost must come from QuickBooks only. Shopify Shipping Income is
-    # revenue and must never be copied into Shipping Cost.
-    wellington_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("wellington")
-    concierge_mask = location_mask & result["location_filter"].astype(str).str.lower().eq("concierge")
-
-    # Only location/split rows are zeroed by default, never brand rows. This keeps
-    # All Brands / Corro / Cavali Shipping Cost from QuickBooks visible.
+    # 2) Location/channel rows: do not inherit global brand marketing by default.
+    #    Wellington and Concierge can estimate Shipping Cost from Shopify Shipping
+    #    Income only when QuickBooks has no usable separated shipping cost.
     result.loc[location_mask, "applied_shipping"] = 0.0
     result.loc[location_mask, "marketing_allocated"] = 0.0
 
-    # Concierge is a Corro customer split, so it should get QuickBooks Shipping Cost
-    # allocated proportionally by Net Sales. It must NOT use Shopify Shipping Income.
     if monthly:
-        for (year, month), index in result.loc[concierge_mask].groupby(["year", "month"]).groups.items():
+        for (year, month), index in result.loc[channel_shipping_estimate_mask].groupby(["year", "month"]).groups.items():
             index = list(index)
             y_data = _lookup_year_dict(qb_summaries, int(year))
             qb_shipping_total = _safe_float(y_data.get(str(month).zfill(2), 0))
-            brand_month_mask = (
-                result["view_type"].eq("brand")
-                & result["year"].eq(year)
-                & result["month"].astype(str).str.zfill(2).eq(str(month).zfill(2))
-                & result["brand"].astype(str).str.lower().eq("corro")
-            )
-            brand_net_total = result.loc[brand_month_mask, "net_sales"].sum()
+            corro_net_total = _corro_net_total(year, month)
             for i in index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+                proportion = result.at[i, "net_sales"] / corro_net_total if corro_net_total else 0
+                qb_allocated = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+                shopify_estimate = _safe_float(result.at[i, "shipping_charges"])
+                result.at[i, "applied_shipping"] = qb_allocated if qb_allocated > 0 else shopify_estimate
     else:
-        for year, index in result.loc[concierge_mask].groupby("year").groups.items():
+        for year, index in result.loc[channel_shipping_estimate_mask].groupby("year").groups.items():
             index = list(index)
             y_data = _lookup_year_dict(qb_summaries, int(year))
             qb_shipping_total = sum(_safe_float(v) for v in y_data.values())
-            brand_year_mask = (
-                result["view_type"].eq("brand")
-                & result["year"].eq(year)
-                & result["brand"].astype(str).str.lower().eq("corro")
-            )
-            brand_net_total = result.loc[brand_year_mask, "net_sales"].sum()
+            corro_net_total = _corro_net_total(year)
             for i in index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
-
-    # Wellington remains zero until Nicole/Ceci provide Wellington-specific data.
-    result.loc[wellington_mask, "shipping_charges"] = 0.0
-    result.loc[wellington_mask, "applied_shipping"] = 0.0
-
-    # Concierge also uses QuickBooks Shipping Cost, allocated proportionally below.
-    # It must not use Shopify Shipping Income as cost.
+                proportion = result.at[i, "net_sales"] / corro_net_total if corro_net_total else 0
+                qb_allocated = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
+                shopify_estimate = _safe_float(result.at[i, "shipping_charges"])
+                result.at[i, "applied_shipping"] = qb_allocated if qb_allocated > 0 else shopify_estimate
 
     # Cavali should not deduct Ads / Stats in this view for now.
     cavali_mask = result["brand"].astype(str).str.lower().eq("cavali") & result["view_type"].eq("brand")
     result.loc[cavali_mask, "marketing_allocated"] = 0.0
 
-    # Keep these visible in the financial table.
-    # Shipping Cost sits under GM1 and is the adjustment used to get GP2.
-    # Ads / Stats sits under GM2 and is the adjustment used to get GP3.
     result["shipping_cost"] = result["applied_shipping"]
     result["shipping_cost_source"] = "QuickBooks"
     result.loc[result["shipping_cost"].fillna(0).eq(0), "shipping_cost_source"] = "QuickBooks unavailable / unmapped"
-    result.loc[wellington_mask, "shipping_cost_source"] = "Pending Wellington data"
-    result["ads_stats_spend"] = result["marketing_allocated"]
+    result.loc[channel_shipping_estimate_mask & result["shipping_cost"].fillna(0).gt(0), "shipping_cost_source"] = "QuickBooks allocated or Shopify estimate"
 
+    result["ads_stats_spend"] = result["marketing_allocated"]
     result["gross_profit_2"] = result["gross_profit_1"] - result["shipping_cost"]
     result["gross_margin_2"] = (result["gross_profit_2"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
     result["gross_profit_3"] = result["gross_profit_2"] - result["ads_stats_spend"]
@@ -315,20 +298,53 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
 
 
 
-ESTIMATED_OPEX_RULES = {
-    "Corro": {"amount": 100000, "period": "monthly"},
-    "Cavali": {"amount": 17500, "period": "quarterly"},
-}
+GENERAL_OPEX_PAYROLL_MONTHLY = 40000.0
+GENERAL_OPEX_GA_MONTHLY = 45000.0
+GENERAL_OPEX_SALES_MARKETING_PCT = 0.0662
+GENERAL_OPEX_TECHNOLOGY_MONTHLY = 0.0
+
+CHANNEL_OPEX_POOL_ANNUAL = 70000.0
+CONCIERGE_OPEX_BASE_PCT = 0.60
+WELLINGTON_OPEX_BASE_PCT = 0.40
+CONCIERGE_COMMISSION_PCT = 0.10
+WELLINGTON_COMMISSION_PCT = 0.01
+
+
+def _period_fixed_opex(monthly: bool) -> float:
+    months = 1 if monthly else 12
+    return months * (GENERAL_OPEX_PAYROLL_MONTHLY + GENERAL_OPEX_GA_MONTHLY + GENERAL_OPEX_TECHNOLOGY_MONTHLY)
+
+
+def _channel_base_opex(split_name: str, monthly: bool) -> float:
+    split = str(split_name or "").strip().lower()
+    months_divisor = 12 if monthly else 1
+    if split == "concierge":
+        return (CHANNEL_OPEX_POOL_ANNUAL * CONCIERGE_OPEX_BASE_PCT) / months_divisor
+    if split == "wellington":
+        return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT) / months_divisor
+    return 0.0
+
+
+def _channel_commission_opex(split_name: str, net_sales: float) -> float:
+    split = str(split_name or "").strip().lower()
+    if split == "concierge":
+        return _safe_float(net_sales) * CONCIERGE_COMMISSION_PCT
+    if split == "wellington":
+        return _safe_float(net_sales) * WELLINGTON_COMMISSION_PCT
+    return 0.0
 
 
 def add_estimated_operating_income(df):
     """
-    Adds provisional operating estimates after GP3/GM3.
+    Adds provisional Financial Dashboard OPEX and NOI estimates.
 
-    Current provisional rules:
-    - Corro: 100,000 per month
-    - Cavali: 17,500 per quarter, allocated as 17,500 / 3 per month
-    - Wellington/location rows: 0, so location view does not double-count brand OPEX.
+    Financial rules:
+    - Brand/main business OPEX pool is allocated by Gross Sales per period:
+      Payroll 40k/month + G&A 45k/month + Sales & Marketing 6.62% of Gross Revenue + Technology 0.
+    - Concierge OPEX estimate: 70k annual pool * 60%, plus 10% of Concierge Net Sales.
+    - Wellington OPEX estimate: 70k annual pool * 40%, plus 1% of Wellington Net Sales.
+    - NOI = GP3 - OPEX.
+    - NOI % = NOI / Net Sales.
     """
     if df.empty:
         df["estimated_average_opex"] = 0
@@ -336,38 +352,39 @@ def add_estimated_operating_income(df):
         df["estimated_net_operating_income_pct"] = 0
         return df
 
-    def monthly_opex(row):
-        view_type = str(row.get("view_type", "brand"))
-        if view_type == "location":
-            return 0.0
+    df = df.copy()
+    df["estimated_average_opex"] = 0.0
 
-        has_activity = (
-            _safe_float(row.get("total_sales")) != 0 or
-            _safe_float(row.get("gross_sales")) != 0 or
-            _safe_float(row.get("net_sales")) != 0
+    monthly = "month" in df.columns
+    group_cols = ["year", "month"] if monthly else ["year"]
+
+    def has_activity(frame):
+        return (
+            frame["total_sales"].fillna(0).ne(0)
+            | frame["gross_sales"].fillna(0).ne(0)
+            | frame["net_sales"].fillna(0).ne(0)
         )
-        if not has_activity:
-            return 0.0
 
-        brand = str(row.get("brand", ""))
-        rule = ESTIMATED_OPEX_RULES.get(brand)
-        if not rule:
-            return 0.0
+    # Main business rows: allocate the general OPEX pool across brand rows by gross sales.
+    brand_mask = df["view_type"].astype(str).str.lower().eq("brand") & has_activity(df)
+    for _, index in df.loc[brand_mask].groupby(group_cols).groups.items():
+        index = list(index)
+        period_gross = df.loc[index, "gross_sales"].sum()
+        if period_gross <= 0:
+            continue
+        pool = _period_fixed_opex(monthly=monthly) + (period_gross * GENERAL_OPEX_SALES_MARKETING_PCT)
+        for i in index:
+            df.at[i, "estimated_average_opex"] = pool * (_safe_float(df.at[i, "gross_sales"]) / period_gross)
 
-        amount = _safe_float(rule.get("amount"))
-        period = str(rule.get("period"))
+    # Channel/location rows: Concierge and Wellington have their own provisional OPEX rules.
+    location_mask = df["view_type"].astype(str).str.lower().eq("location") & has_activity(df)
+    for i in df.loc[location_mask].index:
+        split = df.at[i, "location_filter"] if "location_filter" in df.columns else ""
+        df.at[i, "estimated_average_opex"] = _channel_base_opex(split, monthly=monthly) + _channel_commission_opex(split, df.at[i, "net_sales"])
 
-        if period == "monthly":
-            return amount
-        if period == "quarterly":
-            return amount / 3
-
-        return 0.0
-
-    df["estimated_average_opex"] = df.apply(monthly_opex, axis=1)
     df["estimated_net_operating_income"] = df["gross_profit_3"] - df["estimated_average_opex"]
     df["estimated_net_operating_income_pct"] = (
-        df["estimated_net_operating_income"] / df["total_sales"].replace(0, pd.NA)
+        df["estimated_net_operating_income"] / df["net_sales"].replace(0, pd.NA)
     ).fillna(0)
 
     return df
@@ -430,7 +447,7 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
             frame["estimated_average_opex"] = 0
             frame["estimated_net_operating_income"] = frame.get("gross_profit_3", 0)
             frame["estimated_net_operating_income_pct"] = (
-                frame["estimated_net_operating_income"] / frame["total_sales"].replace(0, pd.NA)
+                frame["estimated_net_operating_income"] / frame["net_sales"].replace(0, pd.NA)
             ).fillna(0)
 
     return {
