@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15T02:57:11.833253+00:00",
+  "generated_at": "2026-07-15T03:54:54.699591+00:00",
   "brands_available": [
     "Cavali",
     "Corro"
@@ -63,9 +63,9 @@
       "gross_margin_2": 0.3903924861199628,
       "gross_profit_3": 96311.79000000001,
       "gross_margin_3": 0.3903924861199628,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 90478.45666666668,
-      "estimated_net_operating_income_pct": 0.3437045911468297
+      "estimated_average_opex": 165919.87050048017,
+      "estimated_net_operating_income": -69608.08050048017,
+      "estimated_net_operating_income_pct": -0.28215103883564985
     },
     {
       "brand": "Cavali",
@@ -112,9 +112,9 @@
       "gross_margin_2": 0.3799983090603031,
       "gross_profit_3": 55417.46,
       "gross_margin_3": 0.3799983090603031,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 49584.12666666666,
-      "estimated_net_operating_income_pct": 0.3159140577998581
+      "estimated_average_opex": 88501.71562388299,
+      "estimated_net_operating_income": -33084.25562388299,
+      "estimated_net_operating_income_pct": -0.22685920996008047
     },
     {
       "brand": "Cavali",
@@ -161,9 +161,9 @@
       "gross_margin_2": 0.33806895620493566,
       "gross_profit_3": 18727.58,
       "gross_margin_3": 0.33806895620493566,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 12894.24666666667,
-      "estimated_net_operating_income_pct": 0.19508878104625849
+      "estimated_average_opex": 101579.1197172746,
+      "estimated_net_operating_income": -82851.5397172746,
+      "estimated_net_operating_income_pct": -1.4956301642919583
     },
     {
       "brand": "Corro",
@@ -210,9 +210,9 @@
       "gross_margin_2": 0.28267663785623437,
       "gross_profit_3": 338196.27999999997,
       "gross_margin_3": 0.28267663785623437,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": 238196.27999999997,
-      "estimated_net_operating_income_pct": 0.18657361756150426
+      "estimated_average_opex": 972780.8974515198,
+      "estimated_net_operating_income": -634584.6174515199,
+      "estimated_net_operating_income_pct": -0.5304086907652572
     },
     {
       "brand": "Corro",
@@ -259,9 +259,9 @@
       "gross_margin_2": 0.23289978334394157,
       "gross_profit_3": 54958.13297122222,
       "gross_margin_3": 0.036347634268461264,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -45041.86702877778,
-      "estimated_net_operating_income_pct": -0.02807053480807245
+      "estimated_average_opex": 1063118.789306117,
+      "estimated_net_operating_income": -1008160.6563348947,
+      "estimated_net_operating_income_pct": -0.6667667338608588
     },
     {
       "brand": "Corro",
@@ -293,14 +293,14 @@
       "customers": 2250,
       "new_customers": 2250,
       "returning_customers": 337,
-      "sessions_reached_checkout": 3981.0,
+      "sessions_reached_checkout": 3983.0,
       "sessions_completed_checkout": 1896.0,
-      "checkout_abandonments": 2085.0,
+      "checkout_abandonments": 2087.0,
       "discount_pct": 0.10857621457920152,
       "discounts_returns_pct": 0.17292335395494618,
       "gross_margin_1": 0.31080569976334355,
       "net_gross_ratio": 0.8270766460450537,
-      "checkout_abandonment_rate": 0.5237377543330821,
+      "checkout_abandonment_rate": 0.5239769018327893,
       "shipping_cost": 0.0,
       "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 128689.3855482233,
@@ -308,9 +308,9 @@
       "gross_margin_2": 0.3039978016499892,
       "gross_profit_3": 22483.26445177669,
       "gross_margin_3": 0.04521229843662503,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -77516.73554822331,
-      "estimated_net_operating_income_pct": -0.14514372051943286
+      "estimated_average_opex": 962424.8074007255,
+      "estimated_net_operating_income": -939941.5429489489,
+      "estimated_net_operating_income_pct": -1.8901577946538568
     },
     {
       "brand": "Corro",
@@ -350,16 +350,16 @@
       "gross_margin_1": 0.37395966352114457,
       "net_gross_ratio": 0.8707946138669963,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 5575.37,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 169559.91930774137,
-      "gross_margin_2": 0.37395966352114457,
-      "gross_profit_3": 169559.91930774137,
-      "gross_margin_3": 0.37395966352114457,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 169559.91930774137,
-      "estimated_net_operating_income_pct": 0.35588269656565763
+      "gross_profit_2": 163984.54930774137,
+      "gross_margin_2": 0.3616633407951247,
+      "gross_profit_3": 163984.54930774137,
+      "gross_margin_3": 0.3616633407951247,
+      "estimated_average_opex": 87341.76699999999,
+      "estimated_net_operating_income": 76642.78230774138,
+      "estimated_net_operating_income_pct": 0.16903351452478987
     },
     {
       "brand": "Corro",
@@ -399,16 +399,16 @@
       "gross_margin_1": 0.37327275492305834,
       "net_gross_ratio": 0.8514368656981812,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 5411.59,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 202401.20138931493,
-      "gross_margin_2": 0.37327275492305834,
-      "gross_profit_3": 202401.20138931493,
-      "gross_margin_3": 0.37327275492305834,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 202401.20138931493,
-      "estimated_net_operating_income_pct": 0.3549627129830541
+      "gross_profit_2": 196989.61138931493,
+      "gross_margin_2": 0.3632925814164365,
+      "gross_profit_3": 196989.61138931493,
+      "gross_margin_3": 0.3632925814164365,
+      "estimated_average_opex": 96223.40600000002,
+      "estimated_net_operating_income": 100766.20538931491,
+      "estimated_net_operating_income_pct": 0.18583525606878126
     },
     {
       "brand": "Corro",
@@ -448,16 +448,16 @@
       "gross_margin_1": 0.3882974363653575,
       "net_gross_ratio": 0.9206114823055838,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 2054.11,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 69530.16592183929,
-      "gross_margin_2": 0.3882974363653575,
-      "gross_profit_3": 69530.16592183929,
-      "gross_margin_3": 0.3882974363653575,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 69530.16592183929,
-      "estimated_net_operating_income_pct": 0.36629369520570104
+      "gross_profit_2": 67476.05592183929,
+      "gross_margin_2": 0.3768260751735972,
+      "gross_profit_3": 67476.05592183929,
+      "gross_margin_3": 0.3768260751735972,
+      "estimated_average_opex": 59906.419,
+      "estimated_net_operating_income": 7569.6369218392865,
+      "estimated_net_operating_income_pct": 0.04227331507120037
     },
     {
       "brand": "Corro",
@@ -498,15 +498,15 @@
       "net_gross_ratio": 0.9407388714321272,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 27511.914984984985,
       "gross_margin_2": 0.4589659452119385,
       "gross_profit_3": 27511.914984984985,
       "gross_margin_3": 0.4589659452119385,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 27511.914984984985,
-      "estimated_net_operating_income_pct": 0.43099810529102234
+      "estimated_average_opex": 28599.4326,
+      "estimated_net_operating_income": -1087.5176150150146,
+      "estimated_net_operating_income_pct": -0.018142450294078342
     },
     {
       "brand": "Corro",
@@ -547,15 +547,15 @@
       "net_gross_ratio": 0.9244573869581336,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 42594.11,
       "gross_margin_2": 0.5203311473959933,
       "gross_profit_3": 42594.11,
       "gross_margin_3": 0.5203311473959933,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 42594.11,
-      "estimated_net_operating_income_pct": 0.4901921542758262
+      "estimated_average_opex": 28818.5962,
+      "estimated_net_operating_income": 13775.5138,
+      "estimated_net_operating_income_pct": 0.16828216158345227
     }
   ],
   "shopify_kpis_by_brand_month": [
@@ -605,9 +605,9 @@
       "gross_margin_2": 0.4541447071961756,
       "gross_profit_3": 231.8,
       "gross_margin_3": 0.4541447071961756,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5601.533333333333,
-      "estimated_net_operating_income_pct": -9.08867687781239
+      "estimated_average_opex": 391.01542453397883,
+      "estimated_net_operating_income": -159.21542453397882,
+      "estimated_net_operating_income_pct": -0.3119363345819612
     },
     {
       "brand": "Cavali",
@@ -655,9 +655,9 @@
       "gross_margin_2": 0.37345834094646446,
       "gross_profit_3": 327.03,
       "gross_margin_3": 0.37345834094646446,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5506.303333333333,
-      "estimated_net_operating_income_pct": -5.669529075414517
+      "estimated_average_opex": 721.2314234101483,
+      "estimated_net_operating_income": -394.2014234101483,
+      "estimated_net_operating_income_pct": -0.45016606912359347
     },
     {
       "brand": "Cavali",
@@ -705,9 +705,9 @@
       "gross_margin_2": 0.38851448560386637,
       "gross_profit_3": 24925.31,
       "gross_margin_3": 0.38851448560386637,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 19091.97666666667,
-      "estimated_net_operating_income_pct": 0.28186845807587885
+      "estimated_average_opex": 27986.995279179926,
+      "estimated_net_operating_income": -3061.6852791799247,
+      "estimated_net_operating_income_pct": -0.04772294030932889
     },
     {
       "brand": "Cavali",
@@ -755,9 +755,9 @@
       "gross_margin_2": 0.6709329173595745,
       "gross_profit_3": 1952.71,
       "gross_margin_3": 0.6709329173595745,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -3880.623333333333,
-      "estimated_net_operating_income_pct": -1.1731167648137621
+      "estimated_average_opex": 2272.751161810113,
+      "estimated_net_operating_income": -320.04116181011295,
+      "estimated_net_operating_income_pct": -0.10996315395957758
     },
     {
       "brand": "Cavali",
@@ -805,9 +805,9 @@
       "gross_margin_2": 0.44118407724304404,
       "gross_profit_3": 818.82,
       "gross_margin_3": 0.44118407724304404,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5014.513333333333,
-      "estimated_net_operating_income_pct": -2.271292127536862
+      "estimated_average_opex": 1507.647849793985,
+      "estimated_net_operating_income": -688.8278497939849,
+      "estimated_net_operating_income_pct": -0.3711436937186065
     },
     {
       "brand": "Cavali",
@@ -855,9 +855,9 @@
       "gross_margin_2": 0.3465049164866327,
       "gross_profit_3": 18722.17,
       "gross_margin_3": 0.3465049164866327,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 12888.836666666666,
-      "estimated_net_operating_income_pct": 0.22596941417562136
+      "estimated_average_opex": 32529.579436337655,
+      "estimated_net_operating_income": -13807.409436337657,
+      "estimated_net_operating_income_pct": -0.2555438420671815
     },
     {
       "brand": "Cavali",
@@ -905,9 +905,9 @@
       "gross_margin_2": 0.20657659094027045,
       "gross_profit_3": 1114.27,
       "gross_margin_3": 0.20657659094027045,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -4719.0633333333335,
-      "estimated_net_operating_income_pct": -0.7535334212630151
+      "estimated_average_opex": 6129.557196340915,
+      "estimated_net_operating_income": -5015.287196340914,
+      "estimated_net_operating_income_pct": -0.9297934357081254
     },
     {
       "brand": "Cavali",
@@ -955,9 +955,9 @@
       "gross_margin_2": 0.20408542217510406,
       "gross_profit_3": 1285.93,
       "gross_margin_3": 0.20408542217510406,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -4547.403333333333,
-      "estimated_net_operating_income_pct": -0.6895741053290286
+      "estimated_average_opex": 5890.9967968034325,
+      "estimated_net_operating_income": -4605.066796803432,
+      "estimated_net_operating_income_pct": -0.7308539355720627
     },
     {
       "brand": "Cavali",
@@ -1005,9 +1005,9 @@
       "gross_margin_2": 0.3590035839396495,
       "gross_profit_3": 18297.07,
       "gross_margin_3": 0.3590035839396495,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 12463.736666666668,
-      "estimated_net_operating_income_pct": 0.23210806711138848
+      "estimated_average_opex": 33407.24316173064,
+      "estimated_net_operating_income": -15110.173161730643,
+      "estimated_net_operating_income_pct": -0.2964740430577139
     },
     {
       "brand": "Cavali",
@@ -1055,9 +1055,9 @@
       "gross_margin_2": -0.00606555528976362,
       "gross_profit_3": -22.06,
       "gross_margin_3": -0.00606555528976362,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5855.393333333333,
-      "estimated_net_operating_income_pct": -1.3792974025566132
+      "estimated_average_opex": 9017.109983706725,
+      "estimated_net_operating_income": -9039.169983706724,
+      "estimated_net_operating_income_pct": -2.485384646860601
     },
     {
       "brand": "Cavali",
@@ -1105,9 +1105,9 @@
       "gross_margin_2": 0.40050708426547355,
       "gross_profit_3": 268.54,
       "gross_margin_3": 0.40050708426547355,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5564.793333333333,
-      "estimated_net_operating_income_pct": -7.133344442877713
+      "estimated_average_opex": 553.4209585011289,
+      "estimated_net_operating_income": -284.8809585011289,
+      "estimated_net_operating_income_pct": -0.4248783870262921
     },
     {
       "brand": "Cavali",
@@ -1155,9 +1155,9 @@
       "gross_margin_2": 0.5124858656708012,
       "gross_profit_3": 28390.2,
       "gross_margin_3": 0.5124858656708012,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 22556.86666666667,
-      "estimated_net_operating_income_pct": 0.37727099290689997
+      "estimated_average_opex": 28231.84863961715,
+      "estimated_net_operating_income": 158.35136038285054,
+      "estimated_net_operating_income_pct": 0.0028584805322242946
     },
     {
       "brand": "Cavali",
@@ -1205,9 +1205,9 @@
       "gross_margin_2": 0.5303856530188849,
       "gross_profit_3": 646.8,
       "gross_margin_3": 0.5303856530188849,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5186.533333333333,
-      "estimated_net_operating_income_pct": -3.8184285633652113
+      "estimated_average_opex": 1486.4939794542702,
+      "estimated_net_operating_income": -839.6939794542702,
+      "estimated_net_operating_income_pct": -0.6885615949735301
     },
     {
       "brand": "Cavali",
@@ -1255,9 +1255,9 @@
       "gross_margin_2": 0.40427927927927926,
       "gross_profit_3": 359.0,
       "gross_margin_3": 0.40427927927927926,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5474.333333333333,
-      "estimated_net_operating_income_pct": -5.8266101851260546
+      "estimated_average_opex": 816.6335115892293,
+      "estimated_net_operating_income": -457.63351158922933,
+      "estimated_net_operating_income_pct": -0.5153530535914744
     },
     {
       "brand": "Cavali",
@@ -1305,9 +1305,9 @@
       "gross_margin_2": 0.4103050253343023,
       "gross_profit_3": 17202.19,
       "gross_margin_3": 0.4103050253343023,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 11368.856666666667,
-      "estimated_net_operating_income_pct": 0.2495068434005314
+      "estimated_average_opex": 22910.207161404665,
+      "estimated_net_operating_income": -5708.017161404667,
+      "estimated_net_operating_income_pct": -0.1361470909238169
     },
     {
       "brand": "Cavali",
@@ -1355,9 +1355,9 @@
       "gross_margin_2": 0.3364828514871947,
       "gross_profit_3": 1042.01,
       "gross_margin_3": 0.3364828514871947,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -4791.323333333333,
-      "estimated_net_operating_income_pct": -1.4201815591401037
+      "estimated_average_opex": 2188.509434673556,
+      "estimated_net_operating_income": -1146.499434673556,
+      "estimated_net_operating_income_pct": -0.3702242771253777
     },
     {
       "brand": "Cavali",
@@ -1405,9 +1405,9 @@
       "gross_margin_2": 0.32713066721496864,
       "gross_profit_3": 636.4,
       "gross_margin_3": 0.32713066721496864,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5196.933333333333,
-      "estimated_net_operating_income_pct": -2.448219439655037
+      "estimated_average_opex": 1019.7567554553866,
+      "estimated_net_operating_income": -383.35675545538663,
+      "estimated_net_operating_income_pct": -0.19705806284331584
     },
     {
       "brand": "Cavali",
@@ -1455,9 +1455,9 @@
       "gross_margin_2": 0.39408338410798466,
       "gross_profit_3": 15160.64,
       "gross_margin_3": 0.39408338410798466,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 9327.306666666667,
-      "estimated_net_operating_income_pct": 0.22749356447955316
+      "estimated_average_opex": 19197.14640830196,
+      "estimated_net_operating_income": -4036.5064083019606,
+      "estimated_net_operating_income_pct": -0.10492433732066742
     },
     {
       "brand": "Cavali",
@@ -1505,9 +1505,9 @@
       "gross_margin_2": 0.27127430322766016,
       "gross_profit_3": 679.77,
       "gross_margin_3": 0.27127430322766016,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5153.5633333333335,
-      "estimated_net_operating_income_pct": -1.8975247366780317
+      "estimated_average_opex": 1419.1253395994547,
+      "estimated_net_operating_income": -739.3553395994547,
+      "estimated_net_operating_income_pct": -0.29505289228340786
     },
     {
       "brand": "Cavali",
@@ -1555,9 +1555,9 @@
       "gross_margin_2": 0.05416364952932658,
       "gross_profit_3": 29.92,
       "gross_margin_3": 0.05416364952932658,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5803.413333333333,
-      "estimated_net_operating_income_pct": -9.630143426867784
+      "estimated_average_opex": 439.7058166555397,
+      "estimated_net_operating_income": -409.7858166555397,
+      "estimated_net_operating_income_pct": -0.7418280533228452
     },
     {
       "brand": "Cavali",
@@ -1605,9 +1605,9 @@
       "gross_margin_2": 0.36907368691236275,
       "gross_profit_3": 12969.91,
       "gross_margin_3": 0.36907368691236275,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 7136.576666666667,
-      "estimated_net_operating_income_pct": 0.18977723364238783
+      "estimated_average_opex": 18731.475129928185,
+      "estimated_net_operating_income": -5761.565129928185,
+      "estimated_net_operating_income_pct": -0.16395195378289454
     },
     {
       "brand": "Cavali",
@@ -1655,9 +1655,9 @@
       "gross_margin_2": -1.3399383119917752,
       "gross_profit_3": -143.36,
       "gross_margin_3": -1.3399383119917752,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5976.693333333333,
-      "estimated_net_operating_income_pct": -30.44362944851942
+      "estimated_average_opex": 777.9754195012306,
+      "estimated_net_operating_income": -921.3354195012306,
+      "estimated_net_operating_income_pct": -8.61141620246033
     },
     {
       "brand": "Cavali",
@@ -1705,9 +1705,9 @@
       "gross_margin_2": 0.34405934327451326,
       "gross_profit_3": 135.9,
       "gross_margin_3": 0.34405934327451326,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5697.433333333333,
-      "estimated_net_operating_income_pct": -12.043531260349068
+      "estimated_average_opex": 217.1171365770516,
+      "estimated_net_operating_income": -81.2171365770516,
+      "estimated_net_operating_income_pct": -0.20561820951682727
     },
     {
       "brand": "Cavali",
@@ -1755,9 +1755,9 @@
       "gross_margin_2": 0.3419515335359363,
       "gross_profit_3": 6698.28,
       "gross_margin_3": 0.3419515335359363,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 864.9466666666667,
-      "estimated_net_operating_income_pct": 0.04118485744954623
+      "estimated_average_opex": 11181.686557497998,
+      "estimated_net_operating_income": -4483.406557497999,
+      "estimated_net_operating_income_pct": -0.22888080937218416
     },
     {
       "brand": "Cavali",
@@ -1805,9 +1805,9 @@
       "gross_margin_2": 0.2021706338046174,
       "gross_profit_3": 158.15,
       "gross_margin_3": 0.2021706338046174,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5675.183333333333,
-      "estimated_net_operating_income_pct": -6.657340825288085
+      "estimated_average_opex": 645.2487352295864,
+      "estimated_net_operating_income": -487.0987352295864,
+      "estimated_net_operating_income_pct": -0.6226813786076066
     },
     {
       "brand": "Cavali",
@@ -1855,9 +1855,9 @@
       "gross_margin_2": 0.06955219612771177,
       "gross_profit_3": 92.43,
       "gross_margin_3": 0.06955219612771177,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5740.903333333333,
-      "estimated_net_operating_income_pct": -3.7392713693306407
+      "estimated_average_opex": 1356.855479789911,
+      "estimated_net_operating_income": -1264.425479789911,
+      "estimated_net_operating_income_pct": -0.9514613108214209
     },
     {
       "brand": "Cavali",
@@ -1905,9 +1905,9 @@
       "gross_margin_2": 0.38635584846271015,
       "gross_profit_3": 10079.8,
       "gross_margin_3": 0.38635584846271015,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 4246.466666666666,
-      "estimated_net_operating_income_pct": 0.14097998764541042
+      "estimated_average_opex": 26498.27186306131,
+      "estimated_net_operating_income": -16418.47186306131,
+      "estimated_net_operating_income_pct": -0.6293153264066932
     },
     {
       "brand": "Cavali",
@@ -1955,9 +1955,9 @@
       "gross_margin_2": -0.1470106387282068,
       "gross_profit_3": -145.37,
       "gross_margin_3": -0.1470106387282068,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5978.703333333333,
-      "estimated_net_operating_income_pct": -5.432962273009526
+      "estimated_average_opex": 1656.027922366193,
+      "estimated_net_operating_income": -1801.3979223661931,
+      "estimated_net_operating_income_pct": -1.8217284114378394
     },
     {
       "brand": "Cavali",
@@ -2005,9 +2005,9 @@
       "gross_margin_2": 0.06686515449372636,
       "gross_profit_3": 128.91,
       "gross_margin_3": 0.06686515449372636,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5704.423333333333,
-      "estimated_net_operating_income_pct": -2.724500696517413
+      "estimated_average_opex": 2170.5778831739494,
+      "estimated_net_operating_income": -2041.6678831739493,
+      "estimated_net_operating_income_pct": -1.0590058058591683
     },
     {
       "brand": "Cavali",
@@ -2055,9 +2055,9 @@
       "gross_margin_2": 0.360000136272388,
       "gross_profit_3": 8453.66,
       "gross_margin_3": 0.360000136272388,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": 2620.326666666667,
-      "estimated_net_operating_income_pct": 0.08872976711226935
+      "estimated_average_opex": 26171.72483637672,
+      "estimated_net_operating_income": -17718.06483637672,
+      "estimated_net_operating_income_pct": -0.7545259397206212
     },
     {
       "brand": "Cavali",
@@ -2105,9 +2105,9 @@
       "gross_margin_2": -0.05025125628140704,
       "gross_profit_3": -40.0,
       "gross_margin_3": -0.05025125628140704,
-      "estimated_average_opex": 5833.333333333333,
-      "estimated_net_operating_income": -5873.333333333333,
-      "estimated_net_operating_income_pct": -6.831999503691296
+      "estimated_average_opex": 6917.891577310269,
+      "estimated_net_operating_income": -6957.891577310269,
+      "estimated_net_operating_income_pct": -8.741069820741544
     },
     {
       "brand": "Cavali",
@@ -2405,9 +2405,9 @@
       "gross_margin_2": 0.36085903673937714,
       "gross_profit_3": 58673.59,
       "gross_margin_3": 0.36085903673937714,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -41326.41,
-      "estimated_net_operating_income_pct": -0.23774865316315733
+      "estimated_average_opex": 96682.86826546604,
+      "estimated_net_operating_income": -38009.27826546604,
+      "estimated_net_operating_income_pct": -0.23376772312781643
     },
     {
       "brand": "Corro",
@@ -2455,9 +2455,9 @@
       "gross_margin_2": 0.2033538591986073,
       "gross_profit_3": 21671.01,
       "gross_margin_3": 0.2033538591986073,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -78328.99,
-      "estimated_net_operating_income_pct": -0.6886213978781432
+      "estimated_average_opex": 95103.19015658984,
+      "estimated_net_operating_income": -73432.18015658985,
+      "estimated_net_operating_income_pct": -0.6890642025549312
     },
     {
       "brand": "Corro",
@@ -2505,9 +2505,9 @@
       "gross_margin_2": 0.21336733047809117,
       "gross_profit_3": 25263.14,
       "gross_margin_3": 0.21336733047809117,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -74736.86,
-      "estimated_net_operating_income_pct": -0.5861949907321768
+      "estimated_average_opex": 72395.34859882006,
+      "estimated_net_operating_income": -47132.208598820056,
+      "estimated_net_operating_income_pct": -0.39806902579278625
     },
     {
       "brand": "Corro",
@@ -2555,9 +2555,9 @@
       "gross_margin_2": 0.171969377113478,
       "gross_profit_3": 16385.98,
       "gross_margin_3": 0.171969377113478,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -83614.02,
-      "estimated_net_operating_income_pct": -0.8214059837447829
+      "estimated_average_opex": 91678.2011501899,
+      "estimated_net_operating_income": -75292.2211501899,
+      "estimated_net_operating_income_pct": -0.790185046770983
     },
     {
       "brand": "Corro",
@@ -2605,9 +2605,9 @@
       "gross_margin_2": 0.16057168052408613,
       "gross_profit_3": 16420.72,
       "gross_margin_3": 0.16057168052408613,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -83579.28,
-      "estimated_net_operating_income_pct": -0.766899601351913
+      "estimated_average_opex": 93161.250082206,
+      "estimated_net_operating_income": -76740.530082206,
+      "estimated_net_operating_income_pct": -0.750415077999564
     },
     {
       "brand": "Corro",
@@ -2655,9 +2655,9 @@
       "gross_margin_2": 0.30691426390424664,
       "gross_profit_3": 28136.27,
       "gross_margin_3": 0.30691426390424664,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -71863.73,
-      "estimated_net_operating_income_pct": -0.73031221716606
+      "estimated_average_opex": 63222.40742766235,
+      "estimated_net_operating_income": -35086.137427662354,
+      "estimated_net_operating_income_pct": -0.3827243640274361
     },
     {
       "brand": "Corro",
@@ -2705,9 +2705,9 @@
       "gross_margin_2": 0.2482104422103516,
       "gross_profit_3": 15066.56,
       "gross_margin_3": 0.2482104422103516,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -84933.44,
-      "estimated_net_operating_income_pct": -1.3028827318041765
+      "estimated_average_opex": 84210.33274165909,
+      "estimated_net_operating_income": -69143.7727416591,
+      "estimated_net_operating_income_pct": -1.1390925604981668
     },
     {
       "brand": "Corro",
@@ -2755,9 +2755,9 @@
       "gross_margin_2": 0.3243221224715168,
       "gross_profit_3": 26314.07,
       "gross_margin_3": 0.3243221224715168,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -73685.93,
-      "estimated_net_operating_income_pct": -0.8572357767085166
+      "estimated_average_opex": 85688.03202319657,
+      "estimated_net_operating_income": -59373.962023196575,
+      "estimated_net_operating_income_pct": -0.7317868115007047
     },
     {
       "brand": "Corro",
@@ -2805,9 +2805,9 @@
       "gross_margin_2": 0.3284516515461223,
       "gross_profit_3": 26469.6,
       "gross_margin_3": 0.3284516515461223,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -73530.4,
-      "estimated_net_operating_income_pct": -0.8618849989339314
+      "estimated_average_opex": 61340.13420826935,
+      "estimated_net_operating_income": -34870.53420826935,
+      "estimated_net_operating_income_pct": -0.43269579256965063
     },
     {
       "brand": "Corro",
@@ -2855,9 +2855,9 @@
       "gross_margin_2": 0.3142508976282753,
       "gross_profit_3": 26012.58,
       "gross_margin_3": 0.3142508976282753,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -73987.42,
-      "estimated_net_operating_income_pct": -0.8400727899234983
+      "estimated_average_opex": 83804.46172229329,
+      "estimated_net_operating_income": -57791.881722293285,
+      "estimated_net_operating_income_pct": -0.698167990520655
     },
     {
       "brand": "Corro",
@@ -2905,9 +2905,9 @@
       "gross_margin_2": 0.4850395146253809,
       "gross_profit_3": 53583.78,
       "gross_margin_3": 0.4850395146253809,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -46416.22,
-      "estimated_net_operating_income_pct": -0.3977098205824482
+      "estimated_average_opex": 92695.23408949887,
+      "estimated_net_operating_income": -39111.454089498875,
+      "estimated_net_operating_income_pct": -0.3540362532815603
     },
     {
       "brand": "Corro",
@@ -2955,9 +2955,9 @@
       "gross_margin_2": 0.23280640225350704,
       "gross_profit_3": 24198.98,
       "gross_margin_3": 0.23280640225350704,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -75801.02,
-      "estimated_net_operating_income_pct": -0.681653366661358
+      "estimated_average_opex": 70079.91017438285,
+      "estimated_net_operating_income": -45880.930174382855,
+      "estimated_net_operating_income_pct": -0.441397707091061
     },
     {
       "brand": "Corro",
@@ -3005,9 +3005,9 @@
       "gross_margin_2": 0.3258543916976021,
       "gross_profit_3": -54047.745101588,
       "gross_margin_3": -0.6565849053954458,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -154047.745101588,
-      "estimated_net_operating_income_pct": -1.7329246222617645
+      "estimated_average_opex": 89789.62019054573,
+      "estimated_net_operating_income": -143837.36529213373,
+      "estimated_net_operating_income_pct": -1.747370638777879
     },
     {
       "brand": "Corro",
@@ -3055,9 +3055,9 @@
       "gross_margin_2": 0.202365170351516,
       "gross_profit_3": -17492.065902850827,
       "gross_margin_3": -0.16923854265430696,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -117492.06590285082,
-      "estimated_net_operating_income_pct": -1.063660302285067
+      "estimated_average_opex": 92974.23594641077,
+      "estimated_net_operating_income": -110466.3018492616,
+      "estimated_net_operating_income_pct": -1.0687791848722055
     },
     {
       "brand": "Corro",
@@ -3105,9 +3105,9 @@
       "gross_margin_2": 0.2740406386465842,
       "gross_profit_3": 3085.386992218002,
       "gross_margin_3": 0.026347010845136,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -96914.613007782,
-      "estimated_net_operating_income_pct": -0.7827297935357237
+      "estimated_average_opex": 74266.31830459533,
+      "estimated_net_operating_income": -71180.93131237733,
+      "estimated_net_operating_income_pct": -0.6078345355004909
     },
     {
       "brand": "Corro",
@@ -3155,9 +3155,9 @@
       "gross_margin_2": 0.2542127905439257,
       "gross_profit_3": 15026.751404406854,
       "gross_margin_3": 0.12325653470094973,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -84973.24859559315,
-      "estimated_net_operating_income_pct": -0.6548753175360547
+      "estimated_average_opex": 92344.46731932645,
+      "estimated_net_operating_income": -77317.7159149196,
+      "estimated_net_operating_income_pct": -0.6341965391049624
     },
     {
       "brand": "Corro",
@@ -3205,9 +3205,9 @@
       "gross_margin_2": 0.20714437136181776,
       "gross_profit_3": 25466.978399799376,
       "gross_margin_3": 0.15850738164280045,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -74533.02160020062,
-      "estimated_net_operating_income_pct": -0.43611211600124056
+      "estimated_average_opex": 97355.59642654462,
+      "estimated_net_operating_income": -71888.61802674524,
+      "estimated_net_operating_income_pct": -0.4474373219489824
     },
     {
       "brand": "Corro",
@@ -3255,9 +3255,9 @@
       "gross_margin_2": 0.25954711931334074,
       "gross_profit_3": 20545.284614829863,
       "gross_margin_3": 0.14808589551176474,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -79454.71538517013,
-      "estimated_net_operating_income_pct": -0.5417347258635204
+      "estimated_average_opex": 79236.06822169803,
+      "estimated_net_operating_income": -58690.78360686817,
+      "estimated_net_operating_income_pct": -0.42303026760879203
     },
     {
       "brand": "Corro",
@@ -3305,9 +3305,9 @@
       "gross_margin_2": 0.21725863929306652,
       "gross_profit_3": 25478.604192692204,
       "gross_margin_3": 0.1545674089303131,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -74521.3958073078,
-      "estimated_net_operating_income_pct": -0.42727404384779216
+      "estimated_average_opex": 98400.58407640054,
+      "estimated_net_operating_income": -72921.97988370834,
+      "estimated_net_operating_income_pct": -0.4423853598670085
     },
     {
       "brand": "Corro",
@@ -3355,9 +3355,9 @@
       "gross_margin_2": 0.22579119150219307,
       "gross_profit_3": 6278.867295887119,
       "gross_margin_3": 0.0635766804827831,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -93721.13270411288,
-      "estimated_net_operating_income_pct": -0.904831654823764
+      "estimated_average_opex": 92270.71344134446,
+      "estimated_net_operating_income": -85991.84614545734,
+      "estimated_net_operating_income_pct": -0.8707105706940985
     },
     {
       "brand": "Corro",
@@ -3405,9 +3405,9 @@
       "gross_margin_2": 0.2181429782280863,
       "gross_profit_3": 10986.751010970567,
       "gross_margin_3": 0.09428300948515751,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -89013.24898902944,
-      "estimated_net_operating_income_pct": -0.7214865288851106
+      "estimated_average_opex": 78593.26485407182,
+      "estimated_net_operating_income": -67606.51384310126,
+      "estimated_net_operating_income_pct": -0.580166564215644
     },
     {
       "brand": "Corro",
@@ -3455,9 +3455,9 @@
       "gross_margin_2": 0.27181607123082213,
       "gross_profit_3": 12711.872433064022,
       "gross_margin_3": 0.09878650712183122,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -87288.12756693597,
-      "estimated_net_operating_income_pct": -0.6457614279211953
+      "estimated_average_opex": 93987.23490649876,
+      "estimated_net_operating_income": -81275.36247343474,
+      "estimated_net_operating_income_pct": -0.6316071228757695
     },
     {
       "brand": "Corro",
@@ -3505,9 +3505,9 @@
       "gross_margin_2": 0.20907961093510075,
       "gross_profit_3": 2259.8731137405593,
       "gross_margin_3": 0.014256669238944843,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -97740.12688625944,
-      "estimated_net_operating_income_pct": -0.5835973582686004
+      "estimated_average_opex": 96421.47904542295,
+      "estimated_net_operating_income": -94161.6059316824,
+      "estimated_net_operating_income_pct": -0.5940293119173672
     },
     {
       "brand": "Corro",
@@ -3555,9 +3555,9 @@
       "gross_margin_2": 0.16902380886238808,
       "gross_profit_3": 601.9810667367456,
       "gross_margin_3": 0.0049918967584965095,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -99398.01893326326,
-      "estimated_net_operating_income_pct": -0.7640977807380275
+      "estimated_average_opex": 85595.08954650201,
+      "estimated_net_operating_income": -84993.10847976527,
+      "estimated_net_operating_income_pct": -0.7048009416884609
     },
     {
       "brand": "Corro",
@@ -3605,9 +3605,9 @@
       "gross_margin_2": 0.31704562573603207,
       "gross_profit_3": 4169.2971147171265,
       "gross_margin_3": 0.035646711414540316,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -95830.70288528287,
-      "estimated_net_operating_income_pct": -0.7673520780994444
+      "estimated_average_opex": 93584.29634677041,
+      "estimated_net_operating_income": -89414.99923205329,
+      "estimated_net_operating_income_pct": -0.7644815387479524
     },
     {
       "brand": "Corro",
@@ -3655,9 +3655,9 @@
       "gross_margin_2": 0.29320413111974136,
       "gross_profit_3": 4322.932764295012,
       "gross_margin_3": 0.06187308712568936,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -95677.06723570499,
-      "estimated_net_operating_income_pct": -1.2739138078715186
+      "estimated_average_opex": 89536.4419642101,
+      "estimated_net_operating_income": -85213.50919991509,
+      "estimated_net_operating_income_pct": -1.2196402688839667
     },
     {
       "brand": "Corro",
@@ -3705,9 +3705,9 @@
       "gross_margin_2": 0.30399283220907114,
       "gross_profit_3": 16869.38,
       "gross_margin_3": 0.30399283220907114,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -83130.62,
-      "estimated_net_operating_income_pct": -1.405054643423352
+      "estimated_average_opex": 64698.66114893869,
+      "estimated_net_operating_income": -47829.281148938695,
+      "estimated_net_operating_income_pct": -0.8619023721671935
     },
     {
       "brand": "Corro",
@@ -3755,9 +3755,9 @@
       "gross_margin_2": 0.25386359601594727,
       "gross_profit_3": 2665.7740104569566,
       "gross_margin_3": 0.030951890930233757,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -97334.22598954305,
-      "estimated_net_operating_income_pct": -1.0505057976006493
+      "estimated_average_opex": 91096.90034163381,
+      "estimated_net_operating_income": -88431.12633117686,
+      "estimated_net_operating_income_pct": -1.0267601703308389
     },
     {
       "brand": "Corro",
@@ -3805,9 +3805,9 @@
       "gross_margin_2": 0.3199479359640151,
       "gross_profit_3": -21266.183132051265,
       "gross_margin_3": -0.23833376180648919,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -121266.18313205126,
-      "estimated_net_operating_income_pct": -1.2673326613313554
+      "estimated_average_opex": 89521.16438082604,
+      "estimated_net_operating_income": -110787.34751287731,
+      "estimated_net_operating_income_pct": -1.2416128051446893
     },
     {
       "brand": "Corro",
@@ -3855,9 +3855,9 @@
       "gross_margin_2": 0.34476517756882785,
       "gross_profit_3": 7871.7534996364975,
       "gross_margin_3": 0.13843841258007894,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -92128.2465003635,
-      "estimated_net_operating_income_pct": -1.4980005385354032
+      "estimated_average_opex": 65086.751005623286,
+      "estimated_net_operating_income": -57214.99750598679,
+      "estimated_net_operating_income_pct": -1.0062247796336294
     },
     {
       "brand": "Corro",
@@ -3890,14 +3890,14 @@
       "customers": 211,
       "new_customers": 177,
       "returning_customers": 36,
-      "sessions_reached_checkout": 351.0,
+      "sessions_reached_checkout": 353.0,
       "sessions_completed_checkout": 171.0,
-      "checkout_abandonments": 180.0,
+      "checkout_abandonments": 182.0,
       "discount_pct": 0.06558611413147065,
       "discounts_returns_pct": 0.1742831158977003,
       "gross_margin_1": 0.311,
       "net_gross_ratio": 0.8257168841022997,
-      "checkout_abandonment_rate": 0.5128205128205128,
+      "checkout_abandonment_rate": 0.5155807365439093,
       "shipping_cost": 0.0,
       "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 6314.020390824129,
@@ -3905,9 +3905,9 @@
       "gross_margin_2": 0.29541989096025323,
       "gross_profit_3": 405.00960917587054,
       "gross_margin_3": 0.017807316618706936,
-      "estimated_average_opex": 100000.0,
-      "estimated_net_operating_income": -99594.99039082412,
-      "estimated_net_operating_income_pct": -3.9723449617014026
+      "estimated_average_opex": 80063.11363268974,
+      "estimated_net_operating_income": -79658.10402351386,
+      "estimated_net_operating_income_pct": -3.5023788262185134
     },
     {
       "brand": "Corro",
@@ -4198,16 +4198,16 @@
       "gross_margin_1": 0.498168594436128,
       "net_gross_ratio": 0.9215172046263254,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 809.33,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 32114.04986882133,
-      "gross_margin_2": 0.498168594436128,
-      "gross_profit_3": 32114.04986882133,
-      "gross_margin_3": 0.498168594436128,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 32114.04986882133,
-      "estimated_net_operating_income_pct": 0.47636151782216357
+      "gross_profit_2": 31304.71986882133,
+      "gross_margin_2": 0.48561387803686024,
+      "gross_profit_3": 31304.71986882133,
+      "gross_margin_3": 0.48561387803686024,
+      "estimated_average_opex": 9946.422,
+      "estimated_net_operating_income": 21358.297868821326,
+      "estimated_net_operating_income_pct": 0.33132019388152567
     },
     {
       "brand": "Corro",
@@ -4248,16 +4248,16 @@
       "gross_margin_1": 0.4179262425278589,
       "net_gross_ratio": 0.9066247118870232,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 819.4,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 20234.718167421644,
-      "gross_margin_2": 0.4179262425278589,
-      "gross_profit_3": 20234.718167421644,
-      "gross_margin_3": 0.4179262425278589,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 20234.718167421644,
-      "estimated_net_operating_income_pct": 0.3996228299382525
+      "gross_profit_2": 19415.318167421643,
+      "gross_margin_2": 0.4010024207926653,
+      "gross_profit_3": 19415.318167421643,
+      "gross_margin_3": 0.4010024207926653,
+      "estimated_average_opex": 8341.696,
+      "estimated_net_operating_income": 11073.622167421643,
+      "estimated_net_operating_income_pct": 0.22871370212879213
     },
     {
       "brand": "Corro",
@@ -4298,16 +4298,16 @@
       "gross_margin_1": 0.37683371474271327,
       "net_gross_ratio": 0.9117716707241907,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 694.55,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 18557.360931025138,
-      "gross_margin_2": 0.37683371474271327,
-      "gross_profit_3": 18557.360931025138,
-      "gross_margin_3": 0.37683371474271327,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 18557.360931025138,
-      "estimated_net_operating_income_pct": 0.3573210383621189
+      "gross_profit_2": 17862.81093102514,
+      "gross_margin_2": 0.36272988513313886,
+      "gross_profit_3": 17862.81093102514,
+      "gross_margin_3": 0.36272988513313886,
+      "estimated_average_opex": 8424.548999999999,
+      "estimated_net_operating_income": 9438.26193102514,
+      "estimated_net_operating_income_pct": 0.1916573869206122
     },
     {
       "brand": "Corro",
@@ -4348,16 +4348,16 @@
       "gross_margin_1": 0.3344075219274061,
       "net_gross_ratio": 0.9183119033884742,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 399.74,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 11057.241561808409,
-      "gross_margin_2": 0.3344075219274061,
-      "gross_profit_3": 11057.241561808409,
-      "gross_margin_3": 0.3344075219274061,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 11057.241561808409,
-      "estimated_net_operating_income_pct": 0.31823273917396017
+      "gross_profit_2": 10657.501561808409,
+      "gross_margin_2": 0.32231806344284364,
+      "gross_profit_3": 10657.501561808409,
+      "gross_margin_3": 0.32231806344284364,
+      "estimated_average_opex": 6806.517,
+      "estimated_net_operating_income": 3850.984561808409,
+      "estimated_net_operating_income_pct": 0.11646649818550485
     },
     {
       "brand": "Corro",
@@ -4398,16 +4398,16 @@
       "gross_margin_1": 0.3346786476825022,
       "net_gross_ratio": 0.9070750967587319,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 654.64,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 18038.161686997915,
-      "gross_margin_2": 0.3346786476825022,
-      "gross_profit_3": 18038.161686997915,
-      "gross_margin_3": 0.3346786476825022,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 18038.161686997915,
-      "estimated_net_operating_income_pct": 0.3171634693658654
+      "gross_profit_2": 17383.521686997916,
+      "gross_margin_2": 0.3225325080857606,
+      "gross_profit_3": 17383.521686997916,
+      "gross_margin_3": 0.3225325080857606,
+      "estimated_average_opex": 8889.696,
+      "estimated_net_operating_income": 8493.825686997916,
+      "estimated_net_operating_income_pct": 0.1575937805582711
     },
     {
       "brand": "Corro",
@@ -4448,16 +4448,16 @@
       "gross_margin_1": 0.28962166174144865,
       "net_gross_ratio": 0.8607878036968786,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 399.66,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 9909.723740311581,
-      "gross_margin_2": 0.28962166174144865,
-      "gross_profit_3": 9909.723740311581,
-      "gross_margin_3": 0.28962166174144865,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 9909.723740311581,
-      "estimated_net_operating_income_pct": 0.27542181541420124
+      "gross_profit_2": 9510.063740311582,
+      "gross_margin_2": 0.2779411955281748,
+      "gross_profit_3": 9510.063740311582,
+      "gross_margin_3": 0.2779411955281748,
+      "estimated_average_opex": 6921.610000000001,
+      "estimated_net_operating_income": 2588.453740311581,
+      "estimated_net_operating_income_pct": 0.07565016878930039
     },
     {
       "brand": "Corro",
@@ -4498,16 +4498,16 @@
       "gross_margin_1": 0.3022003894451695,
       "net_gross_ratio": 0.8810431606471136,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 399.78999999999996,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 8543.241273661675,
-      "gross_margin_2": 0.3022003894451695,
-      "gross_profit_3": 8543.241273661675,
-      "gross_margin_3": 0.3022003894451695,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 8543.241273661675,
-      "estimated_net_operating_income_pct": 0.28603507500756414
+      "gross_profit_2": 8143.451273661675,
+      "gross_margin_2": 0.28805860299360864,
+      "gross_profit_3": 8143.451273661675,
+      "gross_margin_3": 0.28805860299360864,
+      "estimated_average_opex": 6327.012000000001,
+      "estimated_net_operating_income": 1816.4392736616746,
+      "estimated_net_operating_income_pct": 0.06425297358701253
     },
     {
       "brand": "Corro",
@@ -4548,16 +4548,16 @@
       "gross_margin_1": 0.3742205958871703,
       "net_gross_ratio": 0.8861869806021194,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 324.78000000000003,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 13844.818595886065,
-      "gross_margin_2": 0.3742205958871703,
-      "gross_profit_3": 13844.818595886065,
-      "gross_margin_3": 0.3742205958871703,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 13844.818595886065,
-      "estimated_net_operating_income_pct": 0.3578325015904581
+      "gross_profit_2": 13520.038595886064,
+      "gross_margin_2": 0.3654419062791786,
+      "gross_profit_3": 13520.038595886064,
+      "gross_margin_3": 0.3654419062791786,
+      "estimated_average_opex": 7199.641,
+      "estimated_net_operating_income": 6320.397595886065,
+      "estimated_net_operating_income_pct": 0.17083813256167465
     },
     {
       "brand": "Corro",
@@ -4598,16 +4598,16 @@
       "gross_margin_1": 0.4018805623403174,
       "net_gross_ratio": 0.8755953034714142,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 289.76,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 11181.422415854066,
-      "gross_margin_2": 0.4018805623403174,
-      "gross_profit_3": 11181.422415854066,
-      "gross_margin_3": 0.4018805623403174,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 11181.422415854066,
-      "estimated_net_operating_income_pct": 0.3877645138597451
+      "gross_profit_2": 10891.662415854065,
+      "gross_margin_2": 0.39146606341407897,
+      "gross_profit_3": 10891.662415854065,
+      "gross_margin_3": 0.39146606341407897,
+      "estimated_average_opex": 6282.275,
+      "estimated_net_operating_income": 4609.387415854066,
+      "estimated_net_operating_income_pct": 0.1656697276816298
     },
     {
       "brand": "Corro",
@@ -4648,16 +4648,16 @@
       "gross_margin_1": 0.3735359683145546,
       "net_gross_ratio": 0.6585671163468777,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 399.78999999999996,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 10384.143034037925,
-      "gross_margin_2": 0.3735359683145546,
-      "gross_profit_3": 10384.143034037925,
-      "gross_margin_3": 0.3735359683145546,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 10384.143034037925,
-      "estimated_net_operating_income_pct": 0.35321680131073213
+      "gross_profit_2": 9984.353034037926,
+      "gross_margin_2": 0.3591548157935453,
+      "gross_profit_3": 9984.353034037926,
+      "gross_margin_3": 0.3591548157935453,
+      "estimated_average_opex": 6279.9580000000005,
+      "estimated_net_operating_income": 3704.395034037925,
+      "estimated_net_operating_income_pct": 0.13325363311380695
     },
     {
       "brand": "Corro",
@@ -4698,16 +4698,16 @@
       "gross_margin_1": 0.3493666121857233,
       "net_gross_ratio": 0.8319306454759422,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 246.13,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 10354.55210762332,
-      "gross_margin_2": 0.3493666121857233,
-      "gross_profit_3": 10354.55210762332,
-      "gross_margin_3": 0.3493666121857233,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 10354.55210762332,
-      "estimated_net_operating_income_pct": 0.33025050393282435
+      "gross_profit_2": 10108.42210762332,
+      "gross_margin_2": 0.3410620903325797,
+      "gross_profit_3": 10108.42210762332,
+      "gross_margin_3": 0.3410620903325797,
+      "estimated_average_opex": 6463.807000000001,
+      "estimated_net_operating_income": 3644.61510762332,
+      "estimated_net_operating_income_pct": 0.12297073013267464
     },
     {
       "brand": "Corro",
@@ -4748,16 +4748,16 @@
       "gross_margin_1": 0.27267076236159954,
       "net_gross_ratio": 0.792879971986244,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 137.8,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 5340.485924292311,
-      "gross_margin_2": 0.27267076236159954,
-      "gross_profit_3": 5340.485924292311,
-      "gross_margin_3": 0.27267076236159954,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 5340.485924292311,
-      "estimated_net_operating_income_pct": 0.2577648666739538
+      "gross_profit_2": 5202.685924292311,
+      "gross_margin_2": 0.2656350671859012,
+      "gross_profit_3": 5202.685924292311,
+      "gross_margin_3": 0.2656350671859012,
+      "estimated_average_opex": 5458.584,
+      "estimated_net_operating_income": -255.8980757076888,
+      "estimated_net_operating_income_pct": -0.01306546340150276
     },
     {
       "brand": "Corro",
@@ -4798,16 +4798,16 @@
       "gross_margin_1": 0.4392867778604121,
       "net_gross_ratio": 0.9059954056776834,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 184.05,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 11405.29486381323,
-      "gross_margin_2": 0.4392867778604121,
-      "gross_profit_3": 11405.29486381323,
-      "gross_margin_3": 0.4392867778604121,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 11405.29486381323,
-      "estimated_net_operating_income_pct": 0.42221816560346315
+      "gross_profit_2": 11221.24486381323,
+      "gross_margin_2": 0.4321979009457317,
+      "gross_profit_3": 11221.24486381323,
+      "gross_margin_3": 0.4321979009457317,
+      "estimated_average_opex": 6096.321,
+      "estimated_net_operating_income": 5124.92386381323,
+      "estimated_net_operating_income_pct": 0.19739176564890207
     },
     {
       "brand": "Corro",
@@ -4848,16 +4848,16 @@
       "gross_margin_1": 0.34077205478607536,
       "net_gross_ratio": 0.8510834139586061,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 285.89,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 7644.055608698233,
-      "gross_margin_2": 0.34077205478607536,
-      "gross_profit_3": 7644.055608698233,
-      "gross_margin_3": 0.34077205478607536,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 7644.055608698233,
-      "estimated_net_operating_income_pct": 0.31945308928608074
+      "gross_profit_2": 7358.165608698233,
+      "gross_margin_2": 0.32802707650099694,
+      "gross_profit_3": 7358.165608698233,
+      "gross_margin_3": 0.32802707650099694,
+      "estimated_average_opex": 5743.158,
+      "estimated_net_operating_income": 1615.0076086982326,
+      "estimated_net_operating_income_pct": 0.07199705097448475
     },
     {
       "brand": "Corro",
@@ -4898,16 +4898,16 @@
       "gross_margin_1": 0.2761745192524357,
       "net_gross_ratio": 0.8255394710224495,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 160.89000000000001,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 8216.111857149379,
-      "gross_margin_2": 0.2761745192524357,
-      "gross_profit_3": 8216.111857149379,
-      "gross_margin_3": 0.2761745192524357,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 8216.111857149379,
-      "estimated_net_operating_income_pct": 0.2638469380122082
+      "gross_profit_2": 8055.221857149379,
+      "gross_margin_2": 0.2707663993077371,
+      "gross_profit_3": 8055.221857149379,
+      "gross_margin_3": 0.2707663993077371,
+      "estimated_average_opex": 6474.971,
+      "estimated_net_operating_income": 1580.250857149379,
+      "estimated_net_operating_income_pct": 0.053118193661362716
     },
     {
       "brand": "Corro",
@@ -4948,16 +4948,16 @@
       "gross_margin_1": 0.34872766565182395,
       "net_gross_ratio": 0.8433574245527327,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 279.86,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 14769.467535858934,
-      "gross_margin_2": 0.34872766565182395,
-      "gross_profit_3": 14769.467535858934,
-      "gross_margin_3": 0.34872766565182395,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 14769.467535858934,
-      "estimated_net_operating_income_pct": 0.33138989159006543
+      "gross_profit_2": 14489.607535858933,
+      "gross_margin_2": 0.34211978190297737,
+      "gross_profit_3": 14489.607535858933,
+      "gross_margin_3": 0.34211978190297737,
+      "estimated_average_opex": 7735.244,
+      "estimated_net_operating_income": 6754.363535858934,
+      "estimated_net_operating_income_pct": 0.15947991510899806
     },
     {
       "brand": "Corro",
@@ -4998,16 +4998,16 @@
       "gross_margin_1": 0.2862885105230004,
       "net_gross_ratio": 0.7952046329763865,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 606.38,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 19178.203934506117,
-      "gross_margin_2": 0.2862885105230004,
-      "gross_profit_3": 19178.203934506117,
-      "gross_margin_3": 0.2862885105230004,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 19178.203934506117,
-      "estimated_net_operating_income_pct": 0.27081979426932484
+      "gross_profit_2": 18571.823934506116,
+      "gross_margin_2": 0.2772365874334461,
+      "gross_profit_3": 18571.823934506116,
+      "gross_margin_3": 0.2772365874334461,
+      "estimated_average_opex": 10198.908,
+      "estimated_net_operating_income": 8372.915934506116,
+      "estimated_net_operating_income_pct": 0.12498926592970251
     },
     {
       "brand": "Corro",
@@ -5048,16 +5048,16 @@
       "gross_margin_1": 0.3924171256547106,
       "net_gross_ratio": 0.8125515408738125,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 614.57,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 19093.176898038895,
-      "gross_margin_2": 0.3924171256547106,
-      "gross_profit_3": 19093.176898038895,
-      "gross_margin_3": 0.3924171256547106,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 19093.176898038895,
-      "estimated_net_operating_income_pct": 0.3745624174940175
+      "gross_profit_2": 18478.606898038895,
+      "gross_margin_2": 0.3797860274251443,
+      "gross_profit_3": 18478.606898038895,
+      "gross_margin_3": 0.3797860274251443,
+      "estimated_average_opex": 8365.530999999999,
+      "estimated_net_operating_income": 10113.075898038896,
+      "estimated_net_operating_income_pct": 0.2078514328248838
     },
     {
       "brand": "Corro",
@@ -5098,16 +5098,16 @@
       "gross_margin_1": 0.32815705184386995,
       "net_gross_ratio": 0.8714377316749339,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 401.82,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 18378.731029862596,
-      "gross_margin_2": 0.32815705184386995,
-      "gross_profit_3": 18378.731029862596,
-      "gross_margin_3": 0.32815705184386995,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 18378.731029862596,
-      "estimated_net_operating_income_pct": 0.31500851901258403
+      "gross_profit_2": 17976.911029862596,
+      "gross_margin_2": 0.3209824505965014,
+      "gross_profit_3": 17976.911029862596,
+      "gross_margin_3": 0.3209824505965014,
+      "estimated_average_opex": 9100.59,
+      "estimated_net_operating_income": 8876.321029862596,
+      "estimated_net_operating_income_pct": 0.15848903472424505
     },
     {
       "brand": "Corro",
@@ -5148,16 +5148,16 @@
       "gross_margin_1": 0.38688922099407697,
       "net_gross_ratio": 0.8875050514925997,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 267.99,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 16050.172841891273,
-      "gross_margin_2": 0.38688922099407697,
-      "gross_profit_3": 16050.172841891273,
-      "gross_margin_3": 0.38688922099407697,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 16050.172841891273,
-      "estimated_net_operating_income_pct": 0.37138958467964517
+      "gross_profit_2": 15782.182841891274,
+      "gross_margin_2": 0.3804293253060013,
+      "gross_profit_3": 15782.182841891274,
+      "gross_margin_3": 0.3804293253060013,
+      "estimated_average_opex": 7648.519,
+      "estimated_net_operating_income": 8133.6638418912735,
+      "estimated_net_operating_income_pct": 0.19606186790734895
     },
     {
       "brand": "Corro",
@@ -5198,16 +5198,16 @@
       "gross_margin_1": 0.37216773341388704,
       "net_gross_ratio": 0.8496816290365531,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 468.31,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 18501.392169015195,
-      "gross_margin_2": 0.37216773341388704,
-      "gross_profit_3": 18501.392169015195,
-      "gross_margin_3": 0.37216773341388704,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 18501.392169015195,
-      "estimated_net_operating_income_pct": 0.35274301247730117
+      "gross_profit_2": 18033.082169015193,
+      "gross_margin_2": 0.36274736819796854,
+      "gross_profit_3": 18033.082169015193,
+      "gross_margin_3": 0.36274736819796854,
+      "estimated_average_opex": 8471.251,
+      "estimated_net_operating_income": 9561.831169015193,
+      "estimated_net_operating_income_pct": 0.19234255460074723
     },
     {
       "brand": "Corro",
@@ -5248,16 +5248,16 @@
       "gross_margin_1": 0.3861566422900011,
       "net_gross_ratio": 0.8903293381240007,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 408.31,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 20082.01439722874,
-      "gross_margin_2": 0.3861566422900011,
-      "gross_profit_3": 20082.01439722874,
-      "gross_margin_3": 0.3861566422900011,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 20082.01439722874,
-      "estimated_net_operating_income_pct": 0.36933010822105095
+      "gross_profit_2": 19673.70439722874,
+      "gross_margin_2": 0.3783052576881063,
+      "gross_profit_3": 19673.70439722874,
+      "gross_margin_3": 0.3783052576881063,
+      "estimated_average_opex": 8700.484,
+      "estimated_net_operating_income": 10973.220397228739,
+      "estimated_net_operating_income_pct": 0.21100382959026
     },
     {
       "brand": "Corro",
@@ -5298,16 +5298,16 @@
       "gross_margin_1": 0.42500551687062976,
       "net_gross_ratio": 0.9037867028531932,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 768.61,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 23018.643048181973,
-      "gross_margin_2": 0.42500551687062976,
-      "gross_profit_3": 23018.643048181973,
-      "gross_margin_3": 0.42500551687062976,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 23018.643048181973,
-      "estimated_net_operating_income_pct": 0.40127941149972074
+      "gross_profit_2": 22250.033048181973,
+      "gross_margin_2": 0.41081425939128263,
+      "gross_profit_3": 22250.033048181973,
+      "gross_margin_3": 0.41081425939128263,
+      "estimated_average_opex": 8916.081,
+      "estimated_net_operating_income": 13333.952048181973,
+      "estimated_net_operating_income_pct": 0.24619188760622254
     },
     {
       "brand": "Corro",
@@ -5348,16 +5348,16 @@
       "gross_margin_1": 0.4943516096636708,
       "net_gross_ratio": 0.8289958318664651,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 964.91,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 26063.937205070357,
-      "gross_margin_2": 0.4943516096636708,
-      "gross_profit_3": 26063.937205070357,
-      "gross_margin_3": 0.4943516096636708,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 26063.937205070357,
-      "estimated_net_operating_income_pct": 0.4652834614764816
+      "gross_profit_2": 25099.027205070357,
+      "gross_margin_2": 0.47605027598842786,
+      "gross_profit_3": 25099.027205070357,
+      "gross_margin_3": 0.47605027598842786,
+      "estimated_average_opex": 8772.348000000002,
+      "estimated_net_operating_income": 16326.679205070355,
+      "estimated_net_operating_income_pct": 0.3096661905676627
     },
     {
       "brand": "Corro",
@@ -5398,16 +5398,16 @@
       "gross_margin_1": 0.4020037260932464,
       "net_gross_ratio": 0.9153047234056223,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 529.64,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 21418.834906956126,
-      "gross_margin_2": 0.4020037260932464,
-      "gross_profit_3": 21418.834906956126,
-      "gross_margin_3": 0.4020037260932464,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 21418.834906956126,
-      "estimated_net_operating_income_pct": 0.3801249991917224
+      "gross_profit_2": 20889.194906956127,
+      "gross_margin_2": 0.39206307085158904,
+      "gross_profit_3": 20889.194906956127,
+      "gross_margin_3": 0.39206307085158904,
+      "estimated_average_opex": 8828.019,
+      "estimated_net_operating_income": 12061.175906956127,
+      "estimated_net_operating_income_pct": 0.22637261441740592
     },
     {
       "brand": "Corro",
@@ -5448,16 +5448,16 @@
       "gross_margin_1": 0.37278055129734133,
       "net_gross_ratio": 0.8963422546333544,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 464.87,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 12617.77544956356,
-      "gross_margin_2": 0.37278055129734133,
-      "gross_profit_3": 12617.77544956356,
-      "gross_margin_3": 0.37278055129734133,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 12617.77544956356,
-      "estimated_net_operating_income_pct": 0.3506798176133326
+      "gross_profit_2": 12152.90544956356,
+      "gross_margin_2": 0.35904639541746397,
+      "gross_profit_3": 12152.90544956356,
+      "gross_margin_3": 0.35904639541746397,
+      "estimated_average_opex": 6884.773000000001,
+      "estimated_net_operating_income": 5268.132449563558,
+      "estimated_net_operating_income_pct": 0.1556421198574781
     },
     {
       "brand": "Corro",
@@ -5498,16 +5498,16 @@
       "gross_margin_1": 0.3968740558870524,
       "net_gross_ratio": 0.9392964695406071,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 285.44,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 12399.790127474946,
-      "gross_margin_2": 0.3968740558870524,
-      "gross_profit_3": 12399.790127474946,
-      "gross_margin_3": 0.3968740558870524,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 12399.790127474946,
-      "estimated_net_operating_income_pct": 0.37445356417804676
+      "gross_profit_2": 12114.350127474945,
+      "gross_margin_2": 0.38773811654067664,
+      "gross_profit_3": 12114.350127474945,
+      "gross_margin_3": 0.38773811654067664,
+      "estimated_average_opex": 6624.364,
+      "estimated_net_operating_income": 5489.9861274749455,
+      "estimated_net_operating_income_pct": 0.17571531766064855
     },
     {
       "brand": "Corro",
@@ -5548,16 +5548,16 @@
       "gross_margin_1": 0.3559909106704136,
       "net_gross_ratio": 0.9369892498847415,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 81.14,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 11988.470944646475,
-      "gross_margin_2": 0.3559909106704136,
-      "gross_profit_3": 11988.470944646475,
-      "gross_margin_3": 0.3559909106704136,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 11988.470944646475,
-      "estimated_net_operating_income_pct": 0.33683815979871634
+      "gross_profit_2": 11907.330944646475,
+      "gross_margin_2": 0.353581503947474,
+      "gross_profit_3": 11907.330944646475,
+      "gross_margin_3": 0.353581503947474,
+      "estimated_average_opex": 6867.634,
+      "estimated_net_operating_income": 5039.6969446464755,
+      "estimated_net_operating_income_pct": 0.14965096992863464
     },
     {
       "brand": "Corro",
@@ -5598,16 +5598,16 @@
       "gross_margin_1": 0.40142033757512546,
       "net_gross_ratio": 0.9007841317652425,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 501.58,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 6974.714493198187,
-      "gross_margin_2": 0.40142033757512546,
-      "gross_profit_3": 6974.714493198187,
-      "gross_margin_3": 0.40142033757512546,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 6974.714493198187,
-      "estimated_net_operating_income_pct": 0.3726113562272016
+      "gross_profit_2": 6473.134493198187,
+      "gross_margin_2": 0.3725525734369253,
+      "gross_profit_3": 6473.134493198187,
+      "gross_margin_3": 0.3725525734369253,
+      "estimated_average_opex": 5237.509,
+      "estimated_net_operating_income": 1235.6254931981866,
+      "estimated_net_operating_income_pct": 0.07111476793491064
     },
     {
       "brand": "Corro",
@@ -5648,16 +5648,16 @@
       "gross_margin_1": 0.43603916421748273,
       "net_gross_ratio": 0.963895095572496,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 161.47,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 3581.46,
-      "gross_margin_2": 0.43603916421748273,
-      "gross_profit_3": 3581.46,
-      "gross_margin_3": 0.43603916421748273,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 3581.46,
-      "estimated_net_operating_income_pct": 0.4183088523854908
+      "gross_profit_2": 3419.9900000000002,
+      "gross_margin_2": 0.41638035360778813,
+      "gross_profit_3": 3419.9900000000002,
+      "gross_margin_3": 0.41638035360778813,
+      "estimated_average_opex": 4321.362,
+      "estimated_net_operating_income": -901.3719999999998,
+      "estimated_net_operating_income_pct": -0.10974113728173449
     },
     {
       "brand": "Corro",
@@ -5698,16 +5698,16 @@
       "gross_margin_1": 0.3156172579815828,
       "net_gross_ratio": 0.9442392855566508,
       "checkout_abandonment_rate": 0.0,
-      "shipping_cost": 0.0,
-      "shipping_cost_source": "QuickBooks unavailable / unmapped",
+      "shipping_cost": 29.97,
+      "shipping_cost_source": "QuickBooks allocated or Shopify estimate",
       "ads_stats_spend": 0.0,
-      "gross_profit_2": 405.12,
-      "gross_margin_2": 0.3156172579815828,
-      "gross_profit_3": 405.12,
-      "gross_margin_3": 0.3156172579815828,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 405.12,
-      "estimated_net_operating_income_pct": 0.29977135330723753
+      "gross_profit_2": 375.15,
+      "gross_margin_2": 0.2922684990417426,
+      "gross_profit_3": 375.15,
+      "gross_margin_3": 0.2922684990417426,
+      "estimated_average_opex": 3628.358,
+      "estimated_net_operating_income": -3253.208,
+      "estimated_net_operating_income_pct": -2.5344801258978795
     },
     {
       "brand": "Corro",
@@ -5755,9 +5755,9 @@
       "gross_margin_2": 1.0,
       "gross_profit_3": 144.0,
       "gross_margin_3": 1.0,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 144.0,
-      "estimated_net_operating_income_pct": 0.9237875288683604
+      "estimated_average_opex": 3514.4,
+      "estimated_net_operating_income": -3370.4,
+      "estimated_net_operating_income_pct": -23.405555555555555
     },
     {
       "brand": "Corro",
@@ -5799,15 +5799,15 @@
       "net_gross_ratio": 0.994142412593813,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 950.824984984985,
       "gross_margin_2": 0.35014729699318176,
       "gross_profit_3": 950.824984984985,
       "gross_margin_3": 0.35014729699318176,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 950.824984984985,
-      "estimated_net_operating_income_pct": 0.3302427383534091
+      "estimated_average_opex": 2360.4883333333337,
+      "estimated_net_operating_income": -1409.6633483483488,
+      "estimated_net_operating_income_pct": -0.5191174179150613
     },
     {
       "brand": "Corro",
@@ -5849,15 +5849,15 @@
       "net_gross_ratio": 0.9610790997959443,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 7880.049999999999,
       "gross_margin_2": 0.5897380247643496,
       "gross_profit_3": 7880.049999999999,
       "gross_margin_3": 0.5897380247643496,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 7880.049999999999,
-      "estimated_net_operating_income_pct": 0.5533688573286498
+      "estimated_average_opex": 2466.9528333333333,
+      "estimated_net_operating_income": 5413.097166666666,
+      "estimated_net_operating_income_pct": 0.4051128141226892
     },
     {
       "brand": "Corro",
@@ -5899,15 +5899,15 @@
       "net_gross_ratio": 0.9356989697569146,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 2487.75,
       "gross_margin_2": 0.3838984110131894,
       "gross_profit_3": 2487.75,
       "gross_margin_3": 0.3838984110131894,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 2487.75,
-      "estimated_net_operating_income_pct": 0.3618408612910639
+      "estimated_average_opex": 2398.1356333333333,
+      "estimated_net_operating_income": 89.61436666666668,
+      "estimated_net_operating_income_pct": 0.013828886731900981
     },
     {
       "brand": "Corro",
@@ -5949,15 +5949,15 @@
       "net_gross_ratio": 0.8545383766949978,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 1900.67,
       "gross_margin_2": 0.29450446946677844,
       "gross_profit_3": 1900.67,
       "gross_margin_3": 0.29450446946677844,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 1900.67,
-      "estimated_net_operating_income_pct": 0.2762577651939082
+      "estimated_average_opex": 2397.8712333333333,
+      "estimated_net_operating_income": -497.2012333333332,
+      "estimated_net_operating_income_pct": -0.07704019395321714
     },
     {
       "brand": "Corro",
@@ -5999,15 +5999,15 @@
       "net_gross_ratio": 0.8520149521224846,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 2574.96,
       "gross_margin_2": 0.5526946159195694,
       "gross_profit_3": 2574.96,
       "gross_margin_3": 0.5526946159195694,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 2574.96,
-      "estimated_net_operating_income_pct": 0.5177974264565416
+      "estimated_average_opex": 2379.9225333333334,
+      "estimated_net_operating_income": 195.03746666666666,
+      "estimated_net_operating_income_pct": 0.04186323582861836
     },
     {
       "brand": "Corro",
@@ -6049,15 +6049,15 @@
       "net_gross_ratio": 0.9919612613902008,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 1540.53,
       "gross_margin_2": 0.46306661055669107,
       "gross_profit_3": 1540.53,
       "gross_margin_3": 0.46306661055669107,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 1540.53,
-      "estimated_net_operating_income_pct": 0.43430934740688115
+      "estimated_average_opex": 2366.6013333333335,
+      "estimated_net_operating_income": -826.0713333333335,
+      "estimated_net_operating_income_pct": -0.24830808384433495
     },
     {
       "brand": "Corro",
@@ -6099,15 +6099,15 @@
       "net_gross_ratio": 0.9658879629582203,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 861.5899999999999,
       "gross_margin_2": 0.45688544323599123,
       "gross_profit_3": 861.5899999999999,
       "gross_margin_3": 0.45688544323599123,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 861.5899999999999,
-      "estimated_net_operating_income_pct": 0.42894410618182544
+      "estimated_average_opex": 2352.1912333333335,
+      "estimated_net_operating_income": -1490.6012333333335,
+      "estimated_net_operating_income_pct": -0.7904386137021268
     },
     {
       "brand": "Corro",
@@ -6149,15 +6149,15 @@
       "net_gross_ratio": 0.9038382723174332,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 963.4900000000001,
       "gross_margin_2": 0.44580426051711064,
       "gross_profit_3": 963.4900000000001,
       "gross_margin_3": 0.44580426051711064,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 963.4900000000001,
-      "estimated_net_operating_income_pct": 0.4184902054467272
+      "estimated_average_opex": 2354.9457333333335,
+      "estimated_net_operating_income": -1391.4557333333332,
+      "estimated_net_operating_income_pct": -0.6438228671194931
     },
     {
       "brand": "Corro",
@@ -6199,15 +6199,15 @@
       "net_gross_ratio": 1.0,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 552.28,
       "gross_margin_2": 0.4736535162950257,
       "gross_profit_3": 552.28,
       "gross_margin_3": 0.4736535162950257,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 552.28,
-      "estimated_net_operating_income_pct": 0.443445235782019
+      "estimated_average_opex": 2344.9933333333333,
+      "estimated_net_operating_income": -1792.7133333333334,
+      "estimated_net_operating_income_pct": -1.5374899942824471
     },
     {
       "brand": "Corro",
@@ -6249,15 +6249,15 @@
       "net_gross_ratio": 1.0,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 417.08000000000004,
       "gross_margin_2": 0.38573159340405266,
       "gross_profit_3": 417.08000000000004,
       "gross_margin_3": 0.38573159340405266,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 417.08000000000004,
-      "estimated_net_operating_income_pct": 0.3604871260771485
+      "estimated_average_opex": 2344.1460333333334,
+      "estimated_net_operating_income": -1927.0660333333335,
+      "estimated_net_operating_income_pct": -1.7822246370780042
     },
     {
       "brand": "Corro",
@@ -6299,15 +6299,15 @@
       "net_gross_ratio": 0.9497699153157286,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 2463.8300000000004,
       "gross_margin_2": 0.4047951158362373,
       "gross_profit_3": 2463.8300000000004,
       "gross_margin_3": 0.4047951158362373,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 2463.8300000000004,
-      "estimated_net_operating_income_pct": 0.38057717646004824
+      "estimated_average_opex": 2394.1994333333337,
+      "estimated_net_operating_income": 69.63056666666671,
+      "estimated_net_operating_income_pct": 0.011439958641455047
     },
     {
       "brand": "Corro",
@@ -6349,15 +6349,15 @@
       "net_gross_ratio": 0.9795598213176432,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 4918.86,
       "gross_margin_2": 0.465573640153107,
       "gross_profit_3": 4918.86,
       "gross_margin_3": 0.465573640153107,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 4918.86,
-      "estimated_net_operating_income_pct": 0.43718808688549504
+      "estimated_average_opex": 2438.9849333333336,
+      "estimated_net_operating_income": 2479.875066666666,
+      "estimated_net_operating_income_pct": 0.2347219603552304
     },
     {
       "brand": "Corro",
@@ -6399,15 +6399,15 @@
       "net_gross_ratio": 0.9320155184419662,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 10697.550000000001,
       "gross_margin_2": 0.5074604279962203,
       "gross_profit_3": 10697.550000000001,
       "gross_margin_3": 0.5074604279962203,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 10697.550000000001,
-      "estimated_net_operating_income_pct": 0.47825241416309017
+      "estimated_average_opex": 2544.1389333333336,
+      "estimated_net_operating_income": 8153.4110666666675,
+      "estimated_net_operating_income_pct": 0.38677393136931215
     },
     {
       "brand": "Corro",
@@ -6449,15 +6449,15 @@
       "net_gross_ratio": 0.9137299658973564,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 8674.5,
       "gross_margin_2": 0.4798482541090931,
       "gross_profit_3": 8674.5,
       "gross_margin_3": 0.4798482541090931,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 8674.5,
-      "estimated_net_operating_income_pct": 0.452675584324363
+      "estimated_average_opex": 2514.1092333333336,
+      "estimated_net_operating_income": 6160.390766666666,
+      "estimated_net_operating_income_pct": 0.3407750019038305
     },
     {
       "brand": "Corro",
@@ -6499,15 +6499,15 @@
       "net_gross_ratio": 0.9389648685857803,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 13255.800000000001,
       "gross_margin_2": 0.603416803608902,
       "gross_profit_3": 13255.800000000001,
       "gross_margin_3": 0.603416803608902,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 13255.800000000001,
-      "estimated_net_operating_income_pct": 0.5681342833239614
+      "estimated_average_opex": 2553.0123333333336,
+      "estimated_net_operating_income": 10702.787666666667,
+      "estimated_net_operating_income_pct": 0.48720121935490723
     },
     {
       "brand": "Corro",
@@ -6549,15 +6549,15 @@
       "net_gross_ratio": 0.9344082706233526,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 6369.62,
       "gross_margin_2": 0.464986677373435,
       "gross_profit_3": 6369.62,
       "gross_margin_3": 0.464986677373435,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 6369.62,
-      "estimated_net_operating_income_pct": 0.4373912894199241
+      "estimated_average_opex": 2470.3183333333336,
+      "estimated_net_operating_income": 3899.3016666666663,
+      "estimated_net_operating_income_pct": 0.2846517258580623
     },
     {
       "brand": "Corro",
@@ -6599,15 +6599,15 @@
       "net_gross_ratio": 0.9702904716894407,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 2397.13,
       "gross_margin_2": 0.5823407516817002,
       "gross_profit_3": 2397.13,
       "gross_margin_3": 0.5823407516817002,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 2397.13,
-      "estimated_net_operating_income_pct": 0.5489857940166771
+      "estimated_average_opex": 2374.4970333333335,
+      "estimated_net_operating_income": 22.63296666666656,
+      "estimated_net_operating_income_pct": 0.00549828287220696
     },
     {
       "brand": "Corro",
@@ -6649,15 +6649,15 @@
       "net_gross_ratio": 0.7674155035182836,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 1147.59,
       "gross_margin_2": 0.4312480975840726,
       "gross_profit_3": 1147.59,
       "gross_margin_3": 0.4312480975840726,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 1147.59,
-      "estimated_net_operating_income_pct": 0.4060511920515742
+      "estimated_average_opex": 2359.9442333333336,
+      "estimated_net_operating_income": -1212.3542333333337,
+      "estimated_net_operating_income_pct": -0.4555855808459442
     },
     {
       "brand": "Corro",
@@ -6699,15 +6699,15 @@
       "net_gross_ratio": 0.677510980196197,
       "checkout_abandonment_rate": 0.0,
       "shipping_cost": 0.0,
-      "shipping_cost_source": "Pending Wellington data",
+      "shipping_cost_source": "QuickBooks unavailable / unmapped",
       "ads_stats_spend": 0.0,
       "gross_profit_2": 51.919999999999995,
       "gross_margin_2": 0.20154497108031516,
       "gross_profit_3": 51.919999999999995,
       "gross_margin_3": 0.20154497108031516,
-      "estimated_average_opex": 0.0,
-      "estimated_net_operating_income": 51.919999999999995,
-      "estimated_net_operating_income_pct": 0.18924731182795698
+      "estimated_average_opex": 2335.9094333333337,
+      "estimated_net_operating_income": -2283.9894333333336,
+      "estimated_net_operating_income_pct": -8.866074427752547
     }
   ],
   "shopify_by_channel": [
