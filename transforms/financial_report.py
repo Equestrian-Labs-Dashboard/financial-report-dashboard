@@ -289,6 +289,9 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result["ads_stats_spend"] = result["marketing_allocated"]
     result["gross_profit_2"] = result["gross_profit_1"] - result["shipping_cost"]
     result["gross_margin_2"] = (result["gross_profit_2"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
+    # ROAS is shown after Ads / Stats and before Gross Profit 3.
+    # Financial view uses Net Sales as revenue basis because GP3 is deducted from Net Sales flow.
+    result["roas"] = (result["net_sales"] / result["ads_stats_spend"].replace(0, pd.NA)).fillna(0)
     result["gross_profit_3"] = result["gross_profit_2"] - result["ads_stats_spend"]
     result["gross_margin_3"] = (result["gross_profit_3"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
     result.drop(columns=["applied_shipping", "marketing_allocated"], inplace=True, errors="ignore")
@@ -443,6 +446,8 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
             frame["shipping_cost"] = 0
         if "ads_stats_spend" not in frame.columns:
             frame["ads_stats_spend"] = 0
+        if "roas" not in frame.columns:
+            frame["roas"] = 0
         if "estimated_average_opex" not in frame.columns:
             frame["estimated_average_opex"] = 0
             frame["estimated_net_operating_income"] = frame.get("gross_profit_3", 0)

@@ -992,6 +992,12 @@
       return Number(row.ads_stats_spend || row.marketing_allocated || 0);
     }
 
+    function displayRoas(row) {
+      const ads = displayAdsStats(row);
+      if (!ads) return 0;
+      return Number(row.net_sales || 0) / ads;
+    }
+
     function displayGrossProfit2(row) {
       const direct = Number(row.gross_profit_2 || 0);
       if (direct) return direct;
@@ -1106,6 +1112,11 @@
 
     function percent(value) {
       return Number((Number(value || 0) * 100)).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "%";
+    }
+
+    function roas(value) {
+      const numericValue = Number(value || 0);
+      return numericValue.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "x";
     }
 
     function safeArray(value) {
@@ -1295,6 +1306,7 @@
         shipping_cost: 0,
         gross_profit_2: 0,
         ads_stats_spend: 0,
+        roas: 0,
         gross_profit_3: 0,
         estimated_average_opex: 0,
         estimated_net_operating_income: 0,
@@ -1363,6 +1375,7 @@
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result._gross_margin_1_weight / result.net_sales : 0;
       result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
+      result.roas = result.ads_stats_spend ? result.net_sales / result.ads_stats_spend : 0;
       result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
       result.checkout_abandonment_rate = result.sessions_reached_checkout
@@ -1455,6 +1468,8 @@
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping Cost</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Gross Margin 2 (GM2)</div><div class="kpi-value">${percent(totals.gross_margin_2)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP2 / Net Sales</div></div>
 
+        <div class="kpi-card negative"><div class="kpi-label">Ads / Stats</div><div class="kpi-value">${compactMoney(totals.ads_stats_spend)}</div><div class="kpi-chip red">Marketing</div><div class="kpi-note">Ad spend / stats cost</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">ROAS</div><div class="kpi-value">${roas(totals.roas)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Ads Spend</div></div>
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - Ads / Stats</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Gross Margin 3 (GM3)</div><div class="kpi-value">${percent(totals.gross_margin_3)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP3 / Net Sales</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Net / Gross Ratio</div><div class="kpi-value">${percent(totals.net_gross_ratio)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Gross Sales</div></div>
@@ -1486,6 +1501,7 @@
             shipping_cost: 0,
             gross_profit_2: 0,
             ads_stats_spend: 0,
+            roas: 0,
             gross_profit_3: 0,
             estimated_average_opex: 0,
             estimated_net_operating_income: 0,
@@ -1565,6 +1581,7 @@
             ...cleanRow,
             gross_margin_1: row.net_sales ? (row._gross_margin_1_weight || 0) / row.net_sales : 0,
             gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
+            roas: row.ads_stats_spend ? row.net_sales / row.ads_stats_spend : 0,
             gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
             net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
             checkout_abandonment_rate: row.sessions_reached_checkout
@@ -1691,6 +1708,7 @@
         { key: "gross_profit_2", label: "Gross Profit 2", formatter: money },
         { key: "gross_margin_2", label: "Gross Margin 2 (GM2)", formatter: percent },
         { key: "ads_stats_spend", label: "Ads / Stats", formatter: money },
+        { key: "roas", label: "ROAS", formatter: roas },
         { key: "gross_profit_3", label: "Gross Profit 3", formatter: money },
         { key: "gross_margin_3", label: "Gross Margin 3 (GM3)", formatter: percent },
         { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
