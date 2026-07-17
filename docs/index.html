@@ -714,6 +714,19 @@
       .kpi-card { min-height: 105px; }
       .kpi-value { font-size: 22px; }
     }
+  
+    .opex-definition-row td {
+      background: rgba(234, 179, 8, 0.08);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      white-space: normal;
+    }
+
+    .opex-definition-row strong {
+      color: var(--text);
+    }
+
   </style>
 </head>
 
@@ -919,6 +932,12 @@
     const WELLINGTON_OPEX_BASE_PCT = 0.40;
     const CONCIERGE_COMMISSION_PCT = 0.10;
     const WELLINGTON_COMMISSION_PCT = 0.01;
+    const WELLINGTON_RENT_ANNUAL = 15000;
+    const WELLINGTON_PERMIT_ANNUAL = 9000;
+    const WELLINGTON_INSURANCE_ANNUAL = 20000;
+    const WELLINGTON_INSURANCE_UPFRONT = 3000;
+    const WELLINGTON_SHARED_RENT_MONTHLY = 5000;
+    const WELLINGTON_STORE_RENT_SHARE = 0.50;
 
     function rowHasFinancialActivity(row) {
       return Number(row.total_sales || 0) !== 0 ||
@@ -928,6 +947,49 @@
 
     function rowSplitName(row) {
       return String((row && (row.location_filter || row.split_filter || row.location_name)) || "").trim().toLowerCase();
+    }
+
+    function selectedPeriodMonth(row) {
+      const value = Number(row && row.month);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function wellingtonInsuranceForRow(row) {
+      const month = selectedPeriodMonth(row);
+      if (month === 1) return WELLINGTON_INSURANCE_UPFRONT;
+      if (month >= 2 && month <= 12) {
+        return (WELLINGTON_INSURANCE_ANNUAL - WELLINGTON_INSURANCE_UPFRONT) / 11;
+      }
+      return WELLINGTON_INSURANCE_ANNUAL;
+    }
+
+    function wellingtonFixedOpex(row) {
+      const isMonthlyRow = !!(row && row.month);
+      if (isMonthlyRow) {
+        return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12) +
+               (WELLINGTON_RENT_ANNUAL / 12) +
+               (WELLINGTON_PERMIT_ANNUAL / 12) +
+               wellingtonInsuranceForRow(row) +
+               (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE);
+      }
+
+      return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT) +
+             WELLINGTON_RENT_ANNUAL +
+             WELLINGTON_PERMIT_ANNUAL +
+             WELLINGTON_INSURANCE_ANNUAL +
+             (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE * 12);
+    }
+
+    function opexDefinitionForRow(row) {
+      const split = rowSplitName(row);
+      const viewType = String(row && row.view_type || "brand").toLowerCase();
+      if (viewType === "location" && split === "concierge") {
+        return "Concierge OPEX estimate: 60% of the $70k annual channel support pool + 10% of Concierge Net Sales as commission estimate.";
+      }
+      if (viewType === "location" && split === "wellington") {
+        return "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + $15k/year rent + $9k/year permit + $20k/year insurance ($3k upfront, rest monthly) + 50% of $5k/month shared rent.";
+      }
+      return "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now.";
     }
 
     function estimatedMonthlyOpexForRow(row) {
@@ -942,7 +1004,7 @@
           return (CHANNEL_OPEX_POOL_ANNUAL * CONCIERGE_OPEX_BASE_PCT / 12) + (netSales * CONCIERGE_COMMISSION_PCT);
         }
         if (split === "wellington") {
-          return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12) + (netSales * WELLINGTON_COMMISSION_PCT);
+          return wellingtonFixedOpex(row) + (netSales * WELLINGTON_COMMISSION_PCT);
         }
         return 0;
       }
@@ -990,12 +1052,6 @@
     function displayAdsStats(row) {
       if (isCavaliBrand(row) && !isLocationRow(row)) return 0;
       return Number(row.ads_stats_spend || row.marketing_allocated || 0);
-    }
-
-    function displayRoas(row) {
-      const ads = displayAdsStats(row);
-      if (!ads) return 0;
-      return Number(row.net_sales || 0) / ads;
     }
 
     function displayGrossProfit2(row) {
@@ -1114,9 +1170,11 @@
       return Number((Number(value || 0) * 100)).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "%";
     }
 
-    function roas(value) {
-      const numericValue = Number(value || 0);
-      return numericValue.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "x";
+
+    function formatRoas(value) {
+      const n = Number(value || 0);
+      if (!Number.isFinite(n) || n <= 0) return "0.0x";
+      return `${n.toFixed(1)}x`;
     }
 
     function safeArray(value) {
@@ -1375,8 +1433,8 @@
       result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
       result.gross_margin_1 = result.net_sales ? result._gross_margin_1_weight / result.net_sales : 0;
       result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
-      result.roas = result.ads_stats_spend ? result.net_sales / result.ads_stats_spend : 0;
       result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
+      result.roas = result.ads_stats_spend ? result.net_sales / result.ads_stats_spend : 0;
       result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
       result.checkout_abandonment_rate = result.sessions_reached_checkout
         ? result.checkout_abandonments / result.sessions_reached_checkout
@@ -1468,8 +1526,8 @@
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping Cost</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Gross Margin 2 (GM2)</div><div class="kpi-value">${percent(totals.gross_margin_2)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP2 / Net Sales</div></div>
 
-        <div class="kpi-card negative"><div class="kpi-label">Ads / Stats</div><div class="kpi-value">${compactMoney(totals.ads_stats_spend)}</div><div class="kpi-chip red">Marketing</div><div class="kpi-note">Ad spend / stats cost</div></div>
-        <div class="kpi-card purple"><div class="kpi-label">ROAS</div><div class="kpi-value">${roas(totals.roas)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Ads Spend</div></div>
+        <div class="kpi-card negative"><div class="kpi-label">Ads / Stats</div><div class="kpi-value">${compactMoney(totals.ads_stats_spend)}</div><div class="kpi-chip red">Spend</div><div class="kpi-note">Marketing spend</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">ROAS</div><div class="kpi-value">${formatRoas(totals.roas)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Ads Spend</div></div>
         <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - Ads / Stats</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Gross Margin 3 (GM3)</div><div class="kpi-value">${percent(totals.gross_margin_3)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP3 / Net Sales</div></div>
         <div class="kpi-card purple"><div class="kpi-label">Net / Gross Ratio</div><div class="kpi-value">${percent(totals.net_gross_ratio)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Gross Sales</div></div>
@@ -1501,7 +1559,6 @@
             shipping_cost: 0,
             gross_profit_2: 0,
             ads_stats_spend: 0,
-            roas: 0,
             gross_profit_3: 0,
             estimated_average_opex: 0,
             estimated_net_operating_income: 0,
@@ -1581,7 +1638,6 @@
             ...cleanRow,
             gross_margin_1: row.net_sales ? (row._gross_margin_1_weight || 0) / row.net_sales : 0,
             gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
-            roas: row.ads_stats_spend ? row.net_sales / row.ads_stats_spend : 0,
             gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
             net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
             checkout_abandonment_rate: row.sessions_reached_checkout
@@ -1708,12 +1764,13 @@
         { key: "gross_profit_2", label: "Gross Profit 2", formatter: money },
         { key: "gross_margin_2", label: "Gross Margin 2 (GM2)", formatter: percent },
         { key: "ads_stats_spend", label: "Ads / Stats", formatter: money },
-        { key: "roas", label: "ROAS", formatter: roas },
+        { key: "roas", label: "ROAS", formatter: formatRoas },
         { key: "gross_profit_3", label: "Gross Profit 3", formatter: money },
         { key: "gross_margin_3", label: "Gross Margin 3 (GM3)", formatter: percent },
         { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
         { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
         { key: "estimated_average_opex", label: "Estimated Average OPEX", formatter: money },
+        { key: "opex_definition", label: "OPEX Definition", formatter: value => value, isNote: true },
         { key: "estimated_net_operating_income", label: "Estimated Net Operating Income", formatter: money },
         { key: "estimated_net_operating_income_pct", label: "Estimated Net Operating Income %", formatter: percent },
         { key: "taxes", label: "Taxes", formatter: money }
@@ -1721,6 +1778,12 @@
 
       const ytyTotals = sumRows(rows);
       const html = metrics.map(m => {
+        if (m.isNote) {
+          const note = opexDefinitionForRow(rows[0] || {});
+          const colspan = monthKeys.length + quarterKeys.length + 2;
+          return `<tr class="opex-definition-row"><td class="sticky-kpi"><strong>${m.label}</strong></td><td colspan="${colspan - 1}">${note}</td></tr>`;
+        }
+
         const monthCells = monthKeys.map(k => {
           const r = lookup[k];
           const v = r ? r[m.key] : 0;
@@ -1755,6 +1818,7 @@
         <li><span class="note-dot"></span><span>Orders: <strong>${number(totals.orders || totals.transactions)}</strong>, Units Sold: <strong>${number(totals.units_sold)}</strong>, Customers: <strong>${number(totals.customers)}</strong>.</span></li>
         <li><span class="note-dot"></span><span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span></li>
         <li><span class="note-dot"></span><span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>OPEX assumption: <strong>${opexDefinitionForRow((selected.selectedRows || [])[0] || {})}</strong></span></li>
       `;
     }
 

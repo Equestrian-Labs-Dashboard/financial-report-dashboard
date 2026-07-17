@@ -289,8 +289,6 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result["ads_stats_spend"] = result["marketing_allocated"]
     result["gross_profit_2"] = result["gross_profit_1"] - result["shipping_cost"]
     result["gross_margin_2"] = (result["gross_profit_2"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
-    # ROAS is shown after Ads / Stats and before Gross Profit 3.
-    # Financial view uses Net Sales as revenue basis because GP3 is deducted from Net Sales flow.
     result["roas"] = (result["net_sales"] / result["ads_stats_spend"].replace(0, pd.NA)).fillna(0)
     result["gross_profit_3"] = result["gross_profit_2"] - result["ads_stats_spend"]
     result["gross_margin_3"] = (result["gross_profit_3"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
@@ -312,21 +310,99 @@ WELLINGTON_OPEX_BASE_PCT = 0.40
 CONCIERGE_COMMISSION_PCT = 0.10
 WELLINGTON_COMMISSION_PCT = 0.01
 
+# Wellington / Concierge OPEX assumptions requested for Financial Dashboard.
+# Keep them here so the assumptions are visible and easy to update in 3 months.
+WELLINGTON_RENT_ANNUAL = 15000.0
+WELLINGTON_PERMIT_ANNUAL = 9000.0
+WELLINGTON_INSURANCE_ANNUAL = 20000.0
+WELLINGTON_INSURANCE_UPFRONT = 3000.0
+WELLINGTON_SHARED_RENT_MONTHLY = 5000.0
+WELLINGTON_STORE_RENT_SHARE = 0.50
+
 
 def _period_fixed_opex(monthly: bool) -> float:
     months = 1 if monthly else 12
     return months * (GENERAL_OPEX_PAYROLL_MONTHLY + GENERAL_OPEX_GA_MONTHLY + GENERAL_OPEX_TECHNOLOGY_MONTHLY)
 
 
-def _channel_base_opex(split_name: str, monthly: bool) -> float:
+def _wellington_insurance_for_period(monthly: bool, month_value=None) -> float:
+    """Insurance assumption: 20k/year, 3k upfront in January, rest Feb-Dec."""
+    if not monthly:
+        return WELLINGTON_INSURANCE_ANNUAL
+
+    try:
+        month = int(month_value or 0)
+    except (TypeError, ValueError):
+        month = 0
+
+    if month == 1:
+        return WELLINGTON_INSURANCE_UPFRONT
+    if 2 <= month <= 12:
+        return (WELLINGTON_INSURANCE_ANNUAL - WELLINGTON_INSURANCE_UPFRONT) / 11
+    return WELLINGTON_INSURANCE_ANNUAL / 12
+
+
+def _wellington_fixed_opex(monthly: bool, month_value=None) -> float:
+    """
+    Wellington fixed OPEX assumptions:
+    - 40% of the 70k annual channel OPEX pool.
+    - 15k/year rent allocation.
+    - 9k/year permit.
+    - 20k/year insurance: 3k upfront, remaining monthly installments.
+    - 5k/month rent split 50/50 between warehouse and store, so store gets 2.5k/month.
+    """
+    if monthly:
+        return (
+            (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12)
+            + (WELLINGTON_RENT_ANNUAL / 12)
+            + (WELLINGTON_PERMIT_ANNUAL / 12)
+            + _wellington_insurance_for_period(True, month_value)
+            + (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE)
+        )
+
+    return (
+        (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT)
+        + WELLINGTON_RENT_ANNUAL
+        + WELLINGTON_PERMIT_ANNUAL
+        + WELLINGTON_INSURANCE_ANNUAL
+        + (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE * 12)
+    )
+
+
+def _channel_base_opex(split_name: str, monthly: bool, month_value=None) -> float:
     split = str(split_name or "").strip().lower()
     months_divisor = 12 if monthly else 1
     if split == "concierge":
         return (CHANNEL_OPEX_POOL_ANNUAL * CONCIERGE_OPEX_BASE_PCT) / months_divisor
     if split == "wellington":
-        return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT) / months_divisor
+        return _wellington_fixed_opex(monthly=monthly, month_value=month_value)
     return 0.0
 
+
+def _opex_definition(split_name: str, monthly: bool, month_value=None) -> str:
+    split = str(split_name or "").strip().lower()
+    if split == "concierge":
+        return (
+            "Concierge OPEX estimate: 60% of the $70k annual channel support pool "
+            "+ 10% of Concierge Net Sales as commission estimate."
+        )
+    if split == "wellington":
+        if monthly:
+            ins = _wellington_insurance_for_period(True, month_value)
+            return (
+                "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + "
+                "$15k/year rent + $9k/year permit + $20k/year insurance ($3k upfront, rest monthly) + "
+                f"50% of $5k/month shared rent. Current-period insurance applied: ${ins:,.0f}."
+            )
+        return (
+            "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + "
+            "$15k/year rent + $9k/year permit + $20k/year insurance ($3k upfront, rest monthly) + "
+            "50% of $5k/month shared rent."
+        )
+    return (
+        "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + "
+        "Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now."
+    )
 
 def _channel_commission_opex(split_name: str, net_sales: float) -> float:
     split = str(split_name or "").strip().lower()
@@ -345,7 +421,7 @@ def add_estimated_operating_income(df):
     - Brand/main business OPEX pool is allocated by Gross Sales per period:
       Payroll 40k/month + G&A 45k/month + Sales & Marketing 6.62% of Gross Revenue + Technology 0.
     - Concierge OPEX estimate: 70k annual pool * 60%, plus 10% of Concierge Net Sales.
-    - Wellington OPEX estimate: 70k annual pool * 40%, plus 1% of Wellington Net Sales.
+    - Wellington OPEX estimate: 70k annual pool * 40%, plus 1% of Wellington Net Sales, plus rent/permit/insurance assumptions.
     - NOI = GP3 - OPEX.
     - NOI % = NOI / Net Sales.
     """
@@ -353,10 +429,14 @@ def add_estimated_operating_income(df):
         df["estimated_average_opex"] = 0
         df["estimated_net_operating_income"] = 0
         df["estimated_net_operating_income_pct"] = 0
+        df["opex_definition"] = ""
+        df["opex_assumptions"] = ""
         return df
 
     df = df.copy()
     df["estimated_average_opex"] = 0.0
+    df["opex_definition"] = ""
+    df["opex_assumptions"] = ""
 
     monthly = "month" in df.columns
     group_cols = ["year", "month"] if monthly else ["year"]
@@ -378,12 +458,17 @@ def add_estimated_operating_income(df):
         pool = _period_fixed_opex(monthly=monthly) + (period_gross * GENERAL_OPEX_SALES_MARKETING_PCT)
         for i in index:
             df.at[i, "estimated_average_opex"] = pool * (_safe_float(df.at[i, "gross_sales"]) / period_gross)
+            df.at[i, "opex_definition"] = _opex_definition("main", monthly=monthly)
+            df.at[i, "opex_assumptions"] = "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0."
 
     # Channel/location rows: Concierge and Wellington have their own provisional OPEX rules.
     location_mask = df["view_type"].astype(str).str.lower().eq("location") & has_activity(df)
     for i in df.loc[location_mask].index:
         split = df.at[i, "location_filter"] if "location_filter" in df.columns else ""
-        df.at[i, "estimated_average_opex"] = _channel_base_opex(split, monthly=monthly) + _channel_commission_opex(split, df.at[i, "net_sales"])
+        month_value = df.at[i, "month"] if monthly and "month" in df.columns else None
+        df.at[i, "estimated_average_opex"] = _channel_base_opex(split, monthly=monthly, month_value=month_value) + _channel_commission_opex(split, df.at[i, "net_sales"])
+        df.at[i, "opex_definition"] = _opex_definition(split, monthly=monthly, month_value=month_value)
+        df.at[i, "opex_assumptions"] = df.at[i, "opex_definition"]
 
     df["estimated_net_operating_income"] = df["gross_profit_3"] - df["estimated_average_opex"]
     df["estimated_net_operating_income_pct"] = (
@@ -447,7 +532,7 @@ def build_financial_report(shopify_rows: list[dict], bill_rows: list[dict], qb_s
         if "ads_stats_spend" not in frame.columns:
             frame["ads_stats_spend"] = 0
         if "roas" not in frame.columns:
-            frame["roas"] = 0
+            frame["roas"] = (frame.get("net_sales", 0) / frame.get("ads_stats_spend", 0).replace(0, pd.NA)).fillna(0) if hasattr(frame.get("ads_stats_spend", 0), "replace") else 0
         if "estimated_average_opex" not in frame.columns:
             frame["estimated_average_opex"] = 0
             frame["estimated_net_operating_income"] = frame.get("gross_profit_3", 0)
