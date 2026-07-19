@@ -312,12 +312,10 @@ WELLINGTON_COMMISSION_PCT = 0.01
 
 # Wellington / Concierge OPEX assumptions requested for Financial Dashboard.
 # Keep them here so the assumptions are visible and easy to update in 3 months.
-WELLINGTON_RENT_ANNUAL = 15000.0
+WELLINGTON_RENT_MONTHLY = 15000.0
+WELLINGTON_RENT_STORE_SHARE = 0.50
 WELLINGTON_PERMIT_ANNUAL = 9000.0
 WELLINGTON_INSURANCE_ANNUAL = 20000.0
-WELLINGTON_INSURANCE_UPFRONT = 3000.0
-WELLINGTON_SHARED_RENT_MONTHLY = 5000.0
-WELLINGTON_STORE_RENT_SHARE = 0.50
 
 
 def _period_fixed_opex(monthly: bool) -> float:
@@ -325,47 +323,27 @@ def _period_fixed_opex(monthly: bool) -> float:
     return months * (GENERAL_OPEX_PAYROLL_MONTHLY + GENERAL_OPEX_GA_MONTHLY + GENERAL_OPEX_TECHNOLOGY_MONTHLY)
 
 
-def _wellington_insurance_for_period(monthly: bool, month_value=None) -> float:
-    """Insurance assumption: 20k/year, 3k upfront in January, rest Feb-Dec."""
-    if not monthly:
-        return WELLINGTON_INSURANCE_ANNUAL
-
-    try:
-        month = int(month_value or 0)
-    except (TypeError, ValueError):
-        month = 0
-
-    if month == 1:
-        return WELLINGTON_INSURANCE_UPFRONT
-    if 2 <= month <= 12:
-        return (WELLINGTON_INSURANCE_ANNUAL - WELLINGTON_INSURANCE_UPFRONT) / 11
-    return WELLINGTON_INSURANCE_ANNUAL / 12
-
-
 def _wellington_fixed_opex(monthly: bool, month_value=None) -> float:
     """
-    Wellington fixed OPEX assumptions:
+    Wellington fixed OPEX assumptions for Financial Dashboard:
     - 40% of the 70k annual channel OPEX pool.
-    - 15k/year rent allocation.
-    - 9k/year permit.
-    - 20k/year insurance: 3k upfront, remaining monthly installments.
-    - 5k/month rent split 50/50 between warehouse and store, so store gets 2.5k/month.
+    - Rent is 15k/month, with 50% allocated to the store/channel.
+    - Permit is 9k/year, shown as the monthly equivalent.
+    - Insurance is 20k/year, shown as the monthly equivalent.
     """
     if monthly:
         return (
             (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12)
-            + (WELLINGTON_RENT_ANNUAL / 12)
+            + (WELLINGTON_RENT_MONTHLY * WELLINGTON_RENT_STORE_SHARE)
             + (WELLINGTON_PERMIT_ANNUAL / 12)
-            + _wellington_insurance_for_period(True, month_value)
-            + (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE)
+            + (WELLINGTON_INSURANCE_ANNUAL / 12)
         )
 
     return (
         (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT)
-        + WELLINGTON_RENT_ANNUAL
+        + (WELLINGTON_RENT_MONTHLY * WELLINGTON_RENT_STORE_SHARE * 12)
         + WELLINGTON_PERMIT_ANNUAL
         + WELLINGTON_INSURANCE_ANNUAL
-        + (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE * 12)
     )
 
 
@@ -387,21 +365,14 @@ def _opex_definition(split_name: str, monthly: bool, month_value=None) -> str:
             "+ 10% of Concierge Net Sales as commission estimate."
         )
     if split == "wellington":
-        if monthly:
-            ins = _wellington_insurance_for_period(True, month_value)
-            return (
-                "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + "
-                "$15k/year rent + $9k/year permit + $20k/year insurance ($3k upfront, rest monthly) + "
-                f"50% of $5k/month shared rent. Current-period insurance applied: ${ins:,.0f}."
-            )
         return (
             "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + "
-            "$15k/year rent + $9k/year permit + $20k/year insurance ($3k upfront, rest monthly) + "
-            "50% of $5k/month shared rent."
+            "rent $15k/month x 50% store allocation ($7.5k/month) + permit $9k/year ($750/month) + "
+            "insurance $20k/year ($1.67k/month)."
         )
     return (
         "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + "
-        "Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now."
+        "Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue."
     )
 
 def _channel_commission_opex(split_name: str, net_sales: float) -> float:
@@ -419,7 +390,7 @@ def add_estimated_operating_income(df):
 
     Financial rules:
     - Brand/main business OPEX pool is allocated by Gross Sales per period:
-      Payroll 40k/month + G&A 45k/month + Sales & Marketing 6.62% of Gross Revenue + Technology 0.
+      Payroll 40k/month + G&A 45k/month + Sales & Marketing 6.62% of Gross Sales + Technology 0.
     - Concierge OPEX estimate: 70k annual pool * 60%, plus 10% of Concierge Net Sales.
     - Wellington OPEX estimate: 70k annual pool * 40%, plus 1% of Wellington Net Sales, plus rent/permit/insurance assumptions.
     - NOI = GP3 - OPEX.
@@ -459,7 +430,7 @@ def add_estimated_operating_income(df):
         for i in index:
             df.at[i, "estimated_average_opex"] = pool * (_safe_float(df.at[i, "gross_sales"]) / period_gross)
             df.at[i, "opex_definition"] = _opex_definition("main", monthly=monthly)
-            df.at[i, "opex_assumptions"] = "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0."
+            df.at[i, "opex_assumptions"] = "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue."
 
     # Channel/location rows: Concierge and Wellington have their own provisional OPEX rules.
     location_mask = df["view_type"].astype(str).str.lower().eq("location") & has_activity(df)

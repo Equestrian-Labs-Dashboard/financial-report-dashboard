@@ -716,11 +716,13 @@
     }
   
     .opex-definition-row td {
-      background: rgba(234, 179, 8, 0.08);
+      background: rgba(100, 116, 139, 0.10);
       color: var(--muted);
       font-size: 11px;
       line-height: 1.5;
       white-space: normal;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
 
     .opex-definition-row strong {
@@ -932,12 +934,10 @@
     const WELLINGTON_OPEX_BASE_PCT = 0.40;
     const CONCIERGE_COMMISSION_PCT = 0.10;
     const WELLINGTON_COMMISSION_PCT = 0.01;
-    const WELLINGTON_RENT_ANNUAL = 15000;
+    const WELLINGTON_RENT_MONTHLY = 15000;
+    const WELLINGTON_RENT_STORE_SHARE = 0.50;
     const WELLINGTON_PERMIT_ANNUAL = 9000;
     const WELLINGTON_INSURANCE_ANNUAL = 20000;
-    const WELLINGTON_INSURANCE_UPFRONT = 3000;
-    const WELLINGTON_SHARED_RENT_MONTHLY = 5000;
-    const WELLINGTON_STORE_RENT_SHARE = 0.50;
 
     function rowHasFinancialActivity(row) {
       return Number(row.total_sales || 0) !== 0 ||
@@ -949,35 +949,19 @@
       return String((row && (row.location_filter || row.split_filter || row.location_name)) || "").trim().toLowerCase();
     }
 
-    function selectedPeriodMonth(row) {
-      const value = Number(row && row.month);
-      return Number.isFinite(value) ? value : 0;
-    }
-
-    function wellingtonInsuranceForRow(row) {
-      const month = selectedPeriodMonth(row);
-      if (month === 1) return WELLINGTON_INSURANCE_UPFRONT;
-      if (month >= 2 && month <= 12) {
-        return (WELLINGTON_INSURANCE_ANNUAL - WELLINGTON_INSURANCE_UPFRONT) / 11;
-      }
-      return WELLINGTON_INSURANCE_ANNUAL;
-    }
-
     function wellingtonFixedOpex(row) {
       const isMonthlyRow = !!(row && row.month);
       if (isMonthlyRow) {
         return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12) +
-               (WELLINGTON_RENT_ANNUAL / 12) +
+               (WELLINGTON_RENT_MONTHLY * WELLINGTON_RENT_STORE_SHARE) +
                (WELLINGTON_PERMIT_ANNUAL / 12) +
-               wellingtonInsuranceForRow(row) +
-               (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE);
+               (WELLINGTON_INSURANCE_ANNUAL / 12);
       }
 
       return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT) +
-             WELLINGTON_RENT_ANNUAL +
+             (WELLINGTON_RENT_MONTHLY * WELLINGTON_RENT_STORE_SHARE * 12) +
              WELLINGTON_PERMIT_ANNUAL +
-             WELLINGTON_INSURANCE_ANNUAL +
-             (WELLINGTON_SHARED_RENT_MONTHLY * WELLINGTON_STORE_RENT_SHARE * 12);
+             WELLINGTON_INSURANCE_ANNUAL;
     }
 
     function opexDefinitionForRow(row) {
@@ -987,9 +971,9 @@
         return "Concierge OPEX estimate: 60% of the $70k annual channel support pool + 10% of Concierge Net Sales as commission estimate.";
       }
       if (viewType === "location" && split === "wellington") {
-        return "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + $15k/year rent + $9k/year permit + $20k/year insurance ($3k upfront, rest monthly) + 50% of $5k/month shared rent.";
+        return "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + rent $15k/month x 50% store allocation ($7.5k/month) + permit $9k/year ($750/month) + insurance $20k/year ($1.67k/month).";
       }
-      return "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now.";
+      return "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. Monthly variation comes from Sales & Marketing as a % of revenue.";
     }
 
     function estimatedMonthlyOpexForRow(row) {
@@ -1770,10 +1754,10 @@
         { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
         { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
         { key: "estimated_average_opex", label: "Estimated Average OPEX", formatter: money },
-        { key: "opex_definition", label: "OPEX Definition", formatter: value => value, isNote: true },
         { key: "estimated_net_operating_income", label: "Estimated Net Operating Income", formatter: money },
         { key: "estimated_net_operating_income_pct", label: "Estimated Net Operating Income %", formatter: percent },
-        { key: "taxes", label: "Taxes", formatter: money }
+        { key: "taxes", label: "Taxes", formatter: money },
+        { key: "opex_definition", label: "OPEX Assumptions", formatter: value => value, isNote: true }
       ];
 
       const ytyTotals = sumRows(rows);
