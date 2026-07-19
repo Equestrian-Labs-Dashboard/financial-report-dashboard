@@ -3,20 +3,19 @@ name: Daily Financial Report
 on:
   workflow_dispatch:
   schedule:
-    # GitHub cron runs in UTC.
-    # 00:00 UTC = 02:00 Europe/Madrid during summer time.
-    - cron: "0 0 * * *"
+    - cron: "0 7 * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  group: financial-report-dashboard
-  cancel-in-progress: false
+  group: financial-report-main
+  cancel-in-progress: true
 
 jobs:
   financial-report:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -32,9 +31,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Sync latest main before generating data
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+
       - name: Run financial report pipeline
         env:
-          TZ: Europe/Madrid
+          PYTHONUNBUFFERED: "1"
 
           CORRO_SHOPIFY_STORE: ${{ secrets.CORRO_SHOPIFY_STORE }}
           CORRO_SHOPIFY_TOKEN: ${{ secrets.CORRO_SHOPIFY_TOKEN }}
@@ -46,30 +50,42 @@ jobs:
           QB_CLIENT_SECRET: ${{ secrets.QB_CLIENT_SECRET }}
           QB_REFRESH_TOKEN: ${{ secrets.QB_REFRESH_TOKEN }}
           QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
+          QB_ENVIRONMENT: sandbox
 
-          BILL_BASE_URL: ${{ secrets.BILL_BASE_URL }}
-          BILL_USERNAME: ${{ secrets.BILL_USERNAME }}
-          BILL_PASSWORD: ${{ secrets.BILL_PASSWORD }}
-          BILL_ORG_ID: ${{ secrets.BILL_ORG_ID }}
-          BILL_DEV_KEY: ${{ secrets.BILL_DEV_KEY }}
+          MARKETING_SHEET_ID: ${{ secrets.MARKETING_SHEET_ID }}
+          MARKETING_SHEET_START_YEAR: ${{ secrets.MARKETING_SHEET_START_YEAR }}
 
-          MARKETING_SHEET_GID: ${{ secrets.MARKETING_SHEET_GID }}
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          START_YEAR: ${{ secrets.START_YEAR }}
+          WELLINGTON_LOCATION_ID: ${{ secrets.WELLINGTON_LOCATION_ID }}
+          WELLINGTON_LOCATION_NAME: ${{ secrets.WELLINGTON_LOCATION_NAME }}
+
+          START_YEAR: "2024"
         run: python -u main.py
 
-      - name: Commit updated dashboard data
+      - name: Commit and push updated dashboard data
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions@github.com"
 
           git add docs/financial_report.json
 
-          if git diff --staged --quiet; then
+          if git diff --cached --quiet; then
             echo "No dashboard data changes to commit."
             exit 0
           fi
 
           git commit -m "Update financial report data"
-          git pull --rebase --autostash origin main
-          git push origin main
+
+          # If main changed while this job was running, regenerate on top of latest main instead of rebasing a generated JSON file.
+          if ! git push origin main; then
+            echo "Push rejected because main changed. Regenerating financial_report.json on latest main..."
+            git fetch origin main
+            git reset --hard origin/main
+            python -u main.py
+            git add docs/financial_report.json
+            if git diff --cached --quiet; then
+              echo "No dashboard data changes after regenerating."
+              exit 0
+            fi
+            git commit -m "Update financial report data"
+            git push origin main
+          fi
