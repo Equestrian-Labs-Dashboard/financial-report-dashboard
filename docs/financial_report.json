@@ -64,11 +64,11 @@
       "roas": 0,
       "gross_profit_3": 96311.79000000001,
       "gross_margin_3": 0.3903924861199628,
-      "estimated_average_opex": 165919.87050048017,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -69608.08050048017,
-      "estimated_net_operating_income_pct": -0.28215103883564985
+      "estimated_average_opex": 69308.0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 27003.790000000008,
+      "estimated_net_operating_income_pct": 0.109457800678
     },
     {
       "brand": "Cavali",
@@ -116,11 +116,11 @@
       "roas": 0,
       "gross_profit_3": 55417.46,
       "gross_margin_3": 0.3799983090603031,
-      "estimated_average_opex": 88501.71562388299,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -33084.25562388299,
-      "estimated_net_operating_income_pct": -0.22685920996008047
+      "estimated_average_opex": 69308.0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -13890.54,
+      "estimated_net_operating_income_pct": -0.0952476297530508
     },
     {
       "brand": "Cavali",
@@ -168,11 +168,11 @@
       "roas": 0,
       "gross_profit_3": 18727.58,
       "gross_margin_3": 0.3362600536433718,
-      "estimated_average_opex": 99273.87174881306,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -80546.29174881306,
-      "estimated_net_operating_income_pct": -1.4462359997517327
+      "estimated_average_opex": 40429.66666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -21702.08666666667,
+      "estimated_net_operating_income_pct": -0.3896683301690041
     },
     {
       "brand": "Corro",
@@ -639,11 +639,11 @@
       "roas": 0,
       "gross_profit_3": 231.8,
       "gross_margin_3": 0.4541447071961756,
-      "estimated_average_opex": 391.01542453397883,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -159.21542453397882,
-      "estimated_net_operating_income_pct": -0.3119363345819612
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5543.866666666667,
+      "estimated_net_operating_income_pct": -10.861594926954147
     },
     {
       "brand": "Cavali",
@@ -692,11 +692,11 @@
       "roas": 0,
       "gross_profit_3": 327.03,
       "gross_margin_3": 0.37345834094646446,
-      "estimated_average_opex": 721.2314234101483,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -394.2014234101483,
-      "estimated_net_operating_income_pct": -0.45016606912359347
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5448.636666666667,
+      "estimated_net_operating_income_pct": -6.2221778122906395
     },
     {
       "brand": "Cavali",
@@ -745,11 +745,11 @@
       "roas": 0,
       "gross_profit_3": 24925.31,
       "gross_margin_3": 0.38851448560386637,
-      "estimated_average_opex": 27986.995279179926,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -3061.6852791799247,
-      "estimated_net_operating_income_pct": -0.04772294030932889
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 19149.643333333333,
+      "estimated_net_operating_income_pct": 0.29848831686135535
     },
     {
       "brand": "Cavali",
@@ -798,11 +798,11 @@
       "roas": 0,
       "gross_profit_3": 1952.71,
       "gross_margin_3": 0.6709329173595745,
-      "estimated_average_opex": 2272.751161810113,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -320.04116181011295,
-      "estimated_net_operating_income_pct": -0.10996315395957758
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -3822.956666666667,
+      "estimated_net_operating_income_pct": -1.3135322036072439
     },
     {
       "brand": "Cavali",
@@ -851,11 +851,11 @@
       "roas": 0,
       "gross_profit_3": 818.82,
       "gross_margin_3": 0.44118407724304404,
-      "estimated_average_opex": 1507.647849793985,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -688.8278497939849,
-      "estimated_net_operating_income_pct": -0.3711436937186065
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -4956.846666666667,
+      "estimated_net_operating_income_pct": -2.6707723585996828
     },
     {
       "brand": "Cavali",
@@ -904,11 +904,11 @@
       "roas": 0,
       "gross_profit_3": 18722.17,
       "gross_margin_3": 0.3465049164866327,
-      "estimated_average_opex": 32529.579436337655,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -13807.409436337657,
-      "estimated_net_operating_income_pct": -0.2555438420671815
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 12946.50333333333,
+      "estimated_net_operating_income_pct": 0.2396104220990717
     },
     {
       "brand": "Cavali",
@@ -957,11 +957,11 @@
       "roas": 0,
       "gross_profit_3": 1114.27,
       "gross_margin_3": 0.20657659094027045,
-      "estimated_average_opex": 6129.557196340915,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -5015.287196340914,
-      "estimated_net_operating_income_pct": -0.9297934357081254
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -4661.396666666667,
+      "estimated_net_operating_income_pct": -0.864185011191489
     },
     {
       "brand": "Cavali",
@@ -1010,11 +1010,11 @@
       "roas": 0,
       "gross_profit_3": 1285.93,
       "gross_margin_3": 0.20408542217510406,
-      "estimated_average_opex": 5890.9967968034325,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -4605.066796803432,
-      "estimated_net_operating_income_pct": -0.7308539355720627
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -4489.736666666667,
+      "estimated_net_operating_income_pct": -0.7125502967282131
     },
     {
       "brand": "Cavali",
@@ -1063,11 +1063,11 @@
       "roas": 0,
       "gross_profit_3": 18297.07,
       "gross_margin_3": 0.3590035839396495,
-      "estimated_average_opex": 33407.24316173064,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -15110.173161730643,
-      "estimated_net_operating_income_pct": -0.2964740430577139
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 12521.403333333332,
+      "estimated_net_operating_income_pct": 0.24568024676194272
     },
     {
       "brand": "Cavali",
@@ -1116,11 +1116,11 @@
       "roas": 0,
       "gross_profit_3": -22.06,
       "gross_margin_3": -0.00606555528976362,
-      "estimated_average_opex": 9017.109983706725,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -9039.169983706724,
-      "estimated_net_operating_income_pct": -2.485384646860601
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5797.726666666667,
+      "estimated_net_operating_income_pct": -1.5941265481234634
     },
     {
       "brand": "Cavali",
@@ -1169,11 +1169,11 @@
       "roas": 0,
       "gross_profit_3": 268.54,
       "gross_margin_3": 0.40050708426547355,
-      "estimated_average_opex": 553.4209585011289,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -284.8809585011289,
-      "estimated_net_operating_income_pct": -0.4248783870262921
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5507.126666666667,
+      "estimated_net_operating_income_pct": -8.213462590106886
     },
     {
       "brand": "Cavali",
@@ -1222,11 +1222,11 @@
       "roas": 0,
       "gross_profit_3": 28390.2,
       "gross_margin_3": 0.5124858656708012,
-      "estimated_average_opex": 28231.84863961715,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": 158.35136038285054,
-      "estimated_net_operating_income_pct": 0.0028584805322242946
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 22614.533333333333,
+      "estimated_net_operating_income_pct": 0.40822638417744583
     },
     {
       "brand": "Cavali",
@@ -1275,11 +1275,11 @@
       "roas": 0,
       "gross_profit_3": 646.8,
       "gross_margin_3": 0.5303856530188849,
-      "estimated_average_opex": 1486.4939794542702,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -839.6939794542702,
-      "estimated_net_operating_income_pct": -0.6885615949735301
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5128.866666666667,
+      "estimated_net_operating_income_pct": -4.205747211265912
     },
     {
       "brand": "Cavali",
@@ -1328,11 +1328,11 @@
       "roas": 0,
       "gross_profit_3": 359.0,
       "gross_margin_3": 0.40427927927927926,
-      "estimated_average_opex": 816.6335115892293,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -457.63351158922933,
-      "estimated_net_operating_income_pct": -0.5153530535914744
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5416.666666666667,
+      "estimated_net_operating_income_pct": -6.09984984984985
     },
     {
       "brand": "Cavali",
@@ -1381,11 +1381,11 @@
       "roas": 0,
       "gross_profit_3": 17202.19,
       "gross_margin_3": 0.4103050253343023,
-      "estimated_average_opex": 22910.207161404665,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -5708.017161404667,
-      "estimated_net_operating_income_pct": -0.1361470909238169
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 11426.52333333333,
+      "estimated_net_operating_income_pct": 0.27254436474462435
     },
     {
       "brand": "Cavali",
@@ -1434,11 +1434,11 @@
       "roas": 0,
       "gross_profit_3": 1042.01,
       "gross_margin_3": 0.3364828514871947,
-      "estimated_average_opex": 2188.509434673556,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -1146.499434673556,
-      "estimated_net_operating_income_pct": -0.3702242771253777
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -4733.656666666667,
+      "estimated_net_operating_income_pct": -1.5285787018947699
     },
     {
       "brand": "Cavali",
@@ -1487,11 +1487,11 @@
       "roas": 0,
       "gross_profit_3": 636.4,
       "gross_margin_3": 0.32713066721496864,
-      "estimated_average_opex": 1019.7567554553866,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -383.35675545538663,
-      "estimated_net_operating_income_pct": -0.19705806284331584
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5139.266666666667,
+      "estimated_net_operating_income_pct": -2.641753195572462
     },
     {
       "brand": "Cavali",
@@ -1540,11 +1540,11 @@
       "roas": 0,
       "gross_profit_3": 15160.64,
       "gross_margin_3": 0.39408338410798466,
-      "estimated_average_opex": 19197.14640830196,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -4036.5064083019606,
-      "estimated_net_operating_income_pct": -0.10492433732066742
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 9384.973333333332,
+      "estimated_net_operating_income_pct": 0.24395157796525693
     },
     {
       "brand": "Cavali",
@@ -1593,11 +1593,11 @@
       "roas": 0,
       "gross_profit_3": 679.77,
       "gross_margin_3": 0.27127430322766016,
-      "estimated_average_opex": 1419.1253395994547,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -739.3553395994547,
-      "estimated_net_operating_income_pct": -0.29505289228340786
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5095.896666666667,
+      "estimated_net_operating_income_pct": -2.0336081580095566
     },
     {
       "brand": "Cavali",
@@ -1646,11 +1646,11 @@
       "roas": 0,
       "gross_profit_3": 29.92,
       "gross_margin_3": 0.05416364952932658,
-      "estimated_average_opex": 439.7058166555397,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -409.7858166555397,
-      "estimated_net_operating_income_pct": -0.7418280533228452
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5745.746666666667,
+      "estimated_net_operating_income_pct": -10.401424088824523
     },
     {
       "brand": "Cavali",
@@ -1699,11 +1699,11 @@
       "roas": 0,
       "gross_profit_3": 12969.91,
       "gross_margin_3": 0.36907368691236275,
-      "estimated_average_opex": 18731.475129928185,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -5761.565129928185,
-      "estimated_net_operating_income_pct": -0.16395195378289454
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 7194.243333333333,
+      "estimated_net_operating_income_pct": 0.20472045770387146
     },
     {
       "brand": "Cavali",
@@ -1752,11 +1752,11 @@
       "roas": 0,
       "gross_profit_3": -143.36,
       "gross_margin_3": -1.3399383119917752,
-      "estimated_average_opex": 777.9754195012306,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -921.3354195012306,
-      "estimated_net_operating_income_pct": -8.61141620246033
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5919.026666666667,
+      "estimated_net_operating_income_pct": -55.323176620868
     },
     {
       "brand": "Cavali",
@@ -1805,11 +1805,11 @@
       "roas": 0,
       "gross_profit_3": 135.9,
       "gross_margin_3": 0.34405934327451326,
-      "estimated_average_opex": 217.1171365770516,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -81.2171365770516,
-      "estimated_net_operating_income_pct": -0.20561820951682727
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5639.766666666667,
+      "estimated_net_operating_income_pct": -14.278251770087008
     },
     {
       "brand": "Cavali",
@@ -1858,11 +1858,11 @@
       "roas": 0,
       "gross_profit_3": 6698.28,
       "gross_margin_3": 0.3419515335359363,
-      "estimated_average_opex": 11181.686557497998,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -4483.406557497999,
-      "estimated_net_operating_income_pct": -0.22888080937218416
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 922.6133333333328,
+      "estimated_net_operating_income_pct": 0.04710000838932311
     },
     {
       "brand": "Cavali",
@@ -1911,11 +1911,11 @@
       "roas": 0,
       "gross_profit_3": 158.15,
       "gross_margin_3": 0.2021706338046174,
-      "estimated_average_opex": 645.2487352295864,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -487.0987352295864,
-      "estimated_net_operating_income_pct": -0.6226813786076066
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5617.516666666667,
+      "estimated_net_operating_income_pct": -7.181137558697451
     },
     {
       "brand": "Cavali",
@@ -1964,11 +1964,11 @@
       "roas": 0,
       "gross_profit_3": 92.43,
       "gross_margin_3": 0.06955219612771177,
-      "estimated_average_opex": 1356.855479789911,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -1264.425479789911,
-      "estimated_net_operating_income_pct": -0.9514613108214209
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5683.236666666667,
+      "estimated_net_operating_income_pct": -4.276550809046877
     },
     {
       "brand": "Cavali",
@@ -2017,11 +2017,11 @@
       "roas": 0,
       "gross_profit_3": 10079.8,
       "gross_margin_3": 0.38635584846271015,
-      "estimated_average_opex": 26498.27186306131,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -16418.47186306131,
-      "estimated_net_operating_income_pct": -0.6293153264066932
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 4304.133333333332,
+      "estimated_net_operating_income_pct": 0.16497619852543033
     },
     {
       "brand": "Cavali",
@@ -2070,11 +2070,11 @@
       "roas": 0,
       "gross_profit_3": -145.37,
       "gross_margin_3": -0.1470106387282068,
-      "estimated_average_opex": 1656.027922366193,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -1801.3979223661931,
-      "estimated_net_operating_income_pct": -1.8217284114378394
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5921.036666666667,
+      "estimated_net_operating_income_pct": -5.987861197632243
     },
     {
       "brand": "Cavali",
@@ -2123,11 +2123,11 @@
       "roas": 0,
       "gross_profit_3": 128.91,
       "gross_margin_3": 0.06686515449372636,
-      "estimated_average_opex": 2170.5778831739494,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -2041.6678831739493,
-      "estimated_net_operating_income_pct": -1.0590058058591683
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5646.756666666667,
+      "estimated_net_operating_income_pct": -2.9289524234360873
     },
     {
       "brand": "Cavali",
@@ -2176,11 +2176,11 @@
       "roas": 0,
       "gross_profit_3": 8453.66,
       "gross_margin_3": 0.360000136272388,
-      "estimated_average_opex": 26171.72483637672,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -17718.06483637672,
-      "estimated_net_operating_income_pct": -0.7545259397206212
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": 2677.993333333333,
+      "estimated_net_operating_income_pct": 0.11404267085931379
     },
     {
       "brand": "Cavali",
@@ -2229,11 +2229,11 @@
       "roas": 0,
       "gross_profit_3": -40.0,
       "gross_margin_3": -0.03656307129798903,
-      "estimated_average_opex": 4927.95321020225,
-      "opex_definition": "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. The monthly variation comes from the Sales & Marketing % of revenue.",
-      "opex_assumptions": "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue.",
-      "estimated_net_operating_income": -4967.95321020225,
-      "estimated_net_operating_income_pct": -4.541090685742459
+      "estimated_average_opex": 5775.666666666667,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
+      "estimated_net_operating_income": -5815.666666666667,
+      "estimated_net_operating_income_pct": -5.315965874466789
     },
     {
       "brand": "Cavali",
@@ -2282,11 +2282,11 @@
       "roas": 0,
       "gross_profit_3": 0.0,
       "gross_margin_3": 0.0,
-      "estimated_average_opex": 0.0,
-      "opex_definition": "",
-      "opex_assumptions": "",
+      "estimated_average_opex": 0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
       "estimated_net_operating_income": 0.0,
-      "estimated_net_operating_income_pct": 0.0
+      "estimated_net_operating_income_pct": 0
     },
     {
       "brand": "Cavali",
@@ -2335,11 +2335,11 @@
       "roas": 0,
       "gross_profit_3": 0.0,
       "gross_margin_3": 0.0,
-      "estimated_average_opex": 0.0,
-      "opex_definition": "",
-      "opex_assumptions": "",
+      "estimated_average_opex": 0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
       "estimated_net_operating_income": 0.0,
-      "estimated_net_operating_income_pct": 0.0
+      "estimated_net_operating_income_pct": 0
     },
     {
       "brand": "Cavali",
@@ -2388,11 +2388,11 @@
       "roas": 0,
       "gross_profit_3": 0.0,
       "gross_margin_3": 0.0,
-      "estimated_average_opex": 0.0,
-      "opex_definition": "",
-      "opex_assumptions": "",
+      "estimated_average_opex": 0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
       "estimated_net_operating_income": 0.0,
-      "estimated_net_operating_income_pct": 0.0
+      "estimated_net_operating_income_pct": 0
     },
     {
       "brand": "Cavali",
@@ -2441,11 +2441,11 @@
       "roas": 0,
       "gross_profit_3": 0.0,
       "gross_margin_3": 0.0,
-      "estimated_average_opex": 0.0,
-      "opex_definition": "",
-      "opex_assumptions": "",
+      "estimated_average_opex": 0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
       "estimated_net_operating_income": 0.0,
-      "estimated_net_operating_income_pct": 0.0
+      "estimated_net_operating_income_pct": 0
     },
     {
       "brand": "Cavali",
@@ -2494,11 +2494,11 @@
       "roas": 0,
       "gross_profit_3": 0.0,
       "gross_margin_3": 0.0,
-      "estimated_average_opex": 0.0,
-      "opex_definition": "",
-      "opex_assumptions": "",
+      "estimated_average_opex": 0,
+      "opex_definition": "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.",
+      "opex_assumptions": "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter.",
       "estimated_net_operating_income": 0.0,
-      "estimated_net_operating_income_pct": 0.0
+      "estimated_net_operating_income_pct": 0
     },
     {
       "brand": "Corro",
