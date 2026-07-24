@@ -929,6 +929,9 @@
     const GENERAL_OPEX_GA_MONTHLY = 45000;
     const GENERAL_OPEX_SALES_MARKETING_PCT = 0.0662;
     const GENERAL_OPEX_TECHNOLOGY_MONTHLY = 0;
+    const CAVALI_OPEX_PAYROLL_QUARTERLY = 14000;
+    const CAVALI_OPEX_APPS_QUARTERLY = 3327;
+    const CAVALI_OPEX_QUARTERLY = CAVALI_OPEX_PAYROLL_QUARTERLY + CAVALI_OPEX_APPS_QUARTERLY;
     const CHANNEL_OPEX_POOL_ANNUAL = 70000;
     const CONCIERGE_OPEX_BASE_PCT = 0.60;
     const WELLINGTON_OPEX_BASE_PCT = 0.40;
@@ -973,6 +976,9 @@
       if (viewType === "location" && split === "wellington") {
         return "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + rent $15k/month x 50% store allocation ($7.5k/month) + permit $9k/year ($750/month) + insurance $20k/year ($1.67k/month).";
       }
+      if (viewType === "brand" && isCavaliBrand(row)) {
+        return "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.";
+      }
       return "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. Monthly variation comes from Sales & Marketing as a % of revenue.";
     }
 
@@ -991,6 +997,11 @@
           return wellingtonFixedOpex(row) + (netSales * WELLINGTON_COMMISSION_PCT);
         }
         return 0;
+      }
+
+      // Cavali finance-approved OPEX: $17,327 per quarter.
+      if (isCavaliBrand(row)) {
+        return CAVALI_OPEX_QUARTERLY / 3;
       }
 
       // Fallback only. The JSON normally already contains the allocated OPEX.
