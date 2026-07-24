@@ -52,8 +52,10 @@ jobs:
           QB_REALM_ID: ${{ secrets.QB_REALM_ID }}
           QB_ENVIRONMENT: sandbox
 
-          MARKETING_SHEET_ID: ${{ secrets.MARKETING_SHEET_ID }}
-          MARKETING_SHEET_START_YEAR: ${{ secrets.MARKETING_SHEET_START_YEAR }}
+          # Public Google Ads worksheet used for Corro Ads / Stats.
+          MARKETING_SHEET_ID: "1ROTaII-_S_0VntYvOZj8GFCoUnkQVcr1rPES0p-14mI"
+          MARKETING_GOOGLE_ADS_GID: "413068087"
+          MARKETING_SHEET_START_YEAR: ${{ secrets.MARKETING_SHEET_START_YEAR || '2024' }}
 
           WELLINGTON_LOCATION_ID: ${{ secrets.WELLINGTON_LOCATION_ID }}
           WELLINGTON_LOCATION_NAME: ${{ secrets.WELLINGTON_LOCATION_NAME }}
@@ -75,9 +77,8 @@ jobs:
 
           git commit -m "Update financial report data"
 
-          # If main changed while this job was running, regenerate on top of latest main instead of rebasing a generated JSON file.
           if ! git push origin main; then
-            echo "Push rejected because main changed. Regenerating financial_report.json on latest main..."
+            echo "Push rejected because main changed. Regenerating on latest main..."
             git fetch origin main
             git reset --hard origin/main
             python -u main.py
