@@ -227,10 +227,14 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
                 result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
 
-            marketing_total = _safe_float(_lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0))
+            # The Google Ads worksheet belongs to Corro. Apply 100% of the
+            # month's Spend to the Corro brand row; Cavali and splits receive $0.
+            marketing_total = _safe_float(
+                _lookup_year_dict(marketing_summaries, int(year)).get(str(month).zfill(2), 0)
+            )
             for i in brand_index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "marketing_allocated"] = marketing_total * proportion
+                is_corro = str(result.at[i, "brand"]).strip().lower() == "corro"
+                result.at[i, "marketing_allocated"] = marketing_total if is_corro else 0.0
     else:
         for year, index in result.groupby("year").groups.items():
             index = list(index)
@@ -243,10 +247,13 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
                 proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
                 result.at[i, "applied_shipping"] = qb_shipping_total * proportion if qb_shipping_total > 0 else 0.0
 
-            marketing_total = sum(_safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values())
+            # Annual/YTD Ads / Stats is also assigned entirely to Corro.
+            marketing_total = sum(
+                _safe_float(v) for v in _lookup_year_dict(marketing_summaries, int(year)).values()
+            )
             for i in brand_index:
-                proportion = result.at[i, "net_sales"] / brand_net_total if brand_net_total else 0
-                result.at[i, "marketing_allocated"] = marketing_total * proportion
+                is_corro = str(result.at[i, "brand"]).strip().lower() == "corro"
+                result.at[i, "marketing_allocated"] = marketing_total if is_corro else 0.0
 
     # 2) Location/channel rows: do not inherit global brand marketing by default.
     #    Wellington and Concierge can estimate Shipping Cost from Shopify Shipping
@@ -287,11 +294,15 @@ def _add_margin_2_and_3(grouped: pd.DataFrame, qb_summaries: dict, marketing_sum
     result.loc[channel_shipping_estimate_mask & result["shipping_cost"].fillna(0).gt(0), "shipping_cost_source"] = "QuickBooks allocated or Shopify estimate"
 
     result["ads_stats_spend"] = result["marketing_allocated"]
+    result["ads_stats"] = result["ads_stats_spend"]
     result["gross_profit_2"] = result["gross_profit_1"] - result["shipping_cost"]
     result["gross_margin_2"] = (result["gross_profit_2"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
     result["roas"] = (result["net_sales"] / result["ads_stats_spend"].replace(0, pd.NA)).fillna(0)
     result["gross_profit_3"] = result["gross_profit_2"] - result["ads_stats_spend"]
     result["gross_margin_3"] = (result["gross_profit_3"] / result["net_sales"].replace(0, pd.NA)).fillna(0)
+    # Compatibility aliases requested by the original Financial Dashboard logic.
+    result["gp3"] = result["gross_profit_3"]
+    result["gm3"] = result["gross_margin_3"]
     result.drop(columns=["applied_shipping", "marketing_allocated"], inplace=True, errors="ignore")
     result = add_estimated_operating_income(result)
 
@@ -439,7 +450,11 @@ def add_estimated_operating_income(df):
         )
 
     # Main business rows: allocate the general OPEX pool across brand rows by gross sales.
-    brand_mask = df["view_type"].astype(str).str.lower().eq("brand") & has_activity(df)
+    brand_mask = (
+        df["view_type"].astype(str).str.lower().eq("brand")
+        & ~df["brand"].astype(str).str.lower().eq("cavali")
+        & has_activity(df)
+    )
     for _, index in df.loc[brand_mask].groupby(group_cols).groups.items():
         index = list(index)
         period_gross = df.loc[index, "gross_sales"].sum()
@@ -459,10 +474,23 @@ def add_estimated_operating_income(df):
         & df["brand"].astype(str).str.lower().eq("cavali")
         & has_activity(df)
     )
-    for i in df.loc[cavali_mask].index:
-        df.at[i, "estimated_average_opex"] = _cavali_opex(monthly=monthly)
-        df.at[i, "opex_definition"] = _cavali_opex_definition()
-        df.at[i, "opex_assumptions"] = "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter."
+    if monthly:
+        cavali_rows = df.loc[cavali_mask].copy()
+        if not cavali_rows.empty:
+            cavali_rows["_quarter"] = ((pd.to_numeric(cavali_rows["month"], errors="coerce").fillna(1).astype(int) - 1) // 3) + 1
+            for _, quarter_index in cavali_rows.groupby(["year", "_quarter"]).groups.items():
+                quarter_index = list(quarter_index)
+                active_count = max(len(quarter_index), 1)
+                monthly_share = CAVALI_OPEX_QUARTERLY / active_count
+                for i in quarter_index:
+                    df.at[i, "estimated_average_opex"] = monthly_share
+                    df.at[i, "opex_definition"] = _cavali_opex_definition()
+                    df.at[i, "opex_assumptions"] = "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter."
+    else:
+        for i in df.loc[cavali_mask].index:
+            df.at[i, "estimated_average_opex"] = CAVALI_OPEX_QUARTERLY * 4
+            df.at[i, "opex_definition"] = _cavali_opex_definition()
+            df.at[i, "opex_assumptions"] = "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter."
 
     # Channel/location rows: Concierge and Wellington have their own provisional OPEX rules.
     location_mask = df["view_type"].astype(str).str.lower().eq("location") & has_activity(df)
