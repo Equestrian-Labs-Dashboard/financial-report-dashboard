@@ -1,1 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Financial Report Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --sidebar: #0b1728;
+      --panel: #0e1c2f;
+      --panel-2: #10233a;
+      --panel-3: #132a45;
+      --border: #1e3a5f;
+      --border-soft: #183250;
+      --text: #f8fafc;
+      --muted: #7f9ab7;
+      --muted-2: #5f7f9f;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --purple: #a78bfa;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --table-even: rgba(19, 42, 69, 0.35);
+      --table-hover: rgba(59, 130, 246, 0.10);
+      --shadow: none;
+    }
+
+    html[data-theme="light"] {
+      --bg: #f3f6fb;
+      --sidebar: #ffffff;
+      --panel: #ffffff;
+      --panel-2: #edf4fb;
+      --panel-3: #e7f0fa;
+      --border: #c9d8ea;
+      --border-soft: #d8e3f0;
+      --text: #142033;
+      --muted: #60748c;
+      --muted-2: #74869a;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --purple: #7c3aed;
+      --amber: #d97706;
+      --red: #dc2626;
+      --table-even: rgba(231, 240, 250, 0.72);
+      --table-hover: rgba(37, 99, 235, 0.08);
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 192px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--border-soft);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+    }
+
+    .company {
+      padding: 18px 12px 16px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .window-dots { display: flex; gap: 6px; margin-bottom: 10px; }
+    .dot-ui { width: 7px; height: 7px; border-radius: 999px; }
+    .green-dot { background: var(--green); }
+    .purple-dot { background: var(--purple); }
+
+    .company-name {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .company-subtitle {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .nav-section { padding: 18px 0 4px; }
+
+    .nav-label {
+      padding: 0 12px;
+      margin-bottom: 7px;
+      color: var(--muted-2);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 650;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .dashboard-nav.active-view,
+    .brand-nav.active-brand,
+    .location-nav.active-location {
+      background: var(--panel-3);
+      color: var(--text);
+    }
+
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue);
+      flex: 0 0 auto;
+    }
+
+    .nav-dot.green { background: var(--green); }
+    .nav-dot.purple { background: var(--purple); }
+
+    .badge-small {
+      margin-left: auto;
+      font-size: 9px;
+      color: #fef3c7;
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.36);
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-weight: 650;
+    }
+
+    .main {
+      padding: 24px 28px 32px;
+      overflow-x: hidden;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.05;
+      font-weight: 720;
+      letter-spacing: -0.035em;
+    }
+
+    .title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .pill,
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: default;
+    }
+
+    .theme-toggle { cursor: pointer; }
+
+    .pill.live {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: var(--green);
+    }
+
+    .pill.draft {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: var(--amber);
+    }
+
+    .tabs {
+      display: inline-flex;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 13px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: default;
+    }
+
+    .tab.active {
+      background: var(--panel-3);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .filters-bar {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .filter-label {
+      color: var(--muted-2);
+      font-size: 10px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    select {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 7px 28px 7px 10px;
+      font-size: 12px;
+      font-weight: 650;
+      outline: none;
+      min-width: 130px;
+    }
+
+    .date-strip {
+      background: var(--panel-2);
+      border: 1px solid var(--border-soft);
+      border-radius: 7px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 650;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 18px 0 12px;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      height: 1px;
+      background: var(--border);
+      flex: 1;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(135px, 1fr));
+      gap: 9px;
+    }
+
+    .kpi-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 13px 14px;
+      min-height: 116px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.positive { border-top: 2px solid var(--green); }
+    .kpi-card.warning { border-top: 2px solid var(--amber); }
+    .kpi-card.negative { border-top: 2px solid var(--red); }
+    .kpi-card.purple { border-top: 2px solid var(--purple); }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 720;
+      letter-spacing: -0.04em;
+      margin-bottom: 9px;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .kpi-value-row .kpi-value {
+      margin-bottom: 0;
+    }
+
+    .kpi-secondary-value {
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .kpi-chip {
+      display: inline-flex;
+      align-items: center;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 650;
+      margin-bottom: 7px;
+    }
+
+    .kpi-chip.green {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: var(--green);
+    }
+
+    .kpi-chip.red {
+      background: rgba(239, 68, 68, 0.13);
+      border-color: rgba(239, 68, 68, 0.36);
+      color: var(--red);
+    }
+
+    .kpi-note {
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.35;
+      font-style: italic;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 14px;
+      min-width: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 720;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .panel-tag {
+      color: var(--blue);
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 650;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 320px;
+    }
+
+    .chart-wrap.large { height: 320px; }
+
+    .source-list { display: grid; gap: 8px; }
+
+    .source-item {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .source-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .source-name { font-size: 12px; font-weight: 700; }
+
+    .source-status {
+      color: var(--green);
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 999px;
+      font-size: 9px;
+      padding: 2px 6px;
+      font-weight: 700;
+    }
+
+    .source-fields {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .notes-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 9px;
+    }
+
+    .notes-list li {
+      display: flex;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .note-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue);
+      margin-top: 5px;
+      flex: 0 0 auto;
+    }
+
+    .table-panel {
+      margin-bottom: 14px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .matrix-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--panel-2);
+    }
+
+    .matrix-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 720;
+      letter-spacing: -0.01em;
+    }
+
+    .matrix-heading::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+    }
+
+    .matrix-meta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .matrix-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .matrix-toggle {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 10.5px;
+      font-weight: 650;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .monthly-table.is-collapsed .monthly-detail {
+      display: none;
+    }
+
+    .matrix-wrapper { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 1180px;
+    }
+
+    th {
+      color: var(--muted);
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 10px;
+      white-space: nowrap;
+      background: var(--panel-2);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      vertical-align: middle;
+      font-weight: 700;
+    }
+
+    td {
+      color: var(--text);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 10px 10px;
+      white-space: nowrap;
+      vertical-align: middle;
+      font-weight: 560;
+    }
+
+    tbody tr:nth-child(even) td { background: var(--table-even); }
+    tbody tr:hover td { background: var(--table-hover); }
+    tr:last-child td { border-bottom: none; }
+
+    .right { text-align: right; }
+
+    .month-head {
+      min-width: 92px;
+      text-align: center;
+    }
+
+    .sticky-kpi {
+      position: sticky;
+      left: 0;
+      background: var(--panel-2) !important;
+      z-index: 2;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 210px;
+      max-width: 210px;
+      text-align: left !important;
+    }
+
+    th.sticky-kpi {
+      z-index: 3;
+      background: var(--panel-2) !important;
+    }
+
+    .total-col {
+      min-width: 110px;
+      background: rgba(59, 130, 246, 0.12) !important;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .quarter-col {
+      min-width: 96px;
+      background: rgba(167, 139, 250, 0.11) !important;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .selected-month {
+      background: rgba(34, 197, 94, 0.18) !important;
+      color: var(--text) !important;
+      font-weight: 700 !important;
+      box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.28);
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 10.5px;
+      text-align: center;
+      padding: 18px 0 0;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main { padding: 22px 18px 30px; }
+      .kpi-grid { grid-template-columns: repeat(3, minmax(130px, 1fr)); }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .header { flex-direction: column; }
+      .header-actions { justify-content: flex-start; }
+      .title h1 { font-size: 21px; }
+      .filters-bar { align-items: stretch; }
+      .filter-group { width: 100%; flex-direction: column; align-items: flex-start; }
+      select { width: 100%; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+      .chart-wrap, .chart-wrap.large { height: 260px; }
+    }
+
+    @media (max-width: 520px) {
+      .main { padding: 18px 12px 26px; }
+      .tabs { width: 100%; }
+      .tab { flex: 1; padding: 6px 8px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .kpi-card { min-height: 105px; }
+      .kpi-value { font-size: 22px; }
+    }
+  
+    .opex-definition-row td {
+      background: rgba(100, 116, 139, 0.10);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      white-space: normal;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .opex-definition-row strong {
+      color: var(--text);
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="company">
+        <div class="window-dots">
+          <span class="dot-ui green-dot"></span>
+          <span class="dot-ui purple-dot"></span>
+        </div>
+        <div class="company-name">Financial Report</div>
+        <div class="company-subtitle">Analytics Suite</div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Performance</div>
+        <a class="nav-item dashboard-nav" href="#" data-brand="all"><span class="nav-dot"></span>Dashboard</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Brands</div>
+        <a class="nav-item brand-nav" href="#" data-brand="Corro"><span class="nav-dot green"></span>Corro</a>
+        <a class="nav-item brand-nav" href="#" data-brand="Cavali"><span class="nav-dot purple"></span>Cavali</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Splits</div>
+        <a class="nav-item location-nav" href="#" data-location="Wellington"><span class="nav-dot"></span>Wellington</a>
+        <a class="nav-item location-nav" href="#" data-location="Concierge"><span class="nav-dot green"></span>Concierge</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="header">
+        <div class="title">
+          <h1>Financial Report — Shopify Performance</h1>
+          <p>Corro · Cavali · Wellington · Concierge · Shopify calculated KPIs · GitHub Actions refresh</p>
+        </div>
+
+        <div class="header-actions">
+          <button class="theme-toggle" id="themeToggle" type="button">Light Mode</button>
+          <div class="pill live">● Shopify Ready</div>
+          <div class="pill draft">Draft / Live Data</div>
+        </div>
+      </section>
+
+      <section class="tabs">
+        <button class="tab active">Shopify KPIs</button>
+        <button class="tab">Financial Report</button>
+        <button class="tab">P&L</button>
+      </section>
+
+      <section class="filters-bar">
+        <div class="filter-group">
+          <span class="filter-label">Brand</span>
+          <select id="brandFilter"></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Split</span>
+          <select id="locationFilter"></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Year</span>
+          <select id="yearFilter"></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Month / MTD</span>
+          <select id="monthFilter"></select>
+        </div>
+
+        <div class="filter-group" id="quarterFilterGroup">
+          <span class="filter-label">Quarter</span>
+          <select id="quarterFilter">
+            <option value="all">All Quarters</option>
+            <option value="Q1">Q1 · Jan–Mar</option>
+            <option value="Q2">Q2 · Apr–Jun</option>
+            <option value="Q3">Q3 · Jul–Sep</option>
+            <option value="Q4">Q4 · Oct–Dec</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
+
+      <section class="panel table-panel">
+        <div class="matrix-topbar">
+          <div class="matrix-heading">Monthly Financial Summary</div>
+          <div class="matrix-actions">
+            <button class="matrix-toggle" id="matrixToggle" type="button">Expand months</button>
+            <div class="matrix-meta" id="matrixMeta">Loading...</div>
+          </div>
+        </div>
+
+        <div class="matrix-wrapper">
+          <table class="monthly-table is-collapsed" id="monthlyTable">
+            <thead id="monthlyMatrixHead"></thead>
+            <tbody id="monthlyMatrix"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="section-title"><span>01 · Shopify KPI Cards</span></div>
+      <section class="kpi-grid" id="shopifyKpis"></section>
+
+      <section class="panel">
+        <div>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Gross Sales vs Net Sales</h2>
+              <p class="panel-subtitle">Monthly Shopify performance by selected brand and year.</p>
+            </div>
+            <div class="panel-tag">Shopify</div>
+          </div>
+          <div class="chart-wrap large">
+            <canvas id="salesTrendChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Gross Margin Trend</h2>
+              <p class="panel-subtitle">GM1, GM2 and GM3 by month.</p>
+            </div>
+            <div class="panel-tag">Margin</div>
+          </div>
+          <div class="chart-wrap large">
+            <canvas id="marginTrendChart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Discounts + Returns by Month</h2>
+              <p class="panel-subtitle">Includes % Discounts and % Discount + Returns.</p>
+            </div>
+            <div class="panel-tag">Risk</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="discountReturnsChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Executive Notes</h2>
+              <p class="panel-subtitle">Auto-generated from selected Shopify view.</p>
+            </div>
+            <div class="panel-tag">Notes</div>
+          </div>
+
+          <ul class="notes-list" id="executiveNotes"></ul>
+        </div>
+      </section>
+
+      <div class="footer" id="updatedAt">Loading update time...</div>
+    </main>
+  </div>
+
+  <script>
+    let DATA = null;
+
+    let salesTrendChart = null;
+    let discountReturnsChart = null;
+    let marginTrendChart = null;
+
+    const MONTHS = {
+      "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
+      "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"
+    };
+
+    const MONTH_ORDER = [
+      "01", "02", "03", "04", "05", "06",
+      "07", "08", "09", "10", "11", "12"
+    ];
+
+    const QUARTERS = {
+      Q1: ["01", "02", "03"], Q2: ["04", "05", "06"],
+      Q3: ["07", "08", "09"], Q4: ["10", "11", "12"]
+    };
+
+    const QUARTER_LABELS = {
+      Q1: "Q1 · Jan–Mar", Q2: "Q2 · Apr–Jun",
+      Q3: "Q3 · Jul–Sep", Q4: "Q4 · Oct–Dec"
+    };
+
+    const GENERAL_OPEX_PAYROLL_MONTHLY = 40000;
+    const GENERAL_OPEX_GA_MONTHLY = 45000;
+    const GENERAL_OPEX_SALES_MARKETING_PCT = 0.0662;
+    const GENERAL_OPEX_TECHNOLOGY_MONTHLY = 0;
+    const CAVALI_OPEX_PAYROLL_QUARTERLY = 14000;
+    const CAVALI_OPEX_APPS_QUARTERLY = 3327;
+    const CAVALI_OPEX_QUARTERLY = CAVALI_OPEX_PAYROLL_QUARTERLY + CAVALI_OPEX_APPS_QUARTERLY;
+    const CHANNEL_OPEX_POOL_ANNUAL = 70000;
+    const CONCIERGE_OPEX_BASE_PCT = 0.60;
+    const WELLINGTON_OPEX_BASE_PCT = 0.40;
+    const CONCIERGE_COMMISSION_PCT = 0.10;
+    const WELLINGTON_COMMISSION_PCT = 0.01;
+    const WELLINGTON_RENT_MONTHLY = 15000;
+    const WELLINGTON_RENT_STORE_SHARE = 0.50;
+    const WELLINGTON_PERMIT_ANNUAL = 9000;
+    const WELLINGTON_INSURANCE_ANNUAL = 20000;
+
+    function rowHasFinancialActivity(row) {
+      return Number(row.total_sales || 0) !== 0 ||
+             Number(row.gross_sales || 0) !== 0 ||
+             Number(row.net_sales || 0) !== 0;
+    }
+
+    function rowSplitName(row) {
+      return String((row && (row.location_filter || row.split_filter || row.location_name)) || "").trim().toLowerCase();
+    }
+
+    function wellingtonFixedOpex(row) {
+      const isMonthlyRow = !!(row && row.month);
+      if (isMonthlyRow) {
+        return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT / 12) +
+               (WELLINGTON_RENT_MONTHLY * WELLINGTON_RENT_STORE_SHARE) +
+               (WELLINGTON_PERMIT_ANNUAL / 12) +
+               (WELLINGTON_INSURANCE_ANNUAL / 12);
+      }
+
+      return (CHANNEL_OPEX_POOL_ANNUAL * WELLINGTON_OPEX_BASE_PCT) +
+             (WELLINGTON_RENT_MONTHLY * WELLINGTON_RENT_STORE_SHARE * 12) +
+             WELLINGTON_PERMIT_ANNUAL +
+             WELLINGTON_INSURANCE_ANNUAL;
+    }
+
+    function opexDefinitionForRow(row) {
+      const split = rowSplitName(row);
+      const viewType = String(row && row.view_type || "brand").toLowerCase();
+      if (viewType === "location" && split === "concierge") {
+        return "Concierge OPEX estimate: 60% of the $70k annual channel support pool + 10% of Concierge Net Sales as commission estimate.";
+      }
+      if (viewType === "location" && split === "wellington") {
+        return "Wellington OPEX estimate: 40% of the $70k annual channel support pool + 1% of Wellington Net Sales + rent $15k/month x 50% store allocation ($7.5k/month) + permit $9k/year ($750/month) + insurance $20k/year ($1.67k/month).";
+      }
+      if (viewType === "brand" && isCavaliBrand(row)) {
+        return "Cavali OPEX: $17,327 per quarter (approximately $17.5k): Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, Smartrr Fee, Klaviyo, Shopify and the other recurring apps.";
+      }
+      return "Main business OPEX estimate: Payroll $40k/month + G&A $45k/month + Sales & Marketing at 6.62% of Gross Sales + Technology $0 for now. Monthly variation comes from Sales & Marketing as a % of revenue.";
+    }
+
+    function estimatedMonthlyOpexForRow(row) {
+      if (!rowHasFinancialActivity(row)) return 0;
+
+      const viewType = String(row.view_type || "brand").toLowerCase();
+      const split = rowSplitName(row);
+      const netSales = Number(row.net_sales || 0);
+
+      if (viewType === "location") {
+        if (split === "concierge") {
+          return (CHANNEL_OPEX_POOL_ANNUAL * CONCIERGE_OPEX_BASE_PCT / 12) + (netSales * CONCIERGE_COMMISSION_PCT);
+        }
+        if (split === "wellington") {
+          return wellingtonFixedOpex(row) + (netSales * WELLINGTON_COMMISSION_PCT);
+        }
+        return 0;
+      }
+
+      // Cavali finance-approved OPEX: $17,327 per quarter.
+      if (isCavaliBrand(row)) {
+        return CAVALI_OPEX_QUARTERLY / 3;
+      }
+
+      // Fallback only. The JSON normally already contains the allocated OPEX.
+      return GENERAL_OPEX_PAYROLL_MONTHLY +
+             GENERAL_OPEX_GA_MONTHLY +
+             GENERAL_OPEX_TECHNOLOGY_MONTHLY +
+             (Number(row.gross_sales || 0) * GENERAL_OPEX_SALES_MARKETING_PCT);
+    }
+
+
+    function estimatedNoiForRow(row) {
+      const jsonValue = Number(row.estimated_net_operating_income || 0);
+
+      if (jsonValue !== 0) {
+        return jsonValue;
+      }
+
+      return Number(row.gross_profit_3 || 0) - estimatedMonthlyOpexForRow(row);
+    }
+
+
+    function isCavaliBrand(rowOrBrand) {
+      const value = typeof rowOrBrand === "string" ? rowOrBrand : (rowOrBrand && rowOrBrand.brand);
+      return String(value || "").toLowerCase() === "cavali";
+    }
+
+    function isLocationRow(row) {
+      return String((row && row.view_type) || "").toLowerCase() === "location";
+    }
+
+    function isWellingtonRow(row) {
+      return isLocationRow(row) && String((row && row.location_filter) || "").toLowerCase() === "wellington";
+    }
+
+    function displayShippingCharges(row) {
+      return Number(row.shipping_charges || 0);
+    }
+
+    function displayShippingCost(row) {
+      return Number(row.shipping_cost || row.applied_shipping || 0);
+    }
+
+    function displayAdsStats(row) {
+      if (isCavaliBrand(row) && !isLocationRow(row)) return 0;
+      return Number(row.ads_stats_spend || row.marketing_allocated || 0);
+    }
+
+    function displayGrossProfit2(row) {
+      const direct = Number(row.gross_profit_2 || 0);
+      if (direct) return direct;
+      return Number(row.gross_profit_1 || 0) - displayShippingCost(row);
+    }
+
+    function displayGrossProfit3(row) {
+      if (isCavaliBrand(row) && !isLocationRow(row)) {
+        return displayGrossProfit2(row);
+      }
+
+      const direct = Number(row.gross_profit_3 || 0);
+      if (direct) return direct;
+
+      return displayGrossProfit2(row) - displayAdsStats(row);
+    }
+
+    function splitIdValues(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) return value.map(v => String(v || "").trim()).filter(Boolean);
+      return String(value || "")
+        .replace(/,/g, "|")
+        .split("|")
+        .map(v => v.trim())
+        .filter(v => v && !["0", "nan", "none", "undefined"].includes(v.toLowerCase()));
+    }
+
+    function uniqueCountFromRows(rows, field, fallbackField) {
+      const values = new Set();
+      rows.forEach(row => splitIdValues(row[field]).forEach(v => values.add(v)));
+      if (values.size) return values.size;
+      return rows.reduce((sum, row) => sum + Number(row[fallbackField] || 0), 0);
+    }
+
+    function displayCogs(row) {
+      const direct = Number(row.cogs || 0);
+      if (direct) return direct;
+      const derived = Number(row.net_sales || 0) - Number(row.gross_profit_1 || 0);
+      return derived > 0 ? derived : 0;
+    }
+
+    function setupTheme() {
+      const savedTheme = localStorage.getItem("financialReportTheme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateThemeButton(savedTheme);
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "dark";
+        const next = current === "dark" ? "light" : "dark";
+
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("financialReportTheme", next);
+        updateThemeButton(next);
+        renderChartsAgain();
+      });
+    }
+
+    function updateThemeButton(theme) {
+      const button = document.getElementById("themeToggle");
+      button.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    function setupMatrixToggle() {
+      const button = document.getElementById("matrixToggle");
+      const table = document.getElementById("monthlyTable");
+
+      button.addEventListener("click", () => {
+        const isCollapsed = table.classList.toggle("is-collapsed");
+        button.textContent = isCollapsed ? "Expand months" : "Collapse months";
+      });
+    }
+
+    function renderChartsAgain() {
+      if (DATA) {
+        const selected = getSelectedRows();
+        renderSalesTrend(selected.trendRows);
+        renderDiscountReturns(selected.trendRows);
+        renderMarginTrend(selected.trendRows);
+      }
+    }
+
+    function money(value) {
+      return "$" + Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    }
+
+    function compactMoney(value) {
+      const numberValue = Number(value || 0);
+      const absValue = Math.abs(numberValue);
+      if (absValue >= 1000000) return "$" + (numberValue / 1000000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "M";
+      if (absValue >= 1000) return "$" + (numberValue / 1000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "K";
+      return "$" + numberValue.toLocaleString("en-US", { maximumFractionDigits: 0 });
+    }
+
+    function number(value) {
+      return Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    }
+
+    function compactNumber(value) {
+      const numberValue = Number(value || 0);
+      const absValue = Math.abs(numberValue);
+
+      if (absValue >= 1000000) {
+        return (numberValue / 1000000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "M";
+      }
+
+      if (absValue >= 1000) {
+        return (numberValue / 1000).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "K";
+      }
+
+      return numberValue.toLocaleString("en-US", { maximumFractionDigits: 0 });
+    }
+
+    function percent(value) {
+      return Number((Number(value || 0) * 100)).toLocaleString("en-US", { maximumFractionDigits: 0 }) + "%";
+    }
+
+
+    function formatRoas(value) {
+      const n = Number(value || 0);
+      if (!Number.isFinite(n) || n <= 0) return "0.0x";
+      return `${n.toFixed(1)}x`;
+    }
+
+    function safeArray(value) {
+      return Array.isArray(value) ? value : [];
+    }
+
+    function firstNumber(row, keys) {
+      for (const key of keys) {
+        const value = Number(row && row[key]);
+        if (!Number.isNaN(value) && value !== 0) return value;
+      }
+      return 0;
+    }
+
+    function rowReachedCheckout(row) {
+      return firstNumber(row, ["sessions_reached_checkout", "reached_checkout", "checkout_reached", "sessions_that_reached_checkout"]);
+    }
+
+    function rowCompletedCheckout(row) {
+      return firstNumber(row, ["sessions_completed_checkout", "completed_checkout", "checkout_completed", "sessions_that_reached_and_completed_checkout"]);
+    }
+
+    function rowCheckoutAbandonments(row) {
+      const direct = firstNumber(row, ["checkout_abandonments", "abandoned_checkout_count"]);
+      if (direct) return direct;
+      return Math.max(rowReachedCheckout(row) - rowCompletedCheckout(row), 0);
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch("financial_report.json?t=" + Date.now());
+        if (!response.ok) throw new Error("Could not load financial_report.json");
+        DATA = await response.json();
+        document.getElementById("updatedAt").textContent = "Financial Report Dashboard · Last updated: " + new Date(DATA.generated_at).toLocaleString();
+        setupFilters();
+        setupBrandNav();
+        render();
+      } catch (error) {
+        document.getElementById("dateStrip").textContent = "Error loading report data.";
+        document.getElementById("shopifyKpis").innerHTML = `<div class="empty">Could not load docs/financial_report.json. Check GitHub Actions.</div>`;
+        console.error(error);
+      }
+    }
+
+
+    function normalizeLabel(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function rowSplitLabel(row) {
+      return String((row && (row.split_filter || row.location_filter || row.location_name)) || "").trim();
+    }
+
+    function setupFilters() {
+      const brandFilter = document.getElementById("brandFilter");
+      const locationFilter = document.getElementById("locationFilter");
+      const yearFilter = document.getElementById("yearFilter");
+      const monthFilter = document.getElementById("monthFilter");
+      const quarterFilter = document.getElementById("quarterFilter");
+      const quarterFilterGroup = document.getElementById("quarterFilterGroup");
+
+      brandFilter.innerHTML = `<option value="all">All Brands</option>` + safeArray(DATA.brands_available).map(b => `<option value="${b}">${b}</option>`).join("");
+      const availableSplits = Array.from(new Set(["Wellington", "Concierge"]
+        .concat(safeArray(DATA.splits_available || []))
+        .concat(safeArray(DATA.locations_available || []))))
+        .filter(Boolean);
+      locationFilter.innerHTML = `<option value="all">All Splits</option>` + availableSplits.map(l => `<option value="${l}">${l}</option>`).join("");
+      yearFilter.innerHTML = safeArray(DATA.years_available).map(y => `<option value="${y}">${y}</option>`).join("");
+      if (safeArray(DATA.years_available).length > 0) yearFilter.value = Math.max(...safeArray(DATA.years_available));
+
+      monthFilter.innerHTML = `<option value="all">All Months / YTD</option>` + MONTH_ORDER.map(v => `<option value="${v}">${MONTHS[v]}</option>`).join("");
+      monthFilter.value = "all";
+      quarterFilter.value = "all";
+      locationFilter.value = "all";
+
+      function syncFilterVisibility() {
+        const isCavali = brandFilter.value === "Cavali";
+        const locationGroup = locationFilter.closest(".filter-group");
+
+        quarterFilterGroup.style.display = isCavali ? "flex" : "none";
+        if (!isCavali) quarterFilter.value = "all";
+
+        // Wellington and Concierge are Corro-only. Hide Split when Cavali is selected.
+        if (locationGroup) locationGroup.style.display = isCavali ? "none" : "flex";
+        if (isCavali) locationFilter.value = "all";
+      }
+
+      brandFilter.addEventListener("change", () => { syncFilterVisibility(); render(); });
+      locationFilter.addEventListener("change", render);
+      yearFilter.addEventListener("change", render);
+      monthFilter.addEventListener("change", () => { if (monthFilter.value !== "all") quarterFilter.value = "all"; render(); });
+      quarterFilter.addEventListener("change", () => { if (quarterFilter.value !== "all") monthFilter.value = "all"; render(); });
+      syncFilterVisibility();
+    }
+
+    function setupBrandNav() {
+      document.querySelectorAll(".brand-nav, .location-nav, .dashboard-nav").forEach(item => {
+        item.addEventListener("click", event => {
+          event.preventDefault();
+          const brandFilter = document.getElementById("brandFilter");
+          const locationFilter = document.getElementById("locationFilter");
+
+          if (item.classList.contains("dashboard-nav")) {
+            brandFilter.value = "all";
+            locationFilter.value = "all";
+          } else if (item.classList.contains("brand-nav")) {
+            brandFilter.value = item.dataset.brand;
+            locationFilter.value = "all";
+          } else if (item.classList.contains("location-nav")) {
+            // Wellington and Concierge are Corro-only.
+            brandFilter.value = "Corro";
+            locationFilter.value = item.dataset.location;
+          }
+
+          brandFilter.dispatchEvent(new Event("change"));
+          locationFilter.dispatchEvent(new Event("change"));
+        });
+      });
+    }
+
+    function updateBrandNavActive(selectedBrand, selectedLocation) {
+      const dbNav = document.querySelector(".dashboard-nav");
+      if (dbNav) dbNav.classList.toggle("active-view", selectedBrand === "all" && selectedLocation === "all");
+
+      document.querySelectorAll(".brand-nav").forEach(item => {
+        item.classList.toggle("active-brand", selectedBrand !== "all" && item.dataset.brand === selectedBrand);
+      });
+
+      document.querySelectorAll(".location-nav").forEach(item => {
+        item.classList.toggle("active-location", selectedLocation !== "all" && item.dataset.location === selectedLocation);
+      });
+    }
+
+    function selectedFilters() {
+      return {
+        brand: document.getElementById("brandFilter").value,
+        location: document.getElementById("brandFilter").value === "Cavali"
+          ? "all"
+          : document.getElementById("locationFilter").value,
+        year: Number(document.getElementById("yearFilter").value),
+        month: document.getElementById("monthFilter").value,
+        quarter: document.getElementById("quarterFilter").value
+      };
+    }
+
+    function filterRows(rows, filters) {
+      const selectedBrand = filters.brand || "all";
+      const selectedSplit = filters.location || "all";
+      const selectedMonth = filters.month || "all";
+      const selectedQuarter = filters.quarter || "all";
+
+      const selectedSplitNorm = normalizeLabel(selectedSplit);
+
+      return rows.filter(row => {
+        const rowMonth = String(row.month).padStart(2, "0");
+        const viewType = String(row.view_type || "brand").trim().toLowerCase();
+        const rowBrand = String(row.brand || "").trim();
+        const rowSplit = rowSplitLabel(row);
+        const rowSplitNorm = normalizeLabel(rowSplit);
+
+        const brandMatch = selectedBrand === "all" || rowBrand === selectedBrand;
+        const splitMatch = selectedSplit === "all"
+          ? viewType !== "location"
+          : viewType === "location" && rowSplitNorm === selectedSplitNorm;
+
+        return brandMatch &&
+               splitMatch &&
+               (Number(row.year) === Number(filters.year)) &&
+               (selectedMonth === "all" || rowMonth === selectedMonth) &&
+               (selectedQuarter === "all" || QUARTERS[selectedQuarter].includes(rowMonth));
+      });
+    }
+
+    function sumRows(rows) {
+      const result = {
+        total_sales: 0,
+        gross_sales: 0,
+        discounts: 0,
+        returns: 0,
+        discounts_returns: 0,
+        discount_pct: 0,
+        shipping_charges: 0,
+        taxes: 0,
+        net_sales: 0,
+        cogs: 0,
+        gross_profit_1: 0,
+        shipping_cost: 0,
+        gross_profit_2: 0,
+        ads_stats_spend: 0,
+        roas: 0,
+        gross_profit_3: 0,
+        estimated_average_opex: 0,
+        estimated_net_operating_income: 0,
+        estimated_net_operating_income_pct: 0,
+        transactions: 0,
+        orders: 0,
+        units_sold: 0,
+        customers: 0,
+        new_customers: 0,
+        returning_customers: 0,
+        net_gross_ratio: 0,
+        sessions_reached_checkout: 0,
+        sessions_completed_checkout: 0,
+        checkout_abandonments: 0,
+        checkout_abandonment_rate: 0,
+        _gross_margin_1_weight: 0
+      };
+
+      rows.forEach(row => {
+        result.total_sales += Number(row.total_sales || 0);
+        result.gross_sales += Number(row.gross_sales || 0);
+        result.discounts += Number(row.discounts || 0);
+        result.returns += Number(row.returns || 0);
+        result.discounts_returns += Number(row.discounts_returns || 0);
+        result.shipping_charges += displayShippingCharges(row);
+        result.taxes += Number(row.taxes || 0);
+        result.net_sales += Number(row.net_sales || 0);
+        result.cogs += displayCogs(row);
+        result.gross_profit_1 += Number(row.gross_profit_1 || 0);
+        result._gross_margin_1_weight += Number(row.gross_margin_1 || 0) * Number(row.net_sales || 0);
+        result.shipping_cost += displayShippingCost(row);
+        result.gross_profit_2 += displayGrossProfit2(row);
+        result.ads_stats_spend += displayAdsStats(row);
+        result.gross_profit_3 += displayGrossProfit3(row);
+
+        // Use JSON values if they exist; otherwise calculate provisional OPEX live.
+        const jsonOpex = Number(row.estimated_average_opex || 0);
+        const rowOpex = jsonOpex !== 0 ? jsonOpex : estimatedMonthlyOpexForRow(row);
+        result.estimated_average_opex += rowOpex;
+        result.estimated_net_operating_income += displayGrossProfit3(row) - rowOpex;
+
+        result.transactions += Number(row.transactions || 0);
+        result.orders += Number(row.orders || row.transactions || 0);
+        result.units_sold += Number(row.units_sold || 0);
+        result.customers += Number(row.customers || 0);
+        result.new_customers += Number(row.new_customers || 0);
+        result.returning_customers += Number(row.returning_customers || 0);
+
+        result.sessions_reached_checkout += rowReachedCheckout(row);
+        result.sessions_completed_checkout += rowCompletedCheckout(row);
+        result.checkout_abandonments += rowCheckoutAbandonments(row);
+      });
+
+      result.customers = uniqueCountFromRows(rows, "customer_ids", "customers");
+      result.new_customers = uniqueCountFromRows(rows, "new_customer_ids", "new_customers");
+      result.returning_customers = uniqueCountFromRows(rows, "returning_customer_ids", "returning_customers");
+
+      if (result.sessions_reached_checkout) {
+        result.checkout_abandonments = Math.max(
+          result.sessions_reached_checkout - result.sessions_completed_checkout,
+          0
+        );
+      }
+
+      result.discount_pct = result.gross_sales ? result.discounts / result.gross_sales : 0;
+      result.discounts_returns_pct = result.gross_sales ? result.discounts_returns / result.gross_sales : 0;
+      result.gross_margin_1 = result.net_sales ? result._gross_margin_1_weight / result.net_sales : 0;
+      result.gross_margin_2 = result.net_sales ? result.gross_profit_2 / result.net_sales : 0;
+      result.gross_margin_3 = result.net_sales ? result.gross_profit_3 / result.net_sales : 0;
+      result.roas = result.ads_stats_spend ? result.net_sales / result.ads_stats_spend : 0;
+      result.net_gross_ratio = result.gross_sales ? result.net_sales / result.gross_sales : 0;
+      result.checkout_abandonment_rate = result.sessions_reached_checkout
+        ? result.checkout_abandonments / result.sessions_reached_checkout
+        : 0;
+      result.estimated_net_operating_income_pct = result.net_sales
+        ? result.estimated_net_operating_income / result.net_sales
+        : 0;
+
+      delete result._gross_margin_1_weight;
+      return result;
+    }
+
+    function getSelectedRows() {
+      const filters = selectedFilters();
+      const monthlyRows = safeArray(DATA.shopify_kpis_by_brand_month);
+      const yearRows = safeArray(DATA.shopify_kpis_by_brand_year);
+      const selectedRows = (filters.month !== "all" || filters.quarter !== "all") ? filterRows(monthlyRows, filters) : filterRows(yearRows, filters);
+      const yearlyMonthlyRows = filterRows(monthlyRows, {
+        brand: filters.brand,
+        location: filters.location,
+        year: filters.year,
+        month: "all",
+        quarter: "all"
+      });
+
+      if (filters.location !== "all" && selectedRows.length === 0) {
+        const availableForSplit = monthlyRows.filter(row =>
+          String(row.brand || "").trim() === filters.brand &&
+          normalizeLabel(rowSplitLabel(row)) === normalizeLabel(filters.location) &&
+          Number(row.year) === Number(filters.year)
+        );
+        console.warn("No selected rows for split", filters.location, "available raw monthly split rows:", availableForSplit.length);
+      }
+
+      return { filters, selectedRows, trendRows: yearlyMonthlyRows, totals: sumRows(selectedRows) };
+    }
+
+    function render() {
+      const selected = getSelectedRows();
+      const brandText = selected.filters.brand === "all" ? "All Brands" : selected.filters.brand;
+      const locationText = selected.filters.location === "all" ? "All Locations" : selected.filters.location;
+      const viewText = selected.filters.location === "all" ? brandText : `${brandText} · ${locationText}`;
+      updateBrandNavActive(selected.filters.brand, selected.filters.location);
+
+      let periodText = "YTD / All Months";
+      if (selected.filters.quarter !== "all") periodText = QUARTER_LABELS[selected.filters.quarter];
+      else if (selected.filters.month !== "all") periodText = MONTHS[selected.filters.month];
+
+      document.getElementById("dateStrip").textContent = `${viewText} · ${selected.filters.year} · ${periodText} · Shopify KPIs ✓`;
+      document.getElementById("matrixMeta").textContent = `${viewText} · ${selected.filters.year}`;
+
+      renderMonthlyMatrix(selected.trendRows, selected.filters);
+      highlightSelectedPeriod(selected.filters);
+      renderKpis(selected.totals);
+      renderSalesTrend(selected.trendRows);
+      renderDiscountReturns(selected.trendRows);
+      renderMarginTrend(selected.trendRows);
+      renderNotes(selected);
+      if (selected.filters.location !== "all" && selected.trendRows.length === 0) {
+        document.getElementById("notes").innerHTML = `<div class="empty">No data found for ${selected.filters.location}. Check Actions log for Financial transform ${selected.filters.location} rows.</div>`;
+      }
+    }
+
+    function highlightSelectedPeriod(filters) {
+      document.querySelectorAll(".month-head").forEach(cell => {
+        cell.classList.remove("selected-month");
+        if (filters.month !== "all" && cell.dataset.month === filters.month) cell.classList.add("selected-month");
+        if (filters.quarter !== "all" && QUARTERS[filters.quarter].includes(cell.dataset.month)) cell.classList.add("selected-month");
+      });
+    }
+
+    function renderKpis(totals) {
+      document.getElementById("shopifyKpis").innerHTML = `
+        <div class="kpi-card"><div class="kpi-label">Orders</div><div class="kpi-value">${compactNumber(totals.orders || totals.transactions)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Order count</div></div>
+        <div class="kpi-card"><div class="kpi-label">Units Sold</div><div class="kpi-value">${compactNumber(totals.units_sold)}</div><div class="kpi-chip">Orders API</div><div class="kpi-note">Line item quantity</div></div>
+        <div class="kpi-card"><div class="kpi-label">Customers</div><div class="kpi-value">${compactNumber(totals.customers)}</div><div class="kpi-chip">Unique</div><div class="kpi-note">Unique selected period</div></div>
+        <div class="kpi-card"><div class="kpi-label">New Customers</div><div class="kpi-value">${compactNumber(totals.new_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">First purchase in selected year</div></div>
+        <div class="kpi-card"><div class="kpi-label">Returning Customers</div><div class="kpi-value">${compactNumber(totals.returning_customers)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Purchased again in selected year</div></div>
+
+        <div class="kpi-card"><div class="kpi-label">Gross Sales</div><div class="kpi-value">${compactMoney(totals.gross_sales)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Price × Qty</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Discounts</div><div class="kpi-value-row"><div class="kpi-value">${compactMoney(totals.discounts)}</div><div class="kpi-secondary-value">${percent(totals.discount_pct)}</div></div><div class="kpi-chip">Shopify</div><div class="kpi-note">Amount + % of Gross Sales</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Returns</div><div class="kpi-value">${compactMoney(totals.returns)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Returns amount</div></div>
+        <div class="kpi-card warning"><div class="kpi-label">Discounts + Returns</div><div class="kpi-value-row"><div class="kpi-value">${compactMoney(totals.discounts_returns)}</div><div class="kpi-secondary-value">${percent(totals.discounts_returns_pct)}</div></div><div class="kpi-chip">Risk</div><div class="kpi-note">Combined amount + %</div></div>
+        <div class="kpi-card"><div class="kpi-label">Shipping Income</div><div class="kpi-value">${compactMoney(totals.shipping_charges)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Customer-paid shipping</div></div>
+
+        <div class="kpi-card negative"><div class="kpi-label">COGS</div><div class="kpi-value">${compactMoney(totals.cogs)}</div><div class="kpi-chip red">Cost</div><div class="kpi-note">Product cost</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 1</div><div class="kpi-value">${compactMoney(totals.gross_profit_1)}</div><div class="kpi-chip green">Shopify</div><div class="kpi-note">Net Sales - COGS</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 1</div><div class="kpi-value">${percent(totals.gross_margin_1)}</div><div class="kpi-chip">Shopify-derived</div><div class="kpi-note">GP1 / Net Sales</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 2</div><div class="kpi-value">${compactMoney(totals.gross_profit_2)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP1 - Shipping Cost</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 2 (GM2)</div><div class="kpi-value">${percent(totals.gross_margin_2)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP2 / Net Sales</div></div>
+
+        <div class="kpi-card negative"><div class="kpi-label">Ads / Stats</div><div class="kpi-value">${compactMoney(totals.ads_stats_spend)}</div><div class="kpi-chip red">Spend</div><div class="kpi-note">Marketing spend</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">ROAS</div><div class="kpi-value">${formatRoas(totals.roas)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Ads Spend</div></div>
+        <div class="kpi-card positive"><div class="kpi-label">Gross Profit 3</div><div class="kpi-value">${compactMoney(totals.gross_profit_3)}</div><div class="kpi-chip green">Calculated</div><div class="kpi-note">GP2 - Ads / Stats</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Gross Margin 3 (GM3)</div><div class="kpi-value">${percent(totals.gross_margin_3)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">GP3 / Net Sales</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Net / Gross Ratio</div><div class="kpi-value">${percent(totals.net_gross_ratio)}</div><div class="kpi-chip">Calculated</div><div class="kpi-note">Net Sales / Gross Sales</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Checkout Abandonment</div><div class="kpi-value">${percent(totals.checkout_abandonment_rate)}</div><div class="kpi-chip">ShopifyQL</div><div class="kpi-note">Reached - Completed / Reached</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taxes</div><div class="kpi-value">${compactMoney(totals.taxes)}</div><div class="kpi-chip">Shopify</div><div class="kpi-note">Moved to final row</div></div>
+      `;
+    }
+
+    function groupByMonth(rows) {
+      const grouped = {};
+
+      rows.forEach(row => {
+        const month = String(row.month).padStart(2, "0");
+
+        if (!grouped[month]) {
+          grouped[month] = {
+            month,
+            total_sales: 0,
+            gross_sales: 0,
+            discounts: 0,
+            returns: 0,
+            discounts_returns: 0,
+            discount_pct: 0,
+            shipping_charges: 0,
+            taxes: 0,
+            net_sales: 0,
+            cogs: 0,
+            gross_profit_1: 0,
+            shipping_cost: 0,
+            gross_profit_2: 0,
+            ads_stats_spend: 0,
+            gross_profit_3: 0,
+            estimated_average_opex: 0,
+            estimated_net_operating_income: 0,
+            estimated_net_operating_income_pct: 0,
+            transactions: 0,
+            orders: 0,
+            units_sold: 0,
+            customers: 0,
+            new_customers: 0,
+            returning_customers: 0,
+            sessions_reached_checkout: 0,
+            sessions_completed_checkout: 0,
+            checkout_abandonments: 0,
+            checkout_abandonment_rate: 0,
+            _customer_ids: new Set(),
+            _new_customer_ids: new Set(),
+            _returning_customer_ids: new Set()
+          };
+        }
+
+        grouped[month].total_sales += Number(row.total_sales || 0);
+        grouped[month].gross_sales += Number(row.gross_sales || 0);
+        grouped[month].discounts += Number(row.discounts || 0);
+        grouped[month].returns += Number(row.returns || 0);
+        grouped[month].discounts_returns += Number(row.discounts_returns || 0);
+        grouped[month].shipping_charges += displayShippingCharges(row);
+        grouped[month].taxes += Number(row.taxes || 0);
+        grouped[month].net_sales += Number(row.net_sales || 0);
+        grouped[month].cogs += displayCogs(row);
+        grouped[month].gross_profit_1 += Number(row.gross_profit_1 || 0);
+        grouped[month]._gross_margin_1_weight = (grouped[month]._gross_margin_1_weight || 0) + Number(row.gross_margin_1 || 0) * Number(row.net_sales || 0);
+        grouped[month].shipping_cost += displayShippingCost(row);
+        grouped[month].gross_profit_2 += displayGrossProfit2(row);
+        grouped[month].ads_stats_spend += displayAdsStats(row);
+        grouped[month].gross_profit_3 += displayGrossProfit3(row);
+
+        const jsonOpex = Number(row.estimated_average_opex || 0);
+        const rowOpex = jsonOpex !== 0 ? jsonOpex : estimatedMonthlyOpexForRow(row);
+        grouped[month].estimated_average_opex += rowOpex;
+        grouped[month].estimated_net_operating_income += displayGrossProfit3(row) - rowOpex;
+
+        grouped[month].transactions += Number(row.transactions || 0);
+        grouped[month].orders += Number(row.orders || row.transactions || 0);
+        grouped[month].units_sold += Number(row.units_sold || 0);
+        grouped[month].customers += Number(row.customers || 0);
+        grouped[month].new_customers += Number(row.new_customers || 0);
+        grouped[month].returning_customers += Number(row.returning_customers || 0);
+        splitIdValues(row.customer_ids).forEach(v => grouped[month]._customer_ids.add(v));
+        splitIdValues(row.new_customer_ids).forEach(v => grouped[month]._new_customer_ids.add(v));
+        splitIdValues(row.returning_customer_ids).forEach(v => grouped[month]._returning_customer_ids.add(v));
+
+        grouped[month].sessions_reached_checkout += rowReachedCheckout(row);
+        grouped[month].sessions_completed_checkout += rowCompletedCheckout(row);
+        grouped[month].checkout_abandonments += rowCheckoutAbandonments(row);
+      });
+
+      return Object.values(grouped)
+        .sort((a, b) => a.month.localeCompare(b.month))
+        .map(row => {
+          if (row.sessions_reached_checkout) {
+            row.checkout_abandonments = Math.max(
+              row.sessions_reached_checkout - row.sessions_completed_checkout,
+              0
+            );
+          }
+
+          if (row._customer_ids && row._customer_ids.size) row.customers = row._customer_ids.size;
+          if (row._new_customer_ids && row._new_customer_ids.size) row.new_customers = row._new_customer_ids.size;
+          if (row._returning_customer_ids && row._returning_customer_ids.size) row.returning_customers = row._returning_customer_ids.size;
+
+          const cleanRow = { ...row };
+          delete cleanRow._customer_ids;
+          delete cleanRow._new_customer_ids;
+          delete cleanRow._returning_customer_ids;
+
+          return {
+            ...cleanRow,
+            gross_margin_1: row.net_sales ? (row._gross_margin_1_weight || 0) / row.net_sales : 0,
+            gross_margin_2: row.net_sales ? row.gross_profit_2 / row.net_sales : 0,
+            gross_margin_3: row.net_sales ? row.gross_profit_3 / row.net_sales : 0,
+            net_gross_ratio: row.gross_sales ? row.net_sales / row.gross_sales : 0,
+            checkout_abandonment_rate: row.sessions_reached_checkout
+              ? row.checkout_abandonments / row.sessions_reached_checkout
+              : 0,
+            estimated_net_operating_income_pct: row.net_sales
+              ? row.estimated_net_operating_income / row.net_sales
+              : 0,
+            discount_pct: row.gross_sales ? row.discounts / row.gross_sales : 0,
+            discounts_returns_pct: row.gross_sales ? row.discounts_returns / row.gross_sales : 0
+          };
+        });
+    }
+
+    function renderSalesTrend(rows) {
+      if (salesTrendChart) salesTrendChart.destroy();
+      const monthly = groupByMonth(rows);
+      salesTrendChart = new Chart(document.getElementById("salesTrendChart"), {
+        type: "bar",
+        data: {
+          labels: monthly.map(row => MONTHS[row.month] || row.month),
+          datasets: [
+            { label: "Gross Sales", data: monthly.map(row => row.gross_sales), backgroundColor: "#3b82f6", borderRadius: 5, maxBarThickness: 36, yAxisID: "y" },
+            { label: "Net Sales", data: monthly.map(row => row.net_sales), backgroundColor: "#22c55e", borderRadius: 5, maxBarThickness: 36, yAxisID: "y" },
+            { type: "line", label: "Net / Gross Ratio", data: monthly.map(row => row.net_gross_ratio * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" }
+          ]
+        },
+        options: chartOptionsMoneyWithRatio()
+      });
+    }
+
+    function renderDiscountReturns(rows) {
+      if (discountReturnsChart) discountReturnsChart.destroy();
+      const monthly = groupByMonth(rows);
+      discountReturnsChart = new Chart(document.getElementById("discountReturnsChart"), {
+        type: "line",
+        data: {
+          labels: monthly.map(row => MONTHS[row.month] || row.month),
+          datasets: [
+            { label: "Discounts", data: monthly.map(row => row.discounts), borderColor: "#f59e0b", backgroundColor: "#f59e0b", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y" },
+            { label: "% Discounts", data: monthly.map(row => row.discount_pct * 100), borderColor: "#22c55e", backgroundColor: "#22c55e", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" },
+            { label: "% Discount + Returns", data: monthly.map(row => row.discounts_returns_pct * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2, yAxisID: "y1" }
+          ]
+        },
+        options: chartOptionsMoneyWithRatio(true)
+      });
+    }
+
+    function renderMarginTrend(rows) {
+      if (marginTrendChart) marginTrendChart.destroy();
+      const monthly = groupByMonth(rows);
+      marginTrendChart = new Chart(document.getElementById("marginTrendChart"), {
+        type: "line",
+        data: {
+          labels: monthly.map(row => MONTHS[row.month] || row.month),
+          datasets: [
+            { label: "Gross Margin 1", data: monthly.map(row => row.gross_margin_1 * 100), borderColor: "#3b82f6", backgroundColor: "#3b82f6", tension: 0.35, pointRadius: 2, borderWidth: 2 },
+            { label: "Gross Margin 2 (GM2)", data: monthly.map(row => row.gross_margin_2 * 100), borderColor: "#22c55e", backgroundColor: "#22c55e", tension: 0.35, pointRadius: 2, borderWidth: 2 },
+            { label: "Gross Margin 3 (GM3)", data: monthly.map(row => row.gross_margin_3 * 100), borderColor: "#a78bfa", backgroundColor: "#a78bfa", tension: 0.35, pointRadius: 2, borderWidth: 2 }
+          ]
+        },
+        options: chartOptionsPercent()
+      });
+    }
+
+    function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+    function chartOptionsMoneyWithRatio(showLegend = true) {
+      return {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: showLegend, position: "bottom", labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 } },
+          tooltip: { callbacks: { label: c => c.dataset.yAxisID === "y1" ? `${c.dataset.label}: ${Number(c.raw || 0).toFixed(0)}%` : `${c.dataset.label}: ${money(c.raw)}` } }
+        },
+        scales: {
+          x: { grid: { color: "rgba(127,154,183,0.10)" }, ticks: { color: cssVar("--muted"), font: { size: 10 } } },
+          y: { beginAtZero: true, position: "left", grid: { color: "rgba(127,154,183,0.14)" }, ticks: { color: cssVar("--muted"), font: { size: 10 }, callback: v => compactMoney(v) } },
+          y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, ticks: { color: cssVar("--muted"), font: { size: 10 }, callback: v => v + "%" } }
+        }
+      };
+    }
+
+    function chartOptionsPercent() {
+      return {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: "bottom", labels: { color: cssVar("--muted"), font: { size: 10 }, boxWidth: 10 } } },
+        scales: {
+          x: { grid: { color: "rgba(127,154,183,0.10)" }, ticks: { color: cssVar("--muted"), font: { size: 10 } } },
+          y: { beginAtZero: true, grid: { color: "rgba(127,154,183,0.14)" }, ticks: { color: cssVar("--muted"), font: { size: 10 }, callback: v => v + "%" } }
+        }
+      };
+    }
+
+    function renderMonthlyMatrix(rows, filters) {
+      const lookup = {};
+      groupByMonth(rows).forEach(r => { lookup[r.month] = r; });
+      const isQuarterSelected = filters && filters.quarter !== "all";
+      const monthKeys = isQuarterSelected ? QUARTERS[filters.quarter] : MONTH_ORDER;
+      const quarterKeys = isQuarterSelected ? [filters.quarter] : ["Q1", "Q2", "Q3", "Q4"];
+
+      const table = document.getElementById("monthlyTable");
+      const toggle = document.getElementById("matrixToggle");
+      if (isQuarterSelected) { table.classList.remove("is-collapsed"); toggle.style.display = "none"; }
+      else { toggle.style.display = "inline-flex"; }
+
+      const monthHeaders = monthKeys.map(k => `<th class="right month-head monthly-detail${(isQuarterSelected || filters.month === k) ? ' selected-month' : ''}" data-month="${k}">${MONTHS[k]}</th>`).join("");
+      const quarterHeaders = quarterKeys.map(k => `<th class="right quarter-col${(isQuarterSelected && k === filters.quarter) ? ' selected-month' : ''}">${k}</th>`).join("");
+
+      document.getElementById("monthlyMatrixHead").innerHTML = `<tr><th class="sticky-kpi">KPI</th>${monthHeaders}<th class="right total-col">YTD</th>${quarterHeaders}</tr>`;
+
+      const metrics = [
+        { key: "gross_sales", label: "Gross Sales", formatter: money },
+        { key: "discounts", label: "Discounts", formatter: money },
+        { key: "discount_pct", label: "% Discounts", formatter: percent },
+        { key: "returns", label: "Returns", formatter: money },
+        { key: "discounts_returns_pct", label: "% Discount + Returns", formatter: percent },
+        { key: "shipping_charges", label: "Shipping Income", formatter: money },
+        { key: "net_sales", label: "Net Sales", formatter: money },
+        { key: "cogs", label: "COGS", formatter: money },
+        { key: "gross_profit_1", label: "Gross Profit 1", formatter: money },
+        { key: "gross_margin_1", label: "Gross Margin 1", formatter: percent },
+        { key: "shipping_cost", label: "Shipping Cost", formatter: money },
+        { key: "gross_profit_2", label: "Gross Profit 2", formatter: money },
+        { key: "gross_margin_2", label: "Gross Margin 2 (GM2)", formatter: percent },
+        { key: "ads_stats_spend", label: "Ads / Stats", formatter: money },
+        { key: "roas", label: "ROAS", formatter: formatRoas },
+        { key: "gross_profit_3", label: "Gross Profit 3", formatter: money },
+        { key: "gross_margin_3", label: "Gross Margin 3 (GM3)", formatter: percent },
+        { key: "net_gross_ratio", label: "Net / Gross Ratio", formatter: percent },
+        { key: "checkout_abandonment_rate", label: "Checkout Abandonment Rate", formatter: percent },
+        { key: "estimated_average_opex", label: "Estimated Average OPEX", formatter: money },
+        { key: "estimated_net_operating_income", label: "Estimated Net Operating Income", formatter: money },
+        { key: "estimated_net_operating_income_pct", label: "Estimated Net Operating Income %", formatter: percent },
+        { key: "taxes", label: "Taxes", formatter: money },
+        { key: "opex_definition", label: "OPEX Assumptions", formatter: value => value, isNote: true }
+      ];
+
+      const ytyTotals = sumRows(rows);
+      const html = metrics.map(m => {
+        if (m.isNote) {
+          const note = opexDefinitionForRow(rows[0] || {});
+          const colspan = monthKeys.length + quarterKeys.length + 2;
+          return `<tr class="opex-definition-row"><td class="sticky-kpi"><strong>${m.label}</strong></td><td colspan="${colspan - 1}">${note}</td></tr>`;
+        }
+
+        const monthCells = monthKeys.map(k => {
+          const r = lookup[k];
+          const v = r ? r[m.key] : 0;
+          return `<td class="right monthly-detail${(isQuarterSelected || filters.month === k) ? ' selected-month' : ''}">${m.formatter(v)}</td>`;
+        }).join("");
+
+        const ytyValue = ytyTotals[m.key];
+        const quarterCells = quarterKeys.map(qk => {
+          const qRows = rows.filter(row => QUARTERS[qk].includes(String(row.month).padStart(2, "0")));
+          const qTotals = sumRows(qRows);
+          return `<td class="right quarter-col${(isQuarterSelected && qk === filters.quarter) ? ' selected-month' : ''}">${m.formatter(qTotals[m.key])}</td>`;
+        }).join("");
+
+        return `<tr><td class="sticky-kpi">${m.label}</td>${monthCells}<td class="right total-col">${m.formatter(ytyValue)}</td>${quarterCells}</tr>`;
+      }).join("");
+
+      document.getElementById("monthlyMatrix").innerHTML = html;
+    }
+
+    function renderNotes(selected) {
+      const totals = selected.totals;
+      const brandText = selected.filters.brand === "all" ? "all brands" : selected.filters.brand;
+      const locationText = selected.filters.location === "all" ? "all locations" : selected.filters.location;
+      const viewText = selected.filters.location === "all" ? brandText : `${brandText} · ${locationText}`;
+      let periodText = "all months";
+      if (selected.filters.quarter !== "all") periodText = QUARTER_LABELS[selected.filters.quarter];
+      else if (selected.filters.month !== "all") periodText = MONTHS[selected.filters.month];
+
+      document.getElementById("executiveNotes").innerHTML = `
+        <li><span class="note-dot"></span><span>Selected Shopify view: <strong>${viewText}</strong>, <strong>${selected.filters.year}</strong>, <strong>${periodText}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Gross Sales are <strong>${money(totals.gross_sales)}</strong> and Net Sales are <strong>${money(totals.net_sales)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Orders: <strong>${number(totals.orders || totals.transactions)}</strong>, Units Sold: <strong>${number(totals.units_sold)}</strong>, Customers: <strong>${number(totals.customers)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>Discounts + Returns represent <strong>${percent(totals.discounts_returns_pct)}</strong> of Gross Sales.</span></li>
+        <li><span class="note-dot"></span><span>Net / Gross Ratio is <strong>${percent(totals.net_gross_ratio)}</strong>. Checkout Abandonment Rate is <strong>${percent(totals.checkout_abandonment_rate)}</strong>.</span></li>
+        <li><span class="note-dot"></span><span>OPEX assumption: <strong>${opexDefinitionForRow((selected.selectedRows || [])[0] || {})}</strong></span></li>
+      `;
+    }
+
+    setupTheme();
+    setupMatrixToggle();
+    loadData();
+  </script>
+</body>
+</html>
