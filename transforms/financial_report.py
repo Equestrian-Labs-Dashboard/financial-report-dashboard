@@ -304,6 +304,12 @@ GENERAL_OPEX_GA_MONTHLY = 45000.0
 GENERAL_OPEX_SALES_MARKETING_PCT = 0.0662
 GENERAL_OPEX_TECHNOLOGY_MONTHLY = 0.0
 
+# Cavali OPEX supplied by the finance team. The total is approximately $17.5k
+# per quarter and the detail is intentionally grouped into only Payroll + Apps.
+CAVALI_OPEX_PAYROLL_QUARTERLY = 14000.0
+CAVALI_OPEX_APPS_QUARTERLY = 3327.0
+CAVALI_OPEX_QUARTERLY = CAVALI_OPEX_PAYROLL_QUARTERLY + CAVALI_OPEX_APPS_QUARTERLY
+
 CHANNEL_OPEX_POOL_ANNUAL = 70000.0
 CONCIERGE_OPEX_BASE_PCT = 0.60
 WELLINGTON_OPEX_BASE_PCT = 0.40
@@ -317,6 +323,19 @@ WELLINGTON_RENT_STORE_SHARE = 0.50
 WELLINGTON_PERMIT_ANNUAL = 9000.0
 WELLINGTON_INSURANCE_ANNUAL = 20000.0
 
+
+
+def _cavali_opex(monthly: bool) -> float:
+    """Cavali OPEX: $17,327 per quarter = $14,000 Payroll + $3,327 Apps."""
+    return CAVALI_OPEX_QUARTERLY / 3 if monthly else CAVALI_OPEX_QUARTERLY * 4
+
+
+def _cavali_opex_definition() -> str:
+    return (
+        "Cavali OPEX: $17,327 per quarter (approximately $17.5k): "
+        "Payroll $14,000 + Apps $3,327. Apps combines GSuite, Smartrr, "
+        "Smartrr Fee, Klaviyo, Shopify and the other recurring apps."
+    )
 
 def _period_fixed_opex(monthly: bool) -> float:
     months = 1 if monthly else 12
@@ -431,6 +450,19 @@ def add_estimated_operating_income(df):
             df.at[i, "estimated_average_opex"] = pool * (_safe_float(df.at[i, "gross_sales"]) / period_gross)
             df.at[i, "opex_definition"] = _opex_definition("main", monthly=monthly)
             df.at[i, "opex_assumptions"] = "Payroll $40k/month; G&A $45k/month; Sales & Marketing 6.62% of Gross Sales; Technology $0. Variation comes from Sales & Marketing as a % of revenue."
+
+    # Cavali has its own finance-approved OPEX and must not use the general
+    # $40k payroll + $45k G&A allocation. Override only Cavali so the existing
+    # calculations for Corro and the location splits remain unchanged.
+    cavali_mask = (
+        df["view_type"].astype(str).str.lower().eq("brand")
+        & df["brand"].astype(str).str.lower().eq("cavali")
+        & has_activity(df)
+    )
+    for i in df.loc[cavali_mask].index:
+        df.at[i, "estimated_average_opex"] = _cavali_opex(monthly=monthly)
+        df.at[i, "opex_definition"] = _cavali_opex_definition()
+        df.at[i, "opex_assumptions"] = "Payroll $14,000/quarter; Apps $3,327/quarter; Total $17,327/quarter."
 
     # Channel/location rows: Concierge and Wellington have their own provisional OPEX rules.
     location_mask = df["view_type"].astype(str).str.lower().eq("location") & has_activity(df)
