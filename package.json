@@ -1,0 +1,18 @@
+{
+  "name": "equestrian-labs-strategic-operating-model",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:shopify": "node scripts/sync-shopify-actuals.mjs",
+    "sync:connected": "node scripts/sync-connected-data.mjs",
+    "test:model": "node tests-model.mjs",
+    "test": "node tests-model.mjs && node tests-integration-static.mjs && node tests-no-placeholders.mjs"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

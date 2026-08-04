@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Equestrian Labs · Strategic Operating Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css?v=180" />
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <p class="brand-eyebrow">Equestrian Labs</p>
+      <h1 class="brand-title">Strategic Operating Model <span id="versionBadge" class="version-badge">v2.1</span></h1>
+      <p class="brand-sub">2026 – 2029</p>
+      <div class="legend" style="margin-top:10px;">
+        <span class="legend-chip"><span class="legend-swatch" style="background:#FFF4CC"></span>Editable</span>
+        <span class="legend-chip"><span class="legend-swatch" style="background:#FFFFFF;border:1px solid #4a6d93"></span>Calculated</span>
+        <span class="legend-chip"><span class="legend-swatch" style="background:#F2F2F2"></span>Baseline / Historical</span>
+        <span class="save-indicator" id="saveIndicator">Saved ✓</span>
+      </div>
+    </div>
+    <div class="header-actions" aria-label="Model actions">
+      <button class="action-btn primary" id="saveData">Save</button>
+      <button class="action-btn" id="refreshActuals">Refresh Actuals</button>
+      <button class="action-btn" id="downloadData">Download</button>
+      <button class="action-btn" id="publishScenario">Publish To…</button>
+      <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode"><span class="theme-icon" id="themeIcon">☀</span></button>
+    </div>
+  </div>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab-btn active" data-tab="tab-01">01 · Magic Page</button>
+    <button class="tab-btn" data-tab="tab-02">02 · Growth &amp; Margin Engine</button>
+    <button class="tab-btn" data-tab="tab-03">03 · Financial Summary</button>
+    <button class="tab-btn" data-tab="tab-04">04 · Commercial Cash Flow</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="tab-panel active" id="tab-01">
+    <section class="magic-control-panel" aria-label="Magic Page controls">
+      <div class="display-control-row">
+        <div class="display-control-heading">
+          <span class="display-control-kicker">Dashboard Display</span>
+          <span class="display-control-note">All KPI Cards show the closing forecast for the selected year.</span>
+        </div>
+        <div class="dashboard-display-field compact-field"><label for="modelStatus">Scenario</label><select id="modelStatus"></select></div>
+        <div class="dashboard-display-field compact-field"><label for="displayYear">Display Year</label><select id="displayYear"></select></div>
+      </div>
+
+      <div class="assumption-control-row" aria-label="Magic Page model inputs">
+        <div class="dashboard-display-field"><label for="fundingScenario">Funding Scenario</label><select id="fundingScenario"></select></div>
+        <div class="dashboard-display-field"><label for="fundingDate">Funding Date</label><select id="fundingDate"></select></div>
+        <div class="dashboard-display-field"><label for="baseEcommerce">Base Ecommerce</label><input id="baseEcommerce" /></div>
+        <div class="dashboard-display-field"><label for="doverCapture">Dover Capture</label><select id="doverCapture"></select></div>
+        <div class="dashboard-display-field"><label for="roas">ROAS</label><select id="roas"></select></div>
+        <div class="dashboard-display-field"><label for="lastUpdate">Last Updated</label><input id="lastUpdate" /></div>
+      </div>
+
+      <details class="validation-tools">
+        <summary>Validation tools</summary>
+        <div class="validation-tools-body">
+          <p>Loads simple editable assumptions for 2027–2029 only. Shopify actuals and the 2026 forecast are preserved.</p>
+          <div class="qa-actions">
+            <button class="action-btn primary" id="loadEasyNumbers">Load Easy Test (2027–2029)</button>
+            <button class="action-btn" id="restoreScenarioValues">Restore Previous Values</button>
+          </div>
+        </div>
+      </details>
+    </section>
+    <div class="scenario-banner">CURRENT STRATEGIC SCENARIO</div>
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <section class="section" data-accent="funding">
+      <div class="section-header">Section 1 — Funding &amp; Allocation</div>
+      <p class="section-sub">Funding scenarios &amp; allocation rules</p>
+      <table class="grid" id="fundingTable"></table>
+      <p class="section-note">Unallocated Capital = scenario funding total − allocated capital. It should equal $0.</p>
+    </section>
+
+    <section class="section" data-accent="commercial">
+      <div class="section-header">Section 2 — Commercial Strategy</div>
+      <p class="section-note">Growth Engines — strategic inputs only. Baseline/Current values are automatically refreshed from actuals where available.</p>
+      <div class="strategy-grid" id="commercialBlocks"></div>
+    </section>
+
+    <section class="section" data-accent="bu">
+      <div class="section-header">Section 3 — Growth Engines</div>
+      <p class="section-note">Each engine has its own input block according to how that business works. No revenue or gross profit output on the Magic Page.</p>
+      <div class="engine-grid" id="engineBlocks"></div>
+    </section>
+
+    <section class="section" data-accent="margin">
+      <div class="section-header">Section 4 — Purchasing Strategy</div>
+      <span class="owner-tag" style="margin-top:10px; display:inline-block;">Owner: Tatum</span>
+      <div class="two-col" style="margin-top:10px;">
+        <div>
+          <p class="section-sub">Commercial Terms</p>
+          <table class="grid" id="purchasingTable"></table>
+        </div>
+        <div>
+          <p class="section-sub">Vendor Payment Mix</p>
+          <table class="grid" id="vendorMixTable"></table>
+          <p class="section-sub">Capital Efficiency</p>
+          <table class="grid" id="capitalEfficiencyTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-accent="margin">
+      <div class="section-header">Section 5 — Operations Strategy</div>
+      <span class="owner-tag" style="margin-top:10px; display:inline-block;">Owner: Jordyn</span>
+      <table class="grid" id="opsTable" style="max-width:760px;"></table>
+    </section>
+
+    <section class="section" data-accent="growth">
+      <div class="section-header">Section 6 — Growth Initiatives</div>
+      <table class="grid" id="growthTable" style="margin-top:10px;"></table>
+      <button class="add-row-btn" id="addGrowthRow">+ Add initiative</button>
+    </section>
+
+    <section class="section" data-accent="thesis">
+      <div class="section-header">Section 7 — Strategic Targets</div>
+      <p class="section-note">Company-level targets only. Detailed dollar outputs are kept out of the Magic Page.</p>
+      <div class="thesis-grid" id="thesisGrid"></div>
+    </section>
+
+    <div class="footer">
+      Magic Page = what we assume and choose. Growth &amp; Margin Engine = what those assumptions generate.
+      <br />
+      <button class="add-row-btn" id="resetData" style="margin-top:10px;">Reset to base values</button>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="tab-02">
+    <div class="scenario-banner">GROWTH &amp; MARGIN ENGINE</div>
+    <p class="section-note" style="text-align:center; margin-top:8px;">Financial outputs generated from the Magic Page assumptions.</p>
+
+    <section class="section" data-accent="funding">
+      <div class="section-header">Active Scenario</div>
+      <div class="kpi-grid compact" id="sheet2ScenarioGrid"></div>
+    </section>
+
+    <section class="section" data-accent="commercial">
+      <div class="section-header">Financial Snapshot</div>
+      <div class="kpi-grid snapshot-grid" id="financialSnapshotGrid"></div>
+    </section>
+
+    <section class="section" data-accent="bu">
+      <div class="section-header">Growth Engines — Revenue &amp; Profit Contribution</div>
+      <p class="section-note">This is the portfolio view: which engine generates sales and which engine generates GP1. Ecommerce is built from base revenue, organic growth, incremental paid growth and net Dover capture.</p>
+      <p class="section-sub">Ecommerce Revenue Build</p>
+      <table class="grid" id="ecommerceBuildTable" style="margin-top:10px;"></table>
+      <p class="section-sub">Growth Engine Portfolio</p>
+      <table class="grid" id="sheet2ExecSummaryTable" style="margin-top:10px;"></table>
+      <div class="supporting-kpis" id="sheet2SupportingKpis"></div>
+    </section>
+
+    <section class="section" data-accent="margin">
+      <div class="section-header">Margin Bridge</div>
+      <p class="section-note">Gross Sales → Net Sales → COGS → GP1 → GP2 → GP3. EBITDA and fixed operating expenses remain in Tab 03.</p>
+      <table class="grid" id="sheet2MarginBridgeTable" style="margin-top:10px;"></table>
+    </section>
+  </section>
+
+  <section class="tab-panel" id="tab-03">
+    <div class="scenario-banner">FINANCIAL SUMMARY</div>
+    <p class="section-note" style="text-align:center; margin-top:8px;">Executive profitability view generated from the Strategic Model.</p>
+    <section class="section" data-accent="commercial">
+      <div class="section-header">KPI Cards</div>
+      <div class="kpi-grid snapshot-grid" id="tab3KpiGrid"></div>
+    </section>
+    <section class="section" data-accent="margin">
+      <div class="section-header">Commercial P&amp;L</div>
+      <table class="grid" id="tab3PnlTable" style="margin-top:10px;"></table>
+      <div class="assumption-explainer" id="tab3OpexExplanation">
+        <strong>Sales &amp; Marketing assumption:</strong> Fixed annual amount of $210k in 2026 and $300k per year from 2027 through 2029. Advertising is excluded because it is already deducted in GP3.<br>
+        <strong>General &amp; Administrative assumption:</strong> Fixed annual amount of $1.0M per year. This expense is not calculated as a percentage of revenue.
+      </div>
+    </section>
+    <section class="section" data-accent="bu">
+      <div class="section-header">Operating KPIs</div>
+      <div class="kpi-grid snapshot-grid" id="tab3OperatingKpis"></div>
+    </section>
+  </section>
+
+  <section class="tab-panel" id="tab-04">
+    <div class="scenario-banner">COMMERCIAL CASH FLOW</div>
+    <p class="section-note" style="text-align:center; margin-top:8px;">Cash position and execution capacity generated from actual cash timing, model outputs and funding plan.</p>
+    <section class="section cash-summary-section" data-accent="cashflow">
+      <div id="tab4CashKpis" class="cash-summary-card"></div>
+    </section>
+    <section class="section" data-accent="commercial">
+      <div class="section-header">Cash In</div>
+      <table class="grid" id="tab4CashInTable" style="margin-top:10px;"></table>
+    </section>
+    <section class="section" data-accent="margin">
+      <div class="section-header">Cash Out</div>
+      <table class="grid" id="tab4CashOutTable" style="margin-top:10px;"></table>
+      <div class="assumption-explainer">
+        <strong>Cash flow note:</strong> Shopify deposits are used as a simplified cash-in proxy. Opening cash and actual payment timing remain pending QuickBooks or bank integration.
+      </div>
+    </section>
+    <section class="section" data-accent="growth">
+      <div class="section-header">Net Cash Flow</div>
+      <table class="grid" id="tab4NetCashTable" style="margin-top:10px;"></table>
+    </section>
+  </section>
+
+</main>
+
+<script src="assets/js/dataService.js?v=200"></script>
+<script src="assets/js/app.js?v=200"></script>
+</body>
+</html>
