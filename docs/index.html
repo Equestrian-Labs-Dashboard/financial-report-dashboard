@@ -826,13 +826,10 @@
         </div>
       </section>
 
-      <div class="section-title"><span>01 · Variación</span></div>
+      <div class="section-title"><span>01 &middot; Variations (vs Previous)</span></div>
       <div id="variationsSection"></div>
 
-      <div class="section-title"><span>02 · Shopify KPI Cards</span></div>
-      <section class="kpi-grid" id="shopifyKpis"></section>
-
-      <section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
+<section class="date-strip" id="dateStrip">Loading Shopify report period...</section>
 
       <section class="panel table-panel">
         <div class="matrix-topbar">
@@ -851,7 +848,7 @@
         </div>
       </section>
 
-      <div class="section-title"><span>01 · Shopify KPI Cards</span></div>
+      <div class="section-title"><span>02 &middot; Shopify KPI Cards</span></div>
       <section class="kpi-grid" id="shopifyKpis"></section>
 
       <section class="panel">
@@ -1531,13 +1528,13 @@
           const currentTotals = sumRows(currentYearRows);
           const prevYearRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: "all", quarter: "all" });
           const prevTotals = sumRows(prevYearRows);
-          comparisons.push({ label: `FY ${currentYear} VS FY ${currentYear - 1}`, current: currentTotals, prev: prevTotals });
+          comparisons.push({ label: FY  VS FY , current: currentTotals, prev: prevTotals });
         } else if (monthsInCurrentYear.length > 0) {
           const currentTotals = sumRows(currentYearRows);
           const prevYearRowsRaw = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: "all", quarter: "all" });
           const prevYearRows = prevYearRowsRaw.filter(r => String(r.month).padStart(2, "0") <= maxMonth);
           const prevTotals = sumRows(prevYearRows);
-          comparisons.push({ label: `YTD ${currentYear} VS YTD ${currentYear - 1}`, current: currentTotals, prev: prevTotals });
+          comparisons.push({ label: YTD  VS YTD , current: currentTotals, prev: prevTotals });
         }
       } else if (isQuarter) {
         const currentQRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear, month: "all", quarter: filters.quarter });
@@ -1552,47 +1549,50 @@
         
         const prevQRows = filterRows(allMonthlyRows, { ...baseFilters, year: prevQYear, month: "all", quarter: prevQ });
         const prevQTotals = sumRows(prevQRows);
-        comparisons.push({ label: `${filters.quarter} ${currentYear} VS ${prevQ} ${prevQYear}`, current: currentTotals, prev: prevQTotals });
+        comparisons.push({ label: ${filters.quarter}  VS  , current: currentTotals, prev: prevQTotals });
         
         const sameQPrevYearRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: "all", quarter: filters.quarter });
         const sameQPrevYearTotals = sumRows(sameQPrevYearRows);
-        comparisons.push({ label: `${filters.quarter} ${currentYear} VS ${filters.quarter} ${currentYear - 1}`, current: currentTotals, prev: sameQPrevYearTotals });
+        comparisons.push({ label: ${filters.quarter}  VS  , current: currentTotals, prev: sameQPrevYearTotals });
       }
       
       const container = document.getElementById("variationsSection");
       if (!container) return;
       if (comparisons.length === 0) { container.innerHTML = ""; return; }
       
-      let html = `<div class="variations-wrapper">`;
+      let html = <div class="variations-wrapper">;
       comparisons.forEach(comp => {
-        const grossSalesVar = comp.prev.gross_sales ? ((comp.current.gross_sales - comp.prev.gross_sales) / comp.prev.gross_sales) * 100 : 0;
-        const netSalesVar = comp.prev.net_sales ? ((comp.current.net_sales - comp.prev.net_sales) / comp.prev.net_sales) * 100 : 0;
+        const grossSalesVar = comp.current.gross_sales - comp.prev.gross_sales;
+        const netSalesVar = comp.current.net_sales - comp.prev.net_sales;
         
         const currentGrossMargin = comp.current.net_sales ? comp.current.gross_profit_1 / comp.current.net_sales : 0;
         const prevGrossMargin = comp.prev.net_sales ? comp.prev.gross_profit_1 / comp.prev.net_sales : 0;
-        const marginVar = (currentGrossMargin - prevGrossMargin) * 100;
+        const marginVar = (currentGrossMargin - prevGrossMargin) * 100; // in percentage points
         
-        const grossProfitVar = comp.prev.gross_profit_1 ? ((comp.current.gross_profit_1 - comp.prev.gross_profit_1) / comp.prev.gross_profit_1) * 100 : 0;
+        const grossProfitVar = comp.current.gross_profit_1 - comp.prev.gross_profit_1;
         
-        const formatVar = (val) => (val > 0 ? "+" : "") + val.toFixed(1) + "%";
+        const formatMoneyVar = (val) => {
+          const sign = val > 0 ? "+" : (val < 0 ? "-" : "");
+          return sign + "$" + Math.abs(val).toLocaleString("en-US", { maximumFractionDigits: 0 });
+        };
+        const formatPctVar = (val) => (val > 0 ? "+" : "") + val.toFixed(1) + "%";
         const getClass = (val) => val > 0 ? "positive-var" : (val < 0 ? "negative-var" : "neutral-var");
         
-        html += `
+        html += 
           <div class="variation-card">
-            <div class="variation-title">${comp.label}</div>
+            <div class="variation-title"></div>
             <div class="variation-grid">
-              <div class="var-item"><span class="var-label">Gross Sales</span><span class="var-val ${getClass(grossSalesVar)}">${formatVar(grossSalesVar)}</span></div>
-              <div class="var-item"><span class="var-label">Net Sales</span><span class="var-val ${getClass(netSalesVar)}">${formatVar(netSalesVar)}</span></div>
-              <div class="var-item"><span class="var-label">Gross Margin</span><span class="var-val ${getClass(marginVar)}">${formatVar(marginVar)}</span></div>
-              <div class="var-item"><span class="var-label">Gross Profit</span><span class="var-val ${getClass(grossProfitVar)}">${formatVar(grossProfitVar)}</span></div>
+              <div class="var-item"><span class="var-label">Gross Sales</span><span class="var-val "></span></div>
+              <div class="var-item"><span class="var-label">Net Sales</span><span class="var-val "></span></div>
+              <div class="var-item"><span class="var-label">Gross Margin</span><span class="var-val "></span></div>
+              <div class="var-item"><span class="var-label">Gross Profit</span><span class="var-val "></span></div>
             </div>
           </div>
-        `;
+        ;
       });
-      html += `</div>`;
+      html += </div>;
       container.innerHTML = html;
     }
-
     function highlightSelectedPeriod(filters) {
       document.querySelectorAll(".month-head").forEach(cell => {
         cell.classList.remove("selected-month");
