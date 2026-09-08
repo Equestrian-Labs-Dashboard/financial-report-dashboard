@@ -349,8 +349,7 @@
         const isCavali = brandFilter.value === "Cavali";
         const locationGroup = locationFilter.closest(".filter-group");
 
-        quarterFilterGroup.style.display = isCavali ? "flex" : "none";
-        if (!isCavali) quarterFilter.value = "all";
+        quarterFilterGroup.style.display = "flex"; // Always show quarter filter
 
         // Wellington and Concierge are Corro-only. Hide Split when Cavali is selected.
         if (locationGroup) locationGroup.style.display = isCavali ? "none" : "flex";
@@ -640,6 +639,24 @@
         const sameQPrevYearRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: "all", quarter: filters.quarter });
         const sameQPrevYearTotals = sumRows(sameQPrevYearRows);
         comparisons.push({ label: `${filters.quarter} ${currentYear} VS ${filters.quarter} ${currentYear - 1}`, current: currentTotals, prev: sameQPrevYearTotals });
+      } else if (isMonth) {
+        const currentMRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear, month: filters.month, quarter: "all" });
+        const currentTotals = sumRows(currentMRows);
+        
+        let prevMYear = currentYear;
+        let prevMNum = Number(filters.month) - 1;
+        if (prevMNum === 0) { prevMNum = 12; prevMYear = currentYear - 1; }
+        const prevMString = String(prevMNum).padStart(2, "0");
+        
+        const prevMRows = filterRows(allMonthlyRows, { ...baseFilters, year: prevMYear, month: prevMString, quarter: "all" });
+        const prevMTotals = sumRows(prevMRows);
+        const mName = MONTHS[filters.month] || filters.month;
+        const prevMName = MONTHS[prevMString] || prevMString;
+        comparisons.push({ label: `${mName} ${currentYear} VS ${prevMName} ${prevMYear}`, current: currentTotals, prev: prevMTotals });
+        
+        const sameMPrevYearRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: filters.month, quarter: "all" });
+        const sameMPrevYearTotals = sumRows(sameMPrevYearRows);
+        comparisons.push({ label: `${mName} ${currentYear} VS ${mName} ${currentYear - 1}`, current: currentTotals, prev: sameMPrevYearTotals });
       }
       
       const container = document.getElementById("variationsSection");
