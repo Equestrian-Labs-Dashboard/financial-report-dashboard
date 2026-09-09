@@ -620,7 +620,7 @@
           const prevYearRows = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: "all", quarter: "all" });
           const prevTotals = sumRows(prevYearRows);
           comparisons.push({ label: `FY ${currentYear} VS FY ${currentYear - 1}`, current: currentTotals, prev: prevTotals });
-        } else if (monthsInCurrentYear.length > 0) {
+        } else if (currentYearRows.length > 0) {
           const currentTotals = sumRows(currentYearRows);
           const prevYearRowsRaw = filterRows(allMonthlyRows, { ...baseFilters, year: currentYear - 1, month: "all", quarter: "all" });
           const prevYearRows = prevYearRowsRaw.filter(r => String(r.month).padStart(2, "0") <= maxMonth);
