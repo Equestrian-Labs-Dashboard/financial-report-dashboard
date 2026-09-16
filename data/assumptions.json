@@ -3,15 +3,22 @@
     "modelStatus": "Draft",
     "fundingScenario": "$3M",
     "fundingDate": "Oct-26",
-    "version": "2.0",
-    "lastUpdate": "2026-08-04",
+    "version": "2.1",
+    "lastUpdate": "2026-09-16",
     "organicGrowth": "10%",
     "doverCapture": "20%",
     "roas": "4.0x",
     "baseEcommerceMonthly": "$70k",
     "actualsThroughMonth": 0,
     "displayYear": "2026",
-    "actualForecastSeedVersion": 0
+    "actualForecastSeedVersion": 0,
+    "shopifyOrderAudit": {
+      "value": 3616,
+      "throughDate": "2026-09-15",
+      "scope": "Corro Shopify — total store orders, calendar-year YTD",
+      "source": "Shopify total orders check supplied by Ceci on 2026-09-15",
+      "note": "Audit/control only. Ecommerce Baseline / Current is ecommerce-only YTD from the connected channel dataset, while the 2026 column is a full-year forecast/annualized value. Do not compare these figures as if they had the same scope or period."
+    }
   },
   "lists": {
     "modelStatus": [
@@ -345,7 +352,7 @@
           "y2027": "1,600",
           "y2028": "2,500",
           "y2029": "3,000",
-          "note": "Baseline/current should feed from Shopify/Stacks ecommerce-only orders, excluding HITS, Wellington and Concierge."
+          "note": "Baseline/current feeds ecommerce-only YTD orders from connected Shopify/channel data, excluding HITS, Wellington and Concierge where tagged. The 2026 column is a full-year forecast/annualized value. Store-wide control check: 3,616 total Corro Shopify orders through Sep 15, 2026. Different scope/period — do not compare 3,616 directly with ecommerce-only current or FY2026 forecast."
         },
         {
           "driver": "AOV",
@@ -360,10 +367,10 @@
           "driver": "GM1 %",
           "current": "Actuals pending",
           "y2026": "—",
-          "y2027": "32.5%",
-          "y2028": "35.5%",
-          "y2029": "38.5%",
-          "note": "Current GM1 is channel-specific: Gross Profit / Net Sales using Shopify orders classified to this channel and Shopify variant unit costs. Forecast years remain editable."
+          "y2027": "37%",
+          "y2028": "42%",
+          "y2029": "46%",
+          "note": "GM1 = Gross Profit / Net Sales. 2026 remains actual/forecast-seeded and must be reviewed before finalizing. Management guidance: 2027 36–38%, 2028 41–43%, 2029 45–47%; model uses range midpoints 37%, 42%, 46%. 50% remains a longer-term/upside target."
         }
       ]
     },
@@ -803,7 +810,7 @@
       },
       {
         "line": "GM1",
-        "source": "Net Sales − COGS",
+        "source": "GP1 / Net Sales; GP1 = Net Sales − COGS",
         "current": "",
         "y2026": "",
         "y2027": "",
@@ -821,7 +828,7 @@
       },
       {
         "line": "GM2",
-        "source": "GM1 − Total Shipping Expenses",
+        "source": "GP2 / Net Sales; GP2 = GP1 − Outbound Shipping − Packaging + Shipping Revenue",
         "current": "",
         "y2026": "",
         "y2027": "",
@@ -839,7 +846,7 @@
       },
       {
         "line": "GM3",
-        "source": "GM2 − Ad Spend",
+        "source": "GP3 / Net Sales; GP3 = GP2 − Ad Spend",
         "current": "",
         "y2026": "",
         "y2027": "",

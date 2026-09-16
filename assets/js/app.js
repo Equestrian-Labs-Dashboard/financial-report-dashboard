@@ -517,6 +517,17 @@ function renderBusinessUnits() {
       gate ? el("div", { class: `status-pill ${gate.cls}` }, gate.text) : null,
     ]);
     renderEngineTable(card.querySelector("table"), engine.rows);
+    if (String(engine.title || "").startsWith("Ecommerce")) {
+      const audit = (STATE.meta || {}).shopifyOrderAudit || {};
+      if (audit.value) {
+        const through = audit.throughDate || "";
+        card.appendChild(el("p", { class: "source-note" },
+          `Order scope check: Shopify total store orders = ${Number(audit.value).toLocaleString("en-US")} through ${through}. ` +
+          `Baseline / Current above is ecommerce-only YTD from the connected channel dataset; 2026 is the full-year model forecast. Do not compare them directly.`));
+      }
+      card.appendChild(el("p", { class: "source-note" },
+        "GM1 management path: 2027 36–38% (37% midpoint), 2028 41–43% (42%), 2029 45–47% (46%); 50% is long-term/upside. 2026 remains under review and is not hard-coded to a new target."));
+    }
     wrap.appendChild(card);
   });
 }

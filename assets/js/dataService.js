@@ -9,7 +9,7 @@
  * changing app.js.
  */
 const DataService = (() => {
-  const STORAGE_KEY = "som_assumptions_v210";
+  const STORAGE_KEY = "som_assumptions_v211";
   const LEGACY_KEYS = [
     "som_assumptions_v90",
     "som_assumptions_v80",
@@ -41,7 +41,7 @@ const DataService = (() => {
     if (local) {
       try { return JSON.parse(local); } catch (e) { localStorage.removeItem(STORAGE_KEY); }
     }
-    const res = await fetch("data/assumptions.json?v=210", { cache: "no-store" });
+    const res = await fetch("data/assumptions.json?v=211", { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to load data/assumptions.json");
     return res.json();
   }
