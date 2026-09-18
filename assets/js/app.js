@@ -233,6 +233,25 @@ function ensureScenarioStore() {
   if (!STATE.scenarioVersions) STATE.scenarioVersions = {};
 }
 
+// Ceci's approved GM1 path applies to the core Ecommerce model regardless of
+// the selected funding or model-status scenario.  Business lines with their
+// own economics (for example Private Label and Embroidery) retain their
+// separately modeled GM1 assumptions; the consolidated Financial tab then
+// calculates the weighted result from every active engine.
+const APPROVED_ECOMMERCE_GM1_PATH = { y2027: "37%", y2028: "42%", y2029: "46%" };
+function applyApprovedEcommerceGm1Path(modelState = STATE) {
+  if (!modelState) return;
+  const ecommerce = getBlock(modelState.growthEngines, "Ecommerce");
+  const gm1 = ecommerce && getRow(ecommerce.rows, "GM1 %");
+  if (!gm1 || !gm1.driver) return;
+  Object.entries(APPROVED_ECOMMERCE_GM1_PATH).forEach(([year, pct]) => { gm1[year] = pct; });
+}
+
+function applyApprovedEcommerceGm1PathEverywhere() {
+  applyApprovedEcommerceGm1Path(STATE);
+  Object.values(STATE.scenarioVersions || {}).forEach(snapshot => applyApprovedEcommerceGm1Path(snapshot));
+}
+
 function saveScenarioInputs(status) {
   ensureScenarioStore();
   const key = status || (STATE.meta && STATE.meta.modelStatus) || "Draft";
@@ -240,6 +259,7 @@ function saveScenarioInputs(status) {
 }
 
 function renderAll() {
+  applyApprovedEcommerceGm1PathEverywhere();
   syncHeaderToTables();
   renderHeader();
   renderKpis();
@@ -2855,6 +2875,7 @@ function initThemeToggle() {
 async function boot() {
   initThemeToggle();
   STATE = await DataService.load();
+  applyApprovedEcommerceGm1PathEverywhere();
   applyFutureEditableDefaults();
   renderAll();
   refreshActualsFromSheets({ silent: true });

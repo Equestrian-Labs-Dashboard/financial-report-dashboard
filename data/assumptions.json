@@ -370,7 +370,7 @@
           "y2027": "37%",
           "y2028": "42%",
           "y2029": "46%",
-          "note": "GM1 = Gross Profit / Net Sales. 2026 remains actual/forecast-seeded and must be reviewed before finalizing. Management guidance: 2027 36–38%, 2028 41–43%, 2029 45–47%; model uses range midpoints 37%, 42%, 46%. 50% remains a longer-term/upside target."
+          "note": "GM1 = Gross Profit / Net Sales. 2026 remains actual/forecast-seeded and must be reviewed before finalizing. Management guidance is applied to Ecommerce in every funding and model-status scenario: 2027 36–38%, 2028 41–43%, 2029 45–47%; model uses range midpoints 37%, 42%, 46%. 50% remains a longer-term/upside target."
         }
       ]
     },
