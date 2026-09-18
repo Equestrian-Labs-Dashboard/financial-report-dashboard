@@ -653,7 +653,10 @@ function incrementalAdSpendByYear(yearKey) {
   if (!year || !marketingAllocation || total <= 0) return 0;
   const fundingDate = monthIndexFromFundingDate(STATE.meta.fundingDate || funding.date);
   if (!fundingDate) return 0;
-  const start = addMonths(fundingDate, 1);
+  // Funding that closes in a month is available for that month's acquisition
+  // activity.  This makes an October close contribute only Q4 spend in 2026,
+  // while preserving the materially larger capacity in the following year.
+  const start = fundingDate;
   const end = adSpendCoverageEndForScenario(total, start);
   const months = monthsBetweenInclusive(start, end);
   if (!months.length) return 0;
@@ -708,7 +711,7 @@ function computedCommercialValue(row, key) {
     return formatMoney(incrementalAdSpendByYear(key));
   }
   if (row.driver === "Total Ad Spend") {
-    // 2026–2028 are calculated from Target Ad Spend % of Ecommerce Gross Sales.
+    // 2026–2028 are Base Ad Spend plus funding-backed incremental capacity.
     // 2029 uses Default Logic: Prior Year Ecommerce Gross Sales × Reinvestment %.
     return formatMoney(totalAdSpendByYear(key));
   }
@@ -1106,6 +1109,9 @@ function renderEcommerceRevenueBuild() {
   const rows = [
     ["Base Ecommerce Revenue", y => ecommerceBuild(y).base],
     ["Organic Growth", y => ecommerceBuild(y).organic],
+    ["Base Ad Spend", y => baseAdSpendByYear(y)],
+    ["Funding-driven Incremental Ad Spend", y => incrementalAdSpendByYear(y)],
+    ["Total Ad Spend", y => ecommerceBuild(y).adSpend],
     ["Paid Growth", y => ecommerceBuild(y).paid],
     ["Net Dover Capture", y => ecommerceBuild(y).dover],
     ["Total Ecommerce Gross Sales", y => ecommerceBuild(y).total, true]
@@ -1648,6 +1654,7 @@ function renderFinancialSummary() {
     { label: "Gross Sales", value: formatFinancialMoney(b.grossSales, {dashZero:true}), sub: period },
     { label: "Net Sales", value: formatFinancialMoney(b.netSales, {dashZero:true}), sub: forecastPeriod("After Discounts") },
     { label: "GP1", value: formatFinancialMoney(b.gp1, {dashZero:true}), sub: forecastPeriod(b.gp1 ? `${formatPercent(b.netSales ? b.gp1 / b.netSales : 0)} of Net Sales` : "After COGS") },
+    { label: "GM1 %", value: formatPercent(b.netSales ? b.gp1 / b.netSales : 0), sub: forecastPeriod("GP1 / Net Sales") },
     { label: "GP2", value: formatFinancialMoney(b.gp2, {dashZero:true}), sub: forecastPeriod(b.gp2 ? `${formatPercent(b.netSales ? b.gp2 / b.netSales : 0)} of Net Sales` : "After Fulfillment") },
     { label: "GP3", value: formatFinancialMoney(b.gp3, {dashZero:true}), sub: forecastPeriod(b.gp3 ? `${formatPercent(b.netSales ? b.gp3 / b.netSales : 0)} of Net Sales` : "After Advertising") },
     { label: "EBITDA", value: formatFinancialMoney(ebitda, {dashZero:true}), sub: forecastPeriod("After Operating Expenses") }
@@ -1663,6 +1670,7 @@ function renderFinancialSummary() {
     ["Net Sales", y => bridges[y].netSales, true],
     ["COGS", y => -(bridges[y].netSales - bridges[y].gp1)],
     ["GP1", y => bridges[y].gp1, true],
+    ["GM1 %", y => bridges[y].netSales ? bridges[y].gp1 / bridges[y].netSales : 0, true, "pct"],
     ["Outbound Shipping", y => -bridges[y].outboundShipping],
     ["Packaging", y => -bridges[y].packaging],
     ["Shipping Revenue", y => bridges[y].shippingRevenue],

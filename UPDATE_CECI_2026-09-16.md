@@ -20,3 +20,9 @@ Changes made without changing the core model formulas:
    - GM3 = GP3 / Net Sales; GP3 = GP2 − Ad Spend.
 
 No GM2 target percentages were invented because the supplied conversation does not contain a confirmed GM2 target path.
+
+
+4. **Tab 3 Financial Summary update**
+   - Added **GM1 %** as a visible financial KPI and P&L line item.
+   - GM1 is calculated as **GP1 / Net Sales** to avoid introducing the $900K inventory build as a one-year artificial margin expansion.
+   - Existing formulas and inputs were preserved.

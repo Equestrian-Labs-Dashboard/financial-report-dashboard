@@ -158,7 +158,7 @@
             "y2028",
             "y2029"
           ],
-          "note": "Funding-driven allocation reference. Paid Growth Revenue uses total calculated Ad Spend, not only incremental spend."
+          "note": "Calculated from the selected scenario's marketing allocation and funding month. Funding is available in its closing month; Paid Growth Revenue uses Total Ad Spend, not only this incremental component."
         },
         {
           "driver": "Total Ad Spend",
@@ -173,7 +173,7 @@
             "y2028",
             "y2029"
           ],
-          "note": "2026–2028 calculated from Target Ad Spend % of Ecommerce Gross Sales. 2029 default uses prior-year Ecommerce Gross Sales × Reinvestment %. "
+          "note": "2026–2028 = Base Ad Spend + funding-driven Incremental Ad Spend. 2029 defaults to prior-year Ecommerce Gross Sales × Reinvestment %."
         },
         {
           "driver": "2029 Reinvestment %",
@@ -202,7 +202,7 @@
           "calculated": [
             "y2029"
           ],
-          "note": "Input for 2026–2028. Formula solves the circular relationship: Ecommerce Gross Sales = pre-paid revenue / (1 - Ad Spend % × ROAS). 2029 is calculated from editable Total Ad Spend."
+          "note": "Planning guardrail for management review. The modeled 2026–2028 spend is constrained by Base Ad Spend plus the selected funding allocation; 2029 is calculated from editable Total Ad Spend."
         },
         {
           "driver": "Ad Spend % of Ecommerce Gross Sales",
