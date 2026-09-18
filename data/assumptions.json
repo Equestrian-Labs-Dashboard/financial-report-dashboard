@@ -158,7 +158,7 @@
             "y2028",
             "y2029"
           ],
-          "note": "Calculated from the selected scenario's marketing allocation and funding month. Funding is available in its closing month; Paid Growth Revenue uses Total Ad Spend, not only this incremental component."
+          "note": "Funding-driven allocation reference. Paid Growth Revenue uses total calculated Ad Spend, not only incremental spend."
         },
         {
           "driver": "Total Ad Spend",
@@ -173,7 +173,7 @@
             "y2028",
             "y2029"
           ],
-          "note": "2026–2028 = Base Ad Spend + funding-driven Incremental Ad Spend. 2029 defaults to prior-year Ecommerce Gross Sales × Reinvestment %."
+          "note": "2026–2028 calculated from Target Ad Spend % of Ecommerce Gross Sales. 2029 default uses prior-year Ecommerce Gross Sales × Reinvestment %. "
         },
         {
           "driver": "2029 Reinvestment %",
@@ -202,7 +202,7 @@
           "calculated": [
             "y2029"
           ],
-          "note": "Planning guardrail for management review. The modeled 2026–2028 spend is constrained by Base Ad Spend plus the selected funding allocation; 2029 is calculated from editable Total Ad Spend."
+          "note": "Input for 2026–2028. Formula solves the circular relationship: Ecommerce Gross Sales = pre-paid revenue / (1 - Ad Spend % × ROAS). 2029 is calculated from editable Total Ad Spend."
         },
         {
           "driver": "Ad Spend % of Ecommerce Gross Sales",
@@ -370,7 +370,7 @@
           "y2027": "37%",
           "y2028": "42%",
           "y2029": "46%",
-          "note": "GM1 = Gross Profit / Net Sales. 2026 remains actual/forecast-seeded and must be reviewed before finalizing. Management guidance is applied to Ecommerce in every funding and model-status scenario: 2027 36–38%, 2028 41–43%, 2029 45–47%; model uses range midpoints 37%, 42%, 46%. 50% remains a longer-term/upside target."
+          "note": "GM1 = Gross Profit / Net Sales. 2026 remains actual/forecast-seeded and must be reviewed before finalizing. Management guidance: 2027 36–38%, 2028 41–43%, 2029 45–47%; model uses range midpoints 37%, 42%, 46%. 50% remains a longer-term/upside target."
         }
       ]
     },
